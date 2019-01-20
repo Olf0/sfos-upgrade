@@ -5,7 +5,7 @@
 Upgrading SailfishOS at the GUI (per *Settings -> SailfishOS updates*) provides very little information about its progress / process / success, beyond reading `/var/log/systemupdate.log` after the upgrade.  This can make troubleshooting issues hard.<br />
 Furthermore the GUI offers no control which SailfishOS version to upgrade to.
 
-In contrast to that, Jolla's [guide how to upgrade SailfishOS at the command line]() offers full control, while lacking any logs or safety checks.<br />
+In contrast to that, Jolla's [guide how to upgrade SailfishOS at the command line](https://jolla.zendesk.com/hc/en-us/articles/360005795474) offers full control, while lacking any logs or safety checks.<br />
 And it is tedious and error prone to issue multiple critical commands manually at the command line.
 
 **SFOS-upgrade** performs the steps to upgrade SailfishOS at the command line in an automated manner, while providing extensive safety measures plus full log output at the screen and in a log file.<br />
@@ -30,3 +30,5 @@ And it is tedious and error prone to issue multiple critical commands manually a
 
 When an upgrade succeeded, reboot and do not miss to run `post_sfos-upgrade` (as root) then!  
 Not running it will result in the huge upgrade log files (containing many duplicated lines) and may result in RPMs failing to install ("unmet dependency" errors) plus annoying messages from the store-client that an upgrade to the installed version is available.
+
+Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by `tidy_log-dupes.sh` (which is called by `post_sfos-upgrade.sh`) to `/var/log/systemupdate_*.log.txt`.
