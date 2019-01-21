@@ -29,6 +29,6 @@ And it is tedious and error prone to issue multiple critical commands manually a
    Emits a brief usage description.
 
 When an upgrade succeeded, reboot and do not miss to run `post_sfos-upgrade` (as root) then!  
-Not running it will result in the huge upgrade log files (containing many duplicated lines) and may result in RPMs failing to install ("unmet dependency" errors) plus annoying messages from the store-client that an upgrade to the installed version is available.
+Not running it will result in the huge upgrade log files (containing many duplicated lines) and may result in RPMs failing to install ("unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) plus annoying messages from the store-client that an upgrade to the installed version is available.
 
 Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by `tidy_log-dupes.sh` (which is called by `post_sfos-upgrade.sh`) to `/var/log/systemupdate_*.log.txt`.
