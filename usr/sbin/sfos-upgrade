@@ -1,1 +1,136 @@
+#/bin/sh
+set -euf
+
+CALLED="$(echo $0 | rev | cut -f 1 -d '/' | rev)"
+OLDVERSION="$(version | rev | cut -f 2 -d ' ' | rev)"
+if [ -z "$*" ]
+then 
+  NEWVERSION="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
+  if expr "$OLDVERSION" ">=" "$NEWVERSION" > /dev/null
+  then
+    echo "Version $OLDVERSION to upgrade is greater or equals $NEWVERSION to upgrade to!"
+    echo "Override this check by explicitly providing a version number as parameter."
+    exit 1
+  fi
+else 
+  NEWVERSION="$1"
+  shift
+  if [ "$NEWVERSION" = "-h" ] || [ "$NEWVERSION" = "--help" ] || [ -n "$*" ]
+  then
+    if [ -n "$*" ]
+    then
+      echo "No extra parameters expected, but set: $*"
+    fi
+    echo "Usage: ${CALLED} [<version>]"
+    echo "Without a parameter it will upgrade from the installed version to the version set for SSU."
+    exit 1
+  fi
+  SETSSU="1"
+fi
+
+if echo "$NEWVERSION" | egrep -vq '^[0-9]\.[0-9]\.[0-9]+\.[0-9]+' 
+then
+  echo "Inorrect version format set: $NEWVERSION"
+  exit 1
+fi
+
+if curl -sk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | fgrep -q "$NEWVERSION"
+then true
+else
+  echo "\"${NEWVERSION}\" is not a publicly released SailfishOS version number!"
+  echo -n "Do you really want to continue? (Y/N) "
+  read YN
+  if [ "$YN" != "Y" ] && [ "$YN" != "y" ] && true
+  then
+    echo "Aborted by user."
+    exit 1
+  else
+    echo
+  fi
+fi
+
+FREESPACE="$(df -k / | rev | grep '^/ ' | sed 's/  */ /g' | cut -f 3 -d ' ' | rev)"
+if [ "$FREESPACE" -lt "1000000" ]
+then
+  echo "Less than 1 GByte ($FREESPACE KBytes) of free space on root filesystem: Aborting!"
+  echo "Please clean up before retrying."
+  exit 1
+fi
+if [ "$FREESPACE" -lt "1500000" ]
+then
+  echo "Less than 1,5 GByte ($FREESPACE KBytes) of free space on root filesystem!"
+  echo "Please consider to abort and to clean up before retrying."
+  echo
+fi
+if mount -t btrfs | cut -f 3 -d ' ' | grep -q '^/$'
+then
+  ALLOCATION="$(btrfs-balancer allocation / | fgrep 'Allocated:' | cut -f 2 -d ' ')"
+  if [ "$ALLOCATION" -ge "90" ]
+  then
+    echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 90% or more: Aborting!"
+    echo "Please perform a btrfs-balancer run before retrying."
+    exit 1
+  fi
+  if [ "$ALLOCATION" -ge "85" ]
+  then
+    echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 85% or more!"
+    echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
+    echo
+  fi
+  UNALLOCSPC="$(expr $(btrfs-balancer allocation / | fgrep 'Total:' | cut -f 2 -d ' ') - $(btrfs-balancer allocation / | fgrep 'Used:' | cut -f 2 -d ' '))"
+  if [ "$UNALLOCSPC" -lt "1000000000" ]
+  then
+    echo "Less than 1 GByte of unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem: Aborting!"
+    echo "Please perform a btrfs-balancer run before retrying."
+    exit 1
+  fi
+  if [ "$UNALLOCSPC" -lt "1500000000" ]
+  then
+    echo "Less than 1,5 GByte of unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem!"
+    echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
+    echo
+  fi
+fi
+
+if expr "$OLDVERSION" ">" "$NEWVERSION" > /dev/null
+then
+  echo "About to DOWNGRADE SailfishOS from $OLDVERSION to $NEWVERSION!"
+  echo -n "Do you really want to do that? (Y/N) "
+else
+  echo -n "Do you want to upgrade SailfishOS from $OLDVERSION to $NEWVERSION? (Y/N) "
+fi
+read YN
+if [ "$YN" != "Y" ] && [ "$YN" != "y" ] && true
+then
+  echo "Aborted by user."
+  exit 1
+else
+  echo
+fi
+
+echo "For troubleshooting please consult:"
+echo " https://jolla.zendesk.com/hc/en-us/articles/360005795474"
+echo
+
+LOGFILE="/var/log/systemupdate_${NEWVERSION}-from-${OLDVERSION}_$(date +'%F_%H-%M-%S').log-dupes.txt"
+touch "$LOGFILE"
+
+if which patchmanager > /dev/null
+then
+  echo "- Unapplying all Patchmanager-Patches." | tee -a "$LOGFILE"
+  patchmanager --unapply-all 2>> "$LOGFILE"
+  echo | tee -a "$LOGFILE"
+fi
+
+if [ "$SETSSU" = "1" ]
+then
+  echo "- Setting SSU version for SailfishOS:" | tee -a "$LOGFILE"
+  ssu re $NEWVERSION 2>&1 | tee -a "$LOGFILE"
+  echo | tee -a "$LOGFILE"
+fi
+
+echo "- Fetching and installing SailfishOS upgrade from $OLDVERSION to $NEWVERSION (this may take a while):" | tee -a "$LOGFILE"
+version --dup 2>&1 | tee -a "$LOGFILE"
+
+echo "After rebooting, do not miss to run post_${CALLED}"
 
