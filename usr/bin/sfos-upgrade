@@ -22,8 +22,8 @@ else
       echo "No extra parameters expected, but set: $*"
     fi
     echo "Usage: ${CALLED} [<version>]"
-    echo "Without a parameter it will upgrade from the installed version to the version set for SSU."
-    echo "With a version number provided it always sets SSU to this version and in release mode."
+    echo "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading ."
+    echo "Without a version number provided it uses the one set for SSU to upgrade to."
     exit 1
   fi
   SETSSU="1"
