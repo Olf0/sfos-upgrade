@@ -23,8 +23,8 @@ And it is tedious and error prone to issue multiple critical commands manually a
 **Usage** (as root user):
 
 * **sfos-upgrade.sh [\<version\>]**<br />
-   With a version number provided as parameter it sets SSU to this version and in release mode.  This is the regular use case.<br />
-   Without a version number provided it uses the one set per `ssu re <version>` (one can query the version set by using a simple `ssu re`).
+   With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
+   Without a version number provided it uses the one set per `ssu re <version>` to upgrade to (one can query the version set by using a simple `ssu re`).
 * **sfos-upgrade.sh -h|--help**<br />
    Emits a brief usage description.
 
