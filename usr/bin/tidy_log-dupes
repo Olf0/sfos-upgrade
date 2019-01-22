@@ -1,0 +1,33 @@
+#/bin/sh
+
+CALLED="$(echo $0 | rev | cut -f 1 -d '/' | rev)"
+if [ -z "$*" ]
+then 
+  LOGPATH="/var/log"
+else
+  LOGPATH="$1"
+  shift
+  if [ "$LOGPATH" = "-h" ] || [ "$LOGPATH" = "--help" ] || [ -n "$*" ]
+  then
+    if [ -n "$*" ]
+    then
+      echo "No extra parameters expected, but set: $*"
+    fi
+    echo "Usage: ${CALLED} <logdirectory>"
+    echo "Without a parameter it will use /var/log as log directory."
+    exit 1
+  fi
+fi
+
+cd "$LOGPATH" || exit $?
+ 
+TARGETS="systemupdate_*.log-dupes.txt"
+for LOGFILE in $TARGETS
+do
+  if [ "$LOGFILE" != "$TARGETS" ]
+  then
+    cat "$LOGFILE" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$(echo ${LOGFILE} | rev | cut -f 2- -d - | rev).txt"
+    rm "$LOGFILE"
+  fi
+done
+

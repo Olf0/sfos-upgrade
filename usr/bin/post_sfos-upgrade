@@ -1,0 +1,27 @@
+#/bin/sh
+
+echo "- Cleaning logfiles of duplicate lines."
+tidy_log-dupes
+
+if which store-client > /dev/null
+then
+  echo "- Removing outdated Store version info."
+  pkill store-client
+  rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
+fi
+
+# No need to be "brutal":
+# if which zypper > /dev/null
+# then
+#   echo "- Cleaning zypper's caches:"
+#   zypper clean -a
+# fi
+
+echo "- Refreshing pkcon's caches:"
+pkcon refresh
+
+if which zypper > /dev/null
+then
+  echo "- Refreshing zypper's caches:"
+  zypper refresh
+fi
