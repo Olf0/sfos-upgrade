@@ -7,7 +7,7 @@ then
 else
   LOGPATH="$1"
   shift
-  if [ "$LOGPATH" = "-h" ] || [ "$LOGPATH" = "--help" ] || [ -n "$*" ]
+  if [ ! -d "$LOGPATH" ] || [ -n "$*" ]
   then
     if [ -n "$*" ]
     then
