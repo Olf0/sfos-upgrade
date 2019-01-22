@@ -10,18 +10,14 @@ then
   rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
 fi
 
-# No need to be "brutal":
-# if which zypper > /dev/null
-# then
-#   echo "- Cleaning zypper's caches:"
-#   zypper clean -a
-# fi
-
-echo "- Refreshing pkcon's caches:"
-pkcon refresh
-
 if which zypper > /dev/null
 then
+#  No need to be "brutal":
+#  echo "- Cleaning zypper's caches:"
+#  zypper clean -m
   echo "- Refreshing zypper's caches:"
   zypper refresh
 fi
+
+echo "- Refreshing pkcon's caches:"
+pkcon refresh
