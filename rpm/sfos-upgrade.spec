@@ -31,3 +31,4 @@ cp usr/bin/* %{buildroot}%{_bindir}/
 %{_bindir}/sfos-upgrade
 %{_bindir}/post_sfos-upgrade
 %{_bindir}/tidy_log-dupes
+
