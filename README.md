@@ -11,7 +11,7 @@ And it is tedious and error prone to issue multiple critical commands manually a
 **sfos-upgrade** performs the steps to upgrade SailfishOS at the command line in an automated manner, while providing extensive safety measures plus full log output at the screen and in a log file.<br />
 <br />
 
-**Safety measures:**
+Safety measures:
 
 * Check for free space on root filesystem.
 * Check for BTRFS allocation, if the root filesystem uses BTRFS.
@@ -20,7 +20,7 @@ And it is tedious and error prone to issue multiple critical commands manually a
 * Emit a warning when downgrading.
 <br />
 
-**Usage** (as root user):
+Usage (as root user):
 
 * **sfos-upgrade [\<version\>]**<br />
    With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
@@ -28,7 +28,7 @@ And it is tedious and error prone to issue multiple critical commands manually a
 * **sfos-upgrade -h|--help**<br />
    Emits a brief usage description.
 
-When an upgrade succeeded, reboot and do not miss to run `post_sfos-upgrade` (as root) then!  
+When an upgrade succeeded, reboot and do not miss to run **post_sfos-upgrade** (as root) then!  
 Not running it will result in the huge upgrade log files (containing many duplicated lines) and may result in RPMs failing to install ("unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) plus annoying notifications from the store-client that an upgrade to the installed version is available.
 
-Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by `tidy_log-dupes` (which is called by `post_sfos-upgrade`) to `/var/log/systemupdate_*.log.txt`.
+Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by **tidy_log-dupes** (which is called by **post_sfos-upgrade**) to `/var/log/systemupdate_*.log.txt`.
