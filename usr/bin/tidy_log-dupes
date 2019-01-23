@@ -21,7 +21,7 @@ fi
 
 cd "$LOGPATH" || exit $?
 
-rm -rf UpdateTestcase-*  # Removing stale metadata downloads left over by version --dup
+# rm -rf UpdateTestcase-*  # Removing stale metadata downloads left over by version --dup
 
 TARGETS="systemupdate_*.log-dupes.txt"
 for LOGFILE in $TARGETS
