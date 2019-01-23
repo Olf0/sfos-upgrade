@@ -28,7 +28,7 @@ cp usr/bin/* %{buildroot}%{_bindir}/
 
 %files
 %defattr(0754,root,root,-)
-%{_bindir}/sfos-upgrade
-%{_bindir}/post_sfos-upgrade
+%{_bindir}/%{name}
+%{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
 
