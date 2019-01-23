@@ -15,7 +15,8 @@ Safety measures:
 
 * Check for free space on root filesystem.
 * Check for BTRFS allocation, if the root filesystem uses BTRFS.
-* Check for correct and available SailfishOS versions.
+* Check for upgrading to a correct and available SailfishOS version.
+* Check for "jumping over" a stop release.
 * Automatically unapply all Patches, if Patchmanager is installed.
 * Emit a warning when downgrading.
 <br />
