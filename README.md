@@ -40,3 +40,4 @@ Notes:
 * Built RPMs are available in the [release section](https://github.com/Olf0/sfos-upgrade/releases) and for easy installation under SailfishOS at [OpenRepos](https://openrepos.net/content/olf/sfos-upgrade).
 * **sfos-upgrade** does not check battery level and if charging (yet).<br />
 If you know how to query that properly at the command line, please denote these commands to me or submit a PR.
+
