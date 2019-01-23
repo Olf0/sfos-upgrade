@@ -27,7 +27,7 @@ mkdir -p %{buildroot}%{_bindir}
 cp usr/bin/* %{buildroot}%{_bindir}/
 
 %files
-%defattr(-,root,root,0754)
+%defattr(0754,root,root,-)
 %{_bindir}/sfos-upgrade
 %{_bindir}/post_sfos-upgrade
 %{_bindir}/tidy_log-dupes
