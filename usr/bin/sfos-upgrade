@@ -29,11 +29,24 @@ else
   SETSSU="1"
 fi
 
-if echo "$NEWVERSION" | egrep -vq '^[0-9]\.[0-9]\.[0-9]+\.[0-9]+' 
+if echo "$NEWVERSION" | grep -vq '^[0-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$' 
 then
   echo "Inorrect version format set: $NEWVERSION"
   exit 1
 fi
+
+KNOWNSTOPVERSIONS="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5"
+STOPVERSIONS="$(curl -s https://jolla.zendesk.com/hc/en-us/articles/201836347 | sed -n '/id="4"/,/id="5"/p' | sed -n '/<ul>/,/<\/ul>/p' | sed -n '/<li>/,/<\/li>/p' | cut -f 2 -d '>' | cut -f 1 -d '<' | cut -f 1 -d ' ' | tr -d '\200-\377')\n$KNOWNSTOPVERSIONS"
+for i in $(echo -e "$STOPVERSIONS" | grep '^[1-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$' | sort -u)
+do
+  if expr "$OLDVERSION" "<" "$i" > /dev/null &&  expr "$NEWVERSION" ">" "$i" > /dev/null && true
+  then
+    echo "Trying to upgrade from $OLDVERSION to ${NEWVERSION}, which would \"jump over\" the stop release ${i}!"
+    echo "Hence upgrading to $i instead." 
+    NEWVERSION="$i"
+    break
+  fi
+done
 
 if curl -sk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | fgrep -q "$NEWVERSION"
 then true
