@@ -21,7 +21,7 @@ else
     then
       echo "No extra parameters expected, but set: $*"
     fi
-    echo "Usage: ${CALLED} [<version>]"
+    echo "Usage: $CALLED [<version>]"
     echo "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading."
     echo "Without a version number provided it uses the one set for SSU to upgrade to."
     exit 1
@@ -146,5 +146,5 @@ fi
 echo "- Fetching and installing SailfishOS upgrade from $OLDVERSION to $NEWVERSION (this may take a while):" | tee -a "$LOGFILE"
 version --dup 2>&1 | tee -a "$LOGFILE"
 
-echo "After rebooting, do not miss to run post_${CALLED}"
+echo "After rebooting, do not miss to run post_$CALLED"
 
