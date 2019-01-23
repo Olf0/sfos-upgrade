@@ -123,7 +123,7 @@ else
 fi
 
 echo "For troubleshooting please consult:"
-echo " https://jolla.zendesk.com/hc/en-us/articles/360005795474"
+echo "ttps://jolla.zendesk.com/hc/en-us/articles/360005795474"
 echo
 
 LOGFILE="/var/log/systemupdate_${NEWVERSION}-from-${OLDVERSION}_$(date +'%F_%H-%M-%S').log-dupes.txt"
