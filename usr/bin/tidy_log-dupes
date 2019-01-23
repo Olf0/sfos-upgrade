@@ -20,7 +20,9 @@ else
 fi
 
 cd "$LOGPATH" || exit $?
- 
+
+# Remove old metadata downloads by version --dup
+rm -rf UpdateTestcase-*
 TARGETS="systemupdate_*.log-dupes.txt"
 for LOGFILE in $TARGETS
 do
