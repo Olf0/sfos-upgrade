@@ -33,3 +33,10 @@ When an upgrade succeeded, reboot and do not miss to run **post_sfos-upgrade** (
 Not running it will result in the huge upgrade log files (containing many duplicated lines) and may result in RPMs failing to install ("unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) plus annoying notifications from the store-client that an upgrade to the installed version is available.
 
 Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by **tidy_log-dupes** (which is called by **post_sfos-upgrade**) to `/var/log/systemupdate_*.log.txt`.
+<br>
+
+Notes:
+
+* Built RPMs are available in the [release section](https://github.com/Olf0/sfos-upgrade/releases) and for easy installation under SailfishOS at [OpenRepos](https://openrepos.net/content/olf/sfos-upgrade).
+* **sfos-upgrade** does not check battery level and if charging (yet).<br />
+If you know how to query that properly at the command line, please denote these commands to me or submit a PR.
