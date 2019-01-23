@@ -1,6 +1,6 @@
 Name:       	sfos-upgrade
 Summary:    	Scripts for safe and automated upgrading of SailfishOS with logging
-Version:    	0.2
+Version:    	0.3
 Release:    	1
 Group:      	System/Base
 Distribution:	SailfishOS
