@@ -22,13 +22,13 @@ And it is tedious and error prone to issue multiple critical commands manually a
 
 **Usage** (as root user):
 
-* **sfos-upgrade.sh [\<version\>]**<br />
+* **sfos-upgrade [\<version\>]**<br />
    With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
    Without a version number provided it uses the one set per `ssu re <version>` to upgrade to (one can query the version set by using a simple `ssu re`).
-* **sfos-upgrade.sh -h|--help**<br />
+* **sfos-upgrade -h|--help**<br />
    Emits a brief usage description.
 
 When an upgrade succeeded, reboot and do not miss to run `post_sfos-upgrade` (as root) then!  
 Not running it will result in the huge upgrade log files (containing many duplicated lines) and may result in RPMs failing to install ("unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) plus annoying notifications from the store-client that an upgrade to the installed version is available.
 
-Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by `tidy_log-dupes.sh` (which is called by `post_sfos-upgrade.sh`) to `/var/log/systemupdate_*.log.txt`.
+Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by `tidy_log-dupes` (which is called by `post_sfos-upgrade`) to `/var/log/systemupdate_*.log.txt`.
