@@ -13,6 +13,7 @@ Source1:    	https://github.com/Olf0/%{name}/archive/%{version}-%{release}.tar.g
 BuildArch:  	noarch
 Requires:   	ssu
 Requires:   	sailfish-version
+Requires:     curl
 
 %description
 %{summary}
