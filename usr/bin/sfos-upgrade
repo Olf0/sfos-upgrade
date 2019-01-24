@@ -78,8 +78,8 @@ then
 fi
 if mount -t btrfs | cut -f 3 -d ' ' | grep -q '^/$'
 then
-  BTRFSALLOC="$(btrfs-balancer allocation /)"
-  ALLOCATION="$(echo $BTRFSALLOC | fgrep 'Allocated:' | cut -f 2 -d ' ')"
+  BTRFSALLOC="$(btrfs-balancer allocation / | tr -s ' ')"
+  ALLOCATION=$(echo "$BTRFSALLOC" | fgrep 'Allocated:' | cut -f 2 -d ' ')
   if [ "$ALLOCATION" -ge "90" ]
   then
     echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 90% or more: Aborting!"
@@ -92,7 +92,7 @@ then
     echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
     echo
   fi
-  UNALLOCSPC="$(expr $(echo $BTRFSALLOC | fgrep 'Total:' | cut -f 2 -d ' ') - $(echo $BTRFSALLOC | fgrep 'Used:' | cut -f 2 -d ' '))"
+  UNALLOCSPC=$(expr $(echo "$BTRFSALLOC" | fgrep 'Total:' | cut -f 2 -d ' ') "-" $(echo "$BTRFSALLOC" | fgrep 'Used:' | cut -f 2 -d ' '))
   if [ "$UNALLOCSPC" -lt "1000000000" ]
   then
     echo "Less than 1 GByte of unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem: Aborting!"
