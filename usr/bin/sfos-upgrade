@@ -48,7 +48,7 @@ do
   fi
 done
 
-if curl -sk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | fgrep -q "$NEWVERSION"
+if curl -s https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | fgrep -q "$NEWVERSION"
 then true
 else
   echo "\"${NEWVERSION}\" is not a publicly released SailfishOS version number!"
@@ -63,7 +63,7 @@ else
   fi
 fi
 
-FREESPACE="$(df -k / | rev | grep '^/ ' | sed 's/  */ /g' | cut -f 3 -d ' ' | rev)"
+FREESPACE="$(df -k / | rev | grep '^/ ' | tr -s ' ' | cut -f 3 -d ' ' | rev)"
 if [ "$FREESPACE" -lt "1000000" ]
 then
   echo "Less than 1 GByte ($FREESPACE KBytes) of free space on root filesystem: Aborting!"
