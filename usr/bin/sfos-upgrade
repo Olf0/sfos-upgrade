@@ -128,6 +128,16 @@ echo
 LOGFILE="/var/log/systemupdate_${NEWVERSION}-from-${OLDVERSION}_$(date +'%F_%H-%M-%S').log-dupes.txt"
 touch "$LOGFILE"
 
+if expr "$OLDVERSION" "<" "1.0.4.20" > /dev/null
+then
+  echo "- Disabling OpenRepos\' repositories:" | tee -a "$LOGFILE"
+  for i in $(ssu lr | fgrep 'openrepos.net' | cut -f 3 -d ' ')
+  do
+    echo "$i" | tee -a "$LOGFILE"
+    ssu dr "$i" 2>&1 | tee -a "$LOGFILE"
+  done
+fi
+
 if which patchmanager > /dev/null
 then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$LOGFILE"
