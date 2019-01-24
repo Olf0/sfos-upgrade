@@ -26,7 +26,7 @@ else
     echo "Without a version number provided it uses the one set for SSU to upgrade to."
     exit 1
   fi
-  SETSSU="1"
+  SETSSU="yes"
 fi
 
 if echo "$NEWVERSION" | grep -vq '^[0-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$' 
@@ -145,7 +145,7 @@ then
   echo | tee -a "$LOGFILE"
 fi
 
-if [ "$SETSSU" = "1" ]
+if [ "$SETSSU" = "yes" ]
 then
   echo "- Setting SSU version for SailfishOS:" | tee -a "$LOGFILE"
   ssu re $NEWVERSION 2>&1 | tee -a "$LOGFILE"
