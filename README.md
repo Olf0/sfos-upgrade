@@ -16,7 +16,7 @@ Safety measures:
 * Check for free space on root filesystem.
 * Check for BTRFS allocation, if the root filesystem uses BTRFS.
 * Check for upgrading to a correct and available SailfishOS version.
-* Check for "jumping over" a stop release (since v0.3).
+* Check for "jumping over" a [stop release](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4) (since v0.3).
 * Automatically unapply all Patches, if Patchmanager is installed.
 * Disable all OpenRepos' repositories, if upgrading from a SailfishOS version below 1.0.4.20 (since v0.4).
 * Emit a warning when downgrading.
@@ -40,7 +40,7 @@ Notes:
 
 * Built RPMs are available in the [release section](https://github.com/Olf0/sfos-upgrade/releases) and for easy installation under SailfishOS at [OpenRepos](https://openrepos.net/content/olf/sfos-upgrade).
 * After a "factory reset" **sfos-upgrade** eases and speeds up the process of upgrading to a recent SailfishOS release via consecutively installing all "stop releases" on the way:<br />
-Simply run `sfos-upgrade <intended version>`, reboot  and repeat: **sfos-upgrade** will guide you through all stop releases.<br />
+Simply run `sfos-upgrade <intended version>`, reboot  and repeat: **sfos-upgrade** will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
 Omit running `post_sfos-upgrade` between consecutive SailfishOS upgrades (but do reboot each time!), only run it once after having upgraded to the intended version.
 * **sfos-upgrade** should work fine on any SailfishOS version 1.0.0.0 and higher and might work on earlier versions, if upgrading to at least 1.0.0.0.
 * **sfos-upgrade** does not check battery level and if charging (yet).<br />
