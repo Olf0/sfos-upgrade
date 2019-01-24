@@ -136,6 +136,7 @@ then
     echo "$i" | tee -a "$LOGFILE"
     ssu dr "$i" 2>&1 | tee -a "$LOGFILE"
   done
+  echo | tee -a "$LOGFILE"
 fi
 
 if which patchmanager > /dev/null
