@@ -18,6 +18,7 @@ Safety measures:
 * Check for upgrading to a correct and available SailfishOS version.
 * Check for "jumping over" a stop release (since v0.3).
 * Automatically unapply all Patches, if Patchmanager is installed.
+* Disable all OpenRepos' repositories, if upgrading from a SailfishOS version below 1.0.4.20.
 * Emit a warning when downgrading.
 <br />
 
