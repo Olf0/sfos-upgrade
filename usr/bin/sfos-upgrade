@@ -132,7 +132,7 @@ touch "$LOGFILE"
 if expr "$OLDVERSION" "<" "1.0.4.20" > /dev/null
 then
   echo "- Disabling OpenRepos\' repositories:" | tee -a "$LOGFILE"
-  for i in $(ssu lr | fgrep ' | cut -f 3 -d ' ')
+  for i in $(ssu lr | fgrep 'openrepo' | cut -f 3 -d ' ')
   do
     echo "$i" | tee -a "$LOGFILE"
     ssu dr "$i" 2>&1 | tee -a "$LOGFILE"
