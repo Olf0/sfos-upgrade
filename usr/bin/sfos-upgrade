@@ -48,9 +48,8 @@ do
   fi
 done
 
-if curl -s https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | fgrep -q "$NEWVERSION"
-then true
-else
+if ! curl -s https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | fgrep -q "$NEWVERSION"
+then
   echo "\"${NEWVERSION}\" is not a publicly released SailfishOS version number!"
   echo -n "Do you really want to continue? (Y/N) "
   read YN
@@ -93,15 +92,15 @@ then
     echo
   fi
   UNALLOCSPC=$(expr $(echo "$BTRFSALLOC" | fgrep 'Total: ' | cut -f 2 -d ' ') "-" $(echo "$BTRFSALLOC" | fgrep 'Used: ' | cut -f 2 -d ' '))
-  if [ "$UNALLOCSPC" -lt "1000000000" ]
+  if [ "$UNALLOCSPC" -lt "1500000000" ]
   then
-    echo "Less than 1 GByte of unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem: Aborting!"
+    echo "Less than 1,5 GByte of unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem: Aborting!"
     echo "Please perform a btrfs-balancer run before retrying."
     exit 1
   fi
-  if [ "$UNALLOCSPC" -lt "1500000000" ]
+  if [ "$UNALLOCSPC" -lt "2000000000" ]
   then
-    echo "Less than 1,5 GByte of unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem!"
+    echo "Less than 2 GByte of unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem!"
     echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
     echo
   fi
