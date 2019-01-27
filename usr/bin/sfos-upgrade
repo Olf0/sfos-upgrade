@@ -78,7 +78,7 @@ then
 fi
 if mount -t btrfs | cut -f 3 -d ' ' | grep -q '^/$'
 then
-  BTRFSTEST="ok"
+  BTRFSTEST="KO"
   if which btrfs-balancer > /dev/null
   then
     BTRFSALLOC="$(btrfs-balancer allocation / | tr -s ' ')"
@@ -99,6 +99,7 @@ then
     BTRFSUSED=$(echo "$BTRFSALLOC" | fgrep 'Used: ' | cut -f 2 -d ' ')
     if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
     then
+      BTRFSTEST="ok"
       if [ "$UNALLOCSPC" -lt "1500000000" ]
       then
         echo "Less than 1,5 GiB unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem: aborting!"
@@ -111,8 +112,6 @@ then
         echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
         echo
       fi
-    else
-      BTRFSTEST="KO"
     fi
   else
     if which btrfs > /dev/null
@@ -122,6 +121,7 @@ then
       BTRFSUSED=$(echo "$BTRFSALLOC" | fgrep 'used=' | cut -f 2 -d '=')
       if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
       then
+        BTRFSTEST="ok"
         if [ "$UNALLOCSPC" -lt "200" ]
         then
           echo "Less than 2 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev),$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on BTRFS root filesystem: aborting!"
@@ -134,11 +134,7 @@ then
           echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
           echo
         fi
-      else
-        BTRFSTEST="KO"
       fi
-    else
-      BTRFSTEST="KO"
     fi
   fi
   if [ "$BTRFSTEST" != "ok" ]
