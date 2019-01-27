@@ -6,12 +6,13 @@ OLDVERSION="$(version | rev | cut -f 2 -d ' ' | rev)"
 if [ -z "$*" ]
 then 
   NEWVERSION="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
-  if expr "$OLDVERSION" ">=" "$NEWVERSION" > /dev/null
-  then
-    echo "Version $OLDVERSION to upgrade is greater or equals $NEWVERSION to upgrade to!"
-    echo "Override this check by explicitly providing a version number as parameter."
-    exit 1
-  fi
+#  if expr "$OLDVERSION" ">=" "$NEWVERSION" > /dev/null
+#  then
+#    echo "Version $OLDVERSION to upgrade is greater or equals $NEWVERSION to upgrade to!"
+#    echo "Override this check by explicitly providing a version number as parameter."
+#    exit 1
+#  fi
+  SETSSU="no"
 else 
   NEWVERSION="$1"
   shift
@@ -187,7 +188,7 @@ then
   echo | tee -a "$LOGFILE"
 fi
 
-if [ "$SETSSU" = "yes" ]
+if [ "$SETSSU" != "no" ]
 then
   echo "- Setting SSU version for SailfishOS:" | tee -a "$LOGFILE"
   ssu re $NEWVERSION 2>&1 | tee -a "$LOGFILE"
