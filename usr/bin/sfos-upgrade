@@ -81,25 +81,6 @@ then
   if which btrfs-balancer > /dev/null
   then
     BTRFSALLOC="$(btrfs-balancer allocation / | tr -s ' ')"
-    BTRFSTOTAL=$(echo "$BTRFSALLOC" | fgrep 'Total: ' | cut -f 2 -d ' ')
-    BTRFSUSED=$(echo "$BTRFSALLOC" | fgrep 'Used: ' | cut -f 2 -d ' ')
-    if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
-    then
-      if [ "1500000000" -gt "$UNALLOCSPC" ]
-      then
-        echo "Less than 1,5 GiB unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem: aborting!"
-        echo "Please perform a btrfs-balancer run before retrying."
-        exit 1
-      fi
-      if [ "2000000000" -gt "$UNALLOCSPC" ]
-      then
-        echo "Less than 2 GiB unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem!"
-        echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
-        echo
-      fi
-    else
-      BTRFSTEST="KO"
-    fi
     ALLOCATION=$(echo "$BTRFSALLOC" | fgrep 'Allocated: ' | cut -f 2 -d ' ')
     if [ "$ALLOCATION" -ge "90" ]
     then
@@ -112,6 +93,25 @@ then
       echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 85% or more!"
       echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
       echo
+    fi
+    BTRFSTOTAL=$(echo "$BTRFSALLOC" | fgrep 'Total: ' | cut -f 2 -d ' ')
+    BTRFSUSED=$(echo "$BTRFSALLOC" | fgrep 'Used: ' | cut -f 2 -d ' ')
+    if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
+    then
+      if [ "$UNALLOCSPC" -lt "1500000000" ]
+      then
+        echo "Less than 1,5 GiB unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem: aborting!"
+        echo "Please perform a btrfs-balancer run before retrying."
+        exit 1
+      fi
+      if [ "$UNALLOCSPC" -lt "2000000000"]
+      then
+        echo "Less than 2 GiB unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem!"
+        echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
+        echo
+      fi
+    else
+      BTRFSTEST="KO"
     fi
   else
     if which btrfs > /dev/null
