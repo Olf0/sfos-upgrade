@@ -81,19 +81,6 @@ then
   if which btrfs-balancer > /dev/null
   then
     BTRFSALLOC="$(btrfs-balancer allocation / | tr -s ' ')"
-    ALLOCATION=$(echo "$BTRFSALLOC" | fgrep 'Allocated: ' | cut -f 2 -d ' ')
-    if [ "$ALLOCATION" -ge "90" ]
-    then
-      echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 90% or more: aborting!"
-      echo "Please perform a btrfs-balancer run before retrying."
-      exit 1
-    fi
-    if [ "$ALLOCATION" -ge "85" ]
-    then
-      echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 85% or more!"
-      echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
-      echo
-    fi
     BTRFSTOTAL=$(echo "$BTRFSALLOC" | fgrep 'Total: ' | cut -f 2 -d ' ')
     BTRFSUSED=$(echo "$BTRFSALLOC" | fgrep 'Used: ' | cut -f 2 -d ' ')
     if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
@@ -112,6 +99,19 @@ then
       fi
     else
       BTRFSTEST="KO"
+    fi
+    ALLOCATION=$(echo "$BTRFSALLOC" | fgrep 'Allocated: ' | cut -f 2 -d ' ')
+    if [ "$ALLOCATION" -ge "90" ]
+    then
+      echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 90% or more: aborting!"
+      echo "Please perform a btrfs-balancer run before retrying."
+      exit 1
+    fi
+    if [ "$ALLOCATION" -ge "85" ]
+    then
+      echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 85% or more!"
+      echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
+      echo
     fi
   else
     if which btrfs > /dev/null
