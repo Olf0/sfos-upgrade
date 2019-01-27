@@ -104,7 +104,7 @@ then
         echo "Please perform a btrfs-balancer run before retrying."
         exit 1
       fi
-      if [ "$UNALLOCSPC" -lt "2000000000"]
+      if [ "$UNALLOCSPC" -lt "2000000000" ]
       then
         echo "Less than 2 GiB unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem!"
         echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
