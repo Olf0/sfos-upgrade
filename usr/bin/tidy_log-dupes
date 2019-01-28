@@ -2,7 +2,7 @@
 
 CALLED="$(echo $0 | rev | cut -f 1 -d '/' | rev)"
 if [ -z "$*" ]
-then 
+then
   LOGPATH="/var/log"
 else
   LOGPATH="$1"
