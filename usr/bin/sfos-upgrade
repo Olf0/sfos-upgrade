@@ -4,16 +4,11 @@ set -euf
 CALLED="$(echo $0 | rev | cut -f 1 -d '/' | rev)"
 OLDVERSION="$(version | rev | cut -f 2 -d ' ' | rev)"
 if [ -z "$*" ]
-then 
-  NEWVERSION="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
-#  if expr "$OLDVERSION" ">=" "$NEWVERSION" > /dev/null
-#  then
-#    echo "Version $OLDVERSION to upgrade is greater or equals $NEWVERSION to upgrade to!"
-#    echo "Override this check by explicitly providing a version number as parameter."
-#    exit 1
-#  fi
+then
   SETSSU="no"
-else 
+  NEWVERSION="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
+else
+  SETSSU="yes"
   NEWVERSION="$1"
   shift
   if [ "$NEWVERSION" = "-h" ] || [ "$NEWVERSION" = "--help" ] || [ -n "$*" ]
@@ -27,13 +22,11 @@ else
     echo "Without a version number provided it uses the one set for SSU to upgrade to."
     exit 1
   fi
-  SETSSU="yes"
-fi
-
-if echo "$NEWVERSION" | grep -vq '^[0-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$' 
-then
-  echo "Inorrect version format set: $NEWVERSION"
-  exit 1
+  if echo "$NEWVERSION" | grep -vq '^[0-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$' 
+  then
+    echo "Inorrect version format set: $NEWVERSION"
+    exit 1
+  fi
 fi
 
 KNOWNSTOPVERSIONS="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5"
