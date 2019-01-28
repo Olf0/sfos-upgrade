@@ -22,7 +22,7 @@ else
     echo "Without a version number provided it uses the one set for SSU to upgrade to."
     exit 1
   fi
-  if echo "$NEWVERSION" | grep -vq '^[0-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$' 
+  if echo "$NEWVERSION" | grep -vq '^[0-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$'
   then
     echo "Inorrect version format set: $NEWVERSION"
     exit 1
@@ -36,7 +36,7 @@ do
   if expr "$OLDVERSION" "<" "$i" > /dev/null &&  expr "$NEWVERSION" ">" "$i" > /dev/null && true
   then
     echo "Trying to upgrade from $OLDVERSION to ${NEWVERSION}, which would \"jump over\" the stop release ${i}!"
-    echo "Hence upgrading to $i instead." 
+    echo "Hence upgrading to $i instead."
     NEWVERSION="$i"
     break
   fi
