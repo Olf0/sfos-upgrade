@@ -1,6 +1,6 @@
 #/bin/sh
 
-CALLED="$(echo $0 | rev | cut -f 1 -d '/' | rev)"
+CALLED=$(basename "$0")
 if [ -z "$*" ]
 then
   LOGPATH="/var/log"
