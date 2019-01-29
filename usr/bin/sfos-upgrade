@@ -177,6 +177,13 @@ then
   echo | tee -a "$LOGFILE"
 fi
 
+if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
+then
+  echo "- Disabling Theme Pack Support." | tee -a "$LOGFILE"
+  /usr/share/harbour-themepacksupport/ocr.sh
+  echo | tee -a "$LOGFILE"
+fi
+
 if [ "$SETSSU" != "no" ]
 then
   echo "- Setting SSU version for SailfishOS:" | tee -a "$LOGFILE"
