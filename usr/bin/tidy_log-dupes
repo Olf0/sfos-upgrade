@@ -13,7 +13,7 @@ else
     then
       echo "No extra parameters expected, but set: $*"
     fi
-    echo "Usage: ${CALLED} [<logdirectory>]"
+    echo "Usage: $CALLED [<logdirectory>]"
     echo "Without a parameter it will use /var/log as log directory."
     exit 1
   fi
