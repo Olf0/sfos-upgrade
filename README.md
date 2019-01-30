@@ -44,6 +44,4 @@ Notes:
 Simply run `sfos-upgrade <intended version>`, reboot  and repeat: it will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
 Omit running `post_sfos-upgrade` between consecutive SailfishOS upgrades (but do reboot each time!), only run it once after having upgraded to the intended version.
 * **sfos-upgrade** should work fine on any SailfishOS version since 1.0.0.0 and might also work on earlier versions, if upgrading to at least 1.0.0.0.
-* **sfos-upgrade** does not check battery level and if charging (yet).<br />
-If you know how to query that properly at the command line, please denote these commands to me or submit a PR.
-
+* **sfos-upgrade** does not check battery level and if charging, yet.
