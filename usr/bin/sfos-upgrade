@@ -157,7 +157,7 @@ echo "For troubleshooting please consult https://jolla.zendesk.com/hc/en-us/arti
 echo
 
 LOGFILE="/var/log/systemupdate_${NEWVERSION}-from-${OLDVERSION}_$(date +'%F_%H-%M-%S').log-dupes.txt"
-touch "$LOGFILE"
+touch "$LOGFILE" || exit 1
 
 if expr "$OLDVERSION" "<" "1.0.4.20" > /dev/null
 then
