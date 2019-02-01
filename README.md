@@ -32,7 +32,7 @@ Usage (as root user):
   Emits a brief usage description.
 
 When an upgrade succeeded, reboot and do not miss to run **post_sfos-upgrade** (as root) then!
-Not running it will result in the huge upgrade log files (containing many duplicate entries) and may result in RPMs failing to install ("unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) plus annoying notifications from the store-client that an upgrade to the installed version is available.
+Not running it will result in the huge upgrade log files (containing many duplicate entries) and may result (as any SFOS upgrade at the command line without cleaning up afterwards) in RPMs failing to install ("unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) plus annoying notifications from the store-client that an upgrade to the installed version is available.
 
 Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by **tidy_log-dupes** (which is called by **post_sfos-upgrade**) to `/var/log/systemupdate_*.log.txt`.<br />
 <br />
@@ -44,4 +44,4 @@ Notes:
 Simply run `sfos-upgrade <intended version>`, reboot  and repeat: it will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
 Omit running `post_sfos-upgrade` between consecutive SailfishOS upgrades (but do reboot each time!), only run it once after having upgraded to the intended version.
 * **sfos-upgrade** supports [all public SailfishOS releases](https://coderus.openrepos.net/whitesoft/sailversion) and should work fine with any release.
-* **sfos-upgrade** does not check battery level and if charging, yet.
+* **sfos-upgrade** is simply a frontend for `ssu re` and `version --dup` performing a multitude of checks before initiating the upgrade proper, while **post_sfos-upgrade** carries out the "cleaning up" steps from [Jolla's guide](https://jolla.zendesk.com/hc/en-us/articles/360005795474) which many seem to omit (likely running into aforementioned issues later).
