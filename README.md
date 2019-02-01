@@ -26,7 +26,7 @@ Usage (as root user):
 
 * **sfos-upgrade [\<version\>]**<br />
   With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
-  Without a version number it retrieves the one set for SSU to perform slightly relaxed checks and balances, but does not alter SSU's settings for upgrading.
+  Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.
 
 * **sfos-upgrade -h|--help**<br />
   Emits a brief usage description.
