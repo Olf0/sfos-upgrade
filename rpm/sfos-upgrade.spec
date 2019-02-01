@@ -19,7 +19,7 @@ Requires:      curl
 %{summary}
 Usage: sfos-upgrade [<version>]
 With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case.
-Without a version number it extracts the one set for SSU to perform checks and balances, but does not alter SSU's settings before upgrading.
+Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.
 
 %prep
 %setup -n %{name}-%{version}-%{release}
