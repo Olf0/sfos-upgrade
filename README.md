@@ -25,11 +25,11 @@ Safety measures:
 Usage (as root user):
 
 * **sfos-upgrade [\<version\>]**<br />
-   With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
-   Without a version number it extracts the one set for SSU to perform checks and balances, but does not alter SSU's settings before upgrading.
+  With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
+  Without a version number it retrieves the one set for SSU to perform slightly relaxed checks and balances, but does not alter SSU's settings for upgrading.
 
 * **sfos-upgrade -h|--help**<br />
-   Emits a brief usage description.
+  Emits a brief usage description.
 
 When an upgrade succeeded, reboot and do not miss to run **post_sfos-upgrade** (as root) then!
 Not running it will result in the huge upgrade log files (containing many duplicate entries) and may result in RPMs failing to install ("unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) plus annoying notifications from the store-client that an upgrade to the installed version is available.
@@ -43,5 +43,5 @@ Notes:
 * After a "factory reset" **sfos-upgrade** eases and speeds up the process of upgrading to a recent SailfishOS release via consecutively installing all "stop releases" on the way.<br />
 Simply run `sfos-upgrade <intended version>`, reboot  and repeat: it will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
 Omit running `post_sfos-upgrade` between consecutive SailfishOS upgrades (but do reboot each time!), only run it once after having upgraded to the intended version.
-* **sfos-upgrade** should work fine on any SailfishOS version since 1.0.0.0 and might also work on earlier versions, if upgrading to at least 1.0.0.0.
+* **sfos-upgrade** supports [all public SailfishOS releases](https://coderus.openrepos.net/whitesoft/sailversion) and should work fine with any release.
 * **sfos-upgrade** does not check battery level and if charging, yet.
