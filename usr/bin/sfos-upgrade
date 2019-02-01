@@ -182,7 +182,7 @@ fi
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
   echo "- Disabling Theme Pack Support." | tee -a "$LOGFILE"
-  /usr/share/harbour-themepacksupport/ocr.sh
+  /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$LOGFILE"
   echo | tee -a "$LOGFILE"
 fi
 
