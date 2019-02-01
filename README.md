@@ -41,7 +41,7 @@ Notes:
 
 * Built RPMs are available in the [release section](https://github.com/Olf0/sfos-upgrade/releases) and for easy installation under SailfishOS at [OpenRepos](https://openrepos.net/content/olf/sfos-upgrade).
 * When upgrading from very outdated SailfishOS versions (e.g., after a "factory reset"), **sfos-upgrade** eases and speeds up the process of upgrading to a recent SailfishOS release via consecutively installing all "stop releases" on the way.<br />
-Simply run `sfos-upgrade <intended version>`, reboot  and repeat: it will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
+Simply run `sfos-upgrade <intended version>`, reboot and repeat: it will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
 Omit running `post_sfos-upgrade` between consecutive SailfishOS upgrades (but do reboot each time!), only run it once after having upgraded to the intended version.
 * **sfos-upgrade** supports [all public SailfishOS releases](https://coderus.openrepos.net/whitesoft/sailversion) and should work fine with any release.
 * **sfos-upgrade** is simply a frontend for `ssu re` and `version --dup` performing a multitude of checks before initiating the upgrade proper, while **post_sfos-upgrade** carries out the "Final clean up" steps from [Jolla's guide](https://jolla.zendesk.com/hc/en-us/articles/360005795474) which many seem to omit (likely running into aforementioned issues later).
