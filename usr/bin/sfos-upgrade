@@ -22,7 +22,7 @@ else
     echo "Without a version number it extracts the one set for SSU to perform checks and balances, but does not alter SSU's settings before upgrading."
     exit 1
   fi
-  if echo "$NEWVERSION" | grep -vq '^[0-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$'
+  if echo "$NEWVERSION" | grep -vq '^[1-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$'
   then
     echo "Inorrect version format set: $NEWVERSION"
     exit 1
