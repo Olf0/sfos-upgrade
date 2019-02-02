@@ -3,7 +3,7 @@
 CALLED=$(basename "$0")
 if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt "3" ] 2> /dev/null
 then 
-  echo "$CALLED is best run on a freshly rebooted device."
+  echo "Please mind that $CALLED is best run on a freshly rebooted device."
   echo
 fi
 
