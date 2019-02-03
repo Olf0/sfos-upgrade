@@ -133,6 +133,149 @@ then
   fi
 fi
 
+BATCAP=""
+BATCAPDSN=""
+BATCRGNOW=""
+POWER_SUPPLY_CHARGE_FULL_DESIGN=""
+POWER_SUPPLY_CHARGE_FULL=""
+POWER_SUPPLY_CHARGE_NOW=""
+POWER_SUPPLY_CAPACITY=""
+POWER_SUPPLY_STATUS=""
+if . /sys/class/power_supply/battery/uevent
+then
+  BATCAP=$(echo "$POWER_SUPPLY_CAPACITY" | grep '^[0-9][0-9]*$')
+  if echo "$POWER_SUPPLY_CHARGE_FULL_DESIGN" | grep -q '^[1-9][0-9][0-9]*$'
+  then
+    if echo "$POWER_SUPPLY_CHARGE_NOW" | grep -q '^[0-9][0-9]*$'
+    then BATCRGNOW="${POWER_SUPPLY_CHARGE_NOW}00"
+    elif echo "$POWER_SUPPLY_CHARGE_FULL" | grep -q '^[1-9][0-9]*$' && echo "$POWER_SUPPLY_CAPACITY" | grep -q '^[0-9][0-9]*$' && true
+    then BATCRGNOW=$(expr "$POWER_SUPPLY_CHARGE_FULL" "*" "$POWER_SUPPLY_CAPACITY")
+    fi
+    BATCAPDSN=$(expr "$BATCRGNOW" "/" "$POWER_SUPPLY_CHARGE_FULL_DESIGN" 2> /dev/null)
+  fi
+else
+  echo "Failed to read battery information: aborting."
+  exit 1
+fi
+BATTEST="KO"
+case "${POWER_SUPPLY_STATUS}-${BATCAPDSN}-$BATCAP" in
+Charging-[0-9]*-*)
+  if [ "$BATCAPDSN" -le "18" ]
+  then
+    echo "Battery is charged less than 18,5% (${BATCAPDSN}%) of its original design capacity!"
+    echo -n "Continue charging before "
+    if ! [ "$SETSSU" != "no" ]
+    then BATTEST="ask"
+    fi
+  else
+    BATTEST="ok"
+    if [ "$BATCAPDSN" -le "25" ]
+    then
+      echo "Battery is charged 25% or less (${BATCAPDSN}%) of its original design capacity."
+      echo "Please continue charging throughout the upgrade process!"
+      echo
+    fi
+  fi
+  ;;
+Discharging-[0-9]*-*)
+  if [ "$BATCAPDSN" -le "25" ]
+  then
+    echo "Battery is charged 25% or less (${BATCAPDSN}%) of its original design capacity!"
+    echo -n "Plug in a charger before "
+  else
+    BATTEST="ok"
+    if [ "$BATCAPDSN" -le "37" ]
+    then
+      echo "Battery is charged less than 37,5% (${BATCAPDSN}%) of its original design capacity."
+      echo "Please plug in a charger before continuing."
+      echo
+    fi
+  fi
+  ;;
+Charging-*-[0-9]*)
+  if [ "$BATCAP" -le "25" ]
+  then
+    echo "Battery is charged 25% or less (${BATCAP}%) of its capacity!"
+    echo -n "Continue charging before "
+    if ! [ "$SETSSU" != "no" ]
+    then BATTEST="ask"
+    fi
+  else
+    BATTEST="ok"
+    if [ "$BATCAP" -le "33" ]
+    then
+      echo "Battery is charged less than 33% (${BATCAP}%) of its capacity."
+      echo "Please continue charging throughout the upgrade process!"
+      echo
+    fi
+  fi
+  ;;
+Discharging-*-[0-9]*)
+  if [ "$BATCAP" -le "33" ]
+  then
+    echo "Battery is charged less than 33,3% (${BATCAP}%) of its capacity!"
+    echo -n "Plug in a charger before "
+  else
+    BATTEST="ok"
+    if [ "$BATCAP" -lt "50" ]
+    then
+      echo "Battery is charged less than 50% (${BATCAP}%) of its capacity."
+      echo "Please plug in a charger before continuing."
+      echo
+    fi
+  fi
+  ;;
+?*harging-*-*)
+  echo "Failed to determine battery charge: aborting."
+  echo "Check your device before "
+  if ! [ "$SETSSU" != "no" ]
+  then BATTEST="ask"
+  fi
+  ;;
+*-*-*)
+  echo "Failed to determine battery charging state!"
+  echo "Check your device before "
+  if ! [ "$SETSSU" != "no" ]
+  then BATTEST="ask"
+  fi
+  ;;
+*)
+  echo "Internal error 42"
+  exit 42
+  ;;
+esac
+case $BATTEST in
+KO)
+  echo "retrying: aborting."
+  exit 1
+  ;;
+ask)
+  echo "upgrading!"
+  echo "When a power loss occurs during the upgrade process, it will fail."
+  echo -n "Do you really want to continue? (Y/N) "
+  read YN
+  if [ "$YN" != "Y" ] && [ "$YN" != "y" ] && true
+  then
+    echo "Aborted by user."
+    exit 1
+  fi
+  echo
+  ;;
+ok)
+  true
+  ;;
+*)
+  echo "Internal error 23"
+  exit 23
+  ;;
+esac
+
+if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt "3" ] 2> /dev/null
+then
+  echo "Mind that $CALLED is best run on a freshly rebooted device."
+  echo
+fi
+
 if expr "$OLDVERSION" ">" "$NEWVERSION" > /dev/null
 then
   echo "About to DOWNGRADE SailfishOS from $OLDVERSION to $NEWVERSION!"
