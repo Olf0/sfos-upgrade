@@ -19,7 +19,7 @@ else
     fi
     echo "Usage: $CALLED [<version>]"
     echo "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
-    echo "Without a version number it extracts the one set for SSU to perform checks and balances, but does not alter SSU's settings before upgrading."
+    echo "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
     exit 1
   fi
   if echo "$NEWVERSION" | grep -vq '^[1-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$'
@@ -204,7 +204,7 @@ Charging-*-[0-9]*)
     BATTEST="ok"
     if [ "$BATCAP" -le "33" ]
     then
-      echo "Battery is charged less than 33% (${BATCAP}%) of its capacity."
+      echo "Battery is charged less than 33,3% (${BATCAP}%) of its capacity."
       echo "Please continue charging throughout the upgrade process!"
       echo
     fi
@@ -217,9 +217,9 @@ Discharging-*-[0-9]*)
     echo -n "Plug in a charger before "
   else
     BATTEST="ok"
-    if [ "$BATCAP" -lt "50" ]
+    if [ "$BATCAP" -le "50" ]
     then
-      echo "Battery is charged less than 50% (${BATCAP}%) of its capacity."
+      echo "Battery is charged 50% or less (${BATCAP}%) of its capacity."
       echo "Please plug in a charger before continuing."
       echo
     fi
