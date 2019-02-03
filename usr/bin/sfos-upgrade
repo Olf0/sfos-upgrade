@@ -244,7 +244,7 @@ Discharging-*-[0-9]*)
   exit 42
   ;;
 esac
-case $BATTEST in
+case "$BATTEST" in
 KO)
   echo "retrying: aborting."
   exit 1
