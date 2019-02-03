@@ -16,6 +16,7 @@ Safety measures:
 * Check for free space on root filesystem.
 * Check for BTRFS allocation, if the root filesystem uses BTRFS.
 * Check for upgrading to a correct and available SailfishOS version.
+* Check for battery state (since v1.0).
 * Check for "jumping over" a [stop release](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4) (since v0.3).
 * Automatically unapply all Patches, if Patchmanager is installed.
 * Disable all OpenRepos' repositories, if upgrading from a SailfishOS version below 1.0.4.20 (since v0.4).
@@ -44,4 +45,4 @@ Notes:
 Simply run `sfos-upgrade <intended version>`, reboot and repeat: it will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
 Omit running `post_sfos-upgrade` between consecutive SailfishOS upgrades (but do reboot each time!), only run it once after having upgraded to the intended version.
 * **sfos-upgrade** supports [all public SailfishOS releases](https://coderus.openrepos.net/whitesoft/sailversion) and should work fine with any release.
-* **sfos-upgrade** is simply a frontend for `ssu re` and `version --dup` performing a multitude of checks before initiating the upgrade proper, while **post_sfos-upgrade** carries out the "Final clean up" steps from [Jolla's guide](https://jolla.zendesk.com/hc/en-us/articles/360005795474) which many seem to omit (likely running into aforementioned issues later).
+* **sfos-upgrade** is simply a frontend for `ssu re` and `version --dup`, performing a multitude of checks before initiating the upgrade proper, while **post_sfos-upgrade** carries out the "Final clean up" steps from [Jolla's guide](https://jolla.zendesk.com/hc/en-us/articles/360005795474), which many seem to omit (likely running into aforementioned issues later).
