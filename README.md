@@ -15,8 +15,8 @@ Safety measures:
 
 * Check for free space on root filesystem.
 * Check for BTRFS allocation, if the root filesystem uses BTRFS.
-* Check for upgrading to a correct and available SailfishOS version.
 * Check for battery state (since v1.0).
+* Check for upgrading to a correct and available SailfishOS version.
 * Check for "jumping over" a [stop release](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4) (since v0.3).
 * Automatically unapply all Patches, if Patchmanager is installed.
 * Disable all OpenRepos' repositories, if upgrading from a SailfishOS version below 1.0.4.20 (since v0.4).
