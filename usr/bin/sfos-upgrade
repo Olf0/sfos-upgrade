@@ -2,7 +2,7 @@
 set -euf
 
 # Exit codes:
-#   0  version --dup ran without aborting (but this does not imply that upgrading was successful!)
+#   0  version --dup ran without aborting (this does not imply that upgrading was successful!)
 #   1  A check failed
 #   2  Help called
 #   3  Called with wrong parameters
