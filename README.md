@@ -19,7 +19,7 @@ Safety measures:
 * Check if upgrading to a correct and available SailfishOS version.
 * Check if "jumping over" a [stop release](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4) (since v0.3).
 * Automatically unapply all Patches, if Patchmanager is installed.
-* Disable all OpenRepos' repositories, if upgrading from a SailfishOS version below 1.0.4.20 (since v0.4).
+* Disable all OpenRepos' repositories, when upgrading from a SailfishOS version below 1.0.4.20 (since v0.4).
 * Emit a warning when downgrading.
 <br />
 
