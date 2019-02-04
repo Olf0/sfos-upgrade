@@ -1,6 +1,16 @@
 #/bin/sh
 set -euf
 
+# Exit codes:
+#   0  version --dup ran without aborting (but this does not imply that upgrading was successful!)
+#   1  A check failed
+#   2  Help called
+#   3  Called with wrong parameters
+#   4  Aborted upon user interaction
+#   5  Error while interacting with the OS (reading / writing from file system, calling programs, etc.)
+#  23  "Should never be reached" *) case #1
+#  42  "Should never be reached" *) case #2
+
 CALLED=$(basename "$0")
 OLDVERSION="$(version | rev | cut -f 2 -d ' ' | rev)"
 if [ -z "$*" ]
@@ -11,22 +21,26 @@ else
   SETSSU="yes"
   NEWVERSION="$1"
   shift
-  if [ "$NEWVERSION" = "-h" ] || [ "$NEWVERSION" = "--help" ] || [ -n "$*" ]
+  if [ -n "$*" ]
   then
-    if [ -n "$*" ]
-    then
-      echo "No extra parameters expected, but set: $*"
-    fi
+    echo "No extra parameters expected, but set: $*"
+    exit 3
+  fi
+  case "$NEWVERSION" in
+  [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[0-9][0-9])
+    true
+    ;;
+  -h|--help)
     echo "Usage: $CALLED [<version>]"
     echo "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
     echo "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
-    exit 1
-  fi
-  if echo "$NEWVERSION" | grep -vq '^[1-9]\.[0-9]\.[0-9]\.[0-9][0-9]*$'
-  then
+    exit 2
+    ;;
+  *)
     echo "Inorrect version format set: $NEWVERSION"
-    exit 1
-  fi
+    exit 3
+    ;;
+  esac
 fi
 
 KNOWNSTOPVERSIONS="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5"
@@ -39,6 +53,7 @@ do
   then
     echo "Trying to upgrade from $OLDVERSION to ${NEWVERSION}, which would \"jump over\" the stop release ${i}!"
     echo "Hence upgrading to $i instead."
+    echo
     NEWVERSION="$i"
     break
   fi
@@ -46,16 +61,17 @@ done
 
 if ! curl -s https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | fgrep -q "$NEWVERSION"
 then
-  echo "\"${NEWVERSION}\" is not a publicly released SailfishOS version number!"
+  echo "$NEWVERSION is not a publicly released SailfishOS version number!"
   echo -n "Do you really want to continue? (Y/N) "
   read YN
-  if [ "$YN" != "Y" ] && [ "$YN" != "y" ] && true
-  then
-    echo "Aborted by user."
-    exit 1
-  else
+  case "$YN" in
+  y|Y)
     echo
-  fi
+    ;;
+  *)
+    exit 4
+    ;;
+  esac
 fi
 
 FREESPACE="$(df -k / | sed -n 2p | rev | grep '^/ ' | tr -s ' ' | cut -f 3 -d ' ' | rev)"
@@ -129,7 +145,7 @@ then
   if [ "$BTRFSTEST" != "ok" ]
   then
     echo "Cannot properly determine allocation of BTRFS root filesystem: aborting."
-    exit 1
+    exit 5
   fi
 fi
 
@@ -143,22 +159,24 @@ POWER_SUPPLY_CAPACITY=""
 POWER_SUPPLY_STATUS=""
 if . /sys/class/power_supply/battery/uevent
 then
-  BATCAP=$(echo "$POWER_SUPPLY_CAPACITY" | grep '^[0-9][0-9]*$')
-  if echo "$POWER_SUPPLY_CHARGE_FULL_DESIGN" | grep -q '^[1-9][0-9][0-9]*$'
-  then
-    if echo "$POWER_SUPPLY_CHARGE_NOW" | grep -q '^[0-9][0-9]*$'
-    then BATCRGNOW="${POWER_SUPPLY_CHARGE_NOW}00"
-    elif echo "$POWER_SUPPLY_CHARGE_FULL" | grep -q '^[1-9][0-9]*$' && echo "$POWER_SUPPLY_CAPACITY" | grep -q '^[0-9][0-9]*$' && true
-    then BATCRGNOW=$(expr "$POWER_SUPPLY_CHARGE_FULL" "*" "$POWER_SUPPLY_CAPACITY")
-    fi
-    BATCAPDSN=$(expr "$BATCRGNOW" "/" "$POWER_SUPPLY_CHARGE_FULL_DESIGN" 2> /dev/null)
-  fi
+  case "${POWER_SUPPLY_CHARGE_FULL_DESIGN}-${POWER_SUPPLY_CHARGE_NOW}-${POWER_SUPPLY_CHARGE_FULL}-$POWER_SUPPLY_CAPACITY" in
+  [1-9][0-9][0-9]*-[0-9]*-*-*)
+    BATCAPDSN=$(expr "${POWER_SUPPLY_CHARGE_NOW}00" "/" "$POWER_SUPPLY_CHARGE_FULL_DESIGN")
+    ;;
+  [1-9][0-9][0-9]*-*-[1-9][0-9]*-[0-9]*)
+    BATCRGNOW=$(expr "$POWER_SUPPLY_CHARGE_FULL" "*" "$POWER_SUPPLY_CAPACITY")
+    BATCAPDSN=$(expr "$BATCRGNOW" "/" "$POWER_SUPPLY_CHARGE_FULL_DESIGN")
+    ;;
+  *)
+    false
+    ;;
+  esac
 else
   echo "Failed to read battery information: aborting."
-  exit 1
+  exit 5
 fi
 BATTEST="KO"
-case "${POWER_SUPPLY_STATUS}-${BATCAPDSN}-$BATCAP" in
+case "${POWER_SUPPLY_STATUS}-${BATCAPDSN}-$POWER_SUPPLY_CAPACITY" in
 Charging-[0-9]*-*)
   if [ "$BATCAPDSN" -le "18" ]
   then
@@ -240,7 +258,6 @@ Discharging-*-[0-9]*)
   fi
   ;;
 *)
-  echo "Internal error 42"
   exit 42
   ;;
 esac
@@ -254,18 +271,19 @@ ask)
   echo "When a power loss occurs during the upgrade process, it will fail."
   echo -n "Do you really want to continue? (Y/N) "
   read YN
-  if [ "$YN" != "Y" ] && [ "$YN" != "y" ] && true
-  then
-    echo "Aborted by user."
-    exit 1
-  fi
-  echo
+  case "$YN" in
+  y|Y)
+    echo
+    ;;
+  *)
+    exit 4
+    ;;
+  esac
   ;;
 ok)
   true
   ;;
 *)
-  echo "Internal error 23"
   exit 23
   ;;
 esac
@@ -284,19 +302,20 @@ else
   echo -n "Do you want to upgrade SailfishOS from $OLDVERSION to $NEWVERSION? (Y/N) "
 fi
 read YN
-if [ "$YN" != "Y" ] && [ "$YN" != "y" ] && true
-then
-  echo "Aborted by user."
-  exit 1
-else
+case "$YN" in
+y|Y)
   echo
-fi
+  ;;
+*)
+  exit 4
+  ;;
+esac
 
 echo "For troubleshooting please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474"
 echo
 
 LOGFILE="/var/log/systemupdate_${NEWVERSION}-from-${OLDVERSION}_$(date +'%F_%H-%M-%S').log-dupes.txt"
-touch "$LOGFILE" || exit 1
+touch "$LOGFILE" || exit 5
 
 if expr "$OLDVERSION" "<" "1.0.4.20" > /dev/null
 then
