@@ -302,11 +302,11 @@ else
 fi
 askyes
 
-echo "For troubleshooting please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474"
-echo
-
 LOGFILE="/var/log/systemupdate_${NEWVERSION}-from-${OLDVERSION}_$(date +'%F_%H-%M-%S').log-dupes.txt"
 touch "$LOGFILE" || exit 5
+
+echo "For troubleshooting, please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474" | tee -a "$LOGFILE"
+echo | tee -a "$LOGFILE"
 
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
