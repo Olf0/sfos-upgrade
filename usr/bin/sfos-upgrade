@@ -156,25 +156,23 @@ then
   fi
 fi
 
-BATCAPDSN=""
-BATCRGNOW=""
-POWER_SUPPLY_CHARGE_FULL_DESIGN=""
-POWER_SUPPLY_CHARGE_FULL=""
-POWER_SUPPLY_CHARGE_NOW=""
-POWER_SUPPLY_CAPACITY=""
 POWER_SUPPLY_STATUS=""
+POWER_SUPPLY_CAPACITY=""
+POWER_SUPPLY_CHARGE_NOW=""
+POWER_SUPPLY_CHARGE_FULL=""
+POWER_SUPPLY_CHARGE_FULL_DESIGN=""
 if . /sys/class/power_supply/battery/uevent
 then
   case "${POWER_SUPPLY_CHARGE_FULL_DESIGN}-${POWER_SUPPLY_CHARGE_NOW}-${POWER_SUPPLY_CHARGE_FULL}-$POWER_SUPPLY_CAPACITY" in
   [1-9][0-9][0-9]*-[0-9]*-*-*)
-    BATCAPDSN=$(expr "${POWER_SUPPLY_CHARGE_NOW}00" "/" "$POWER_SUPPLY_CHARGE_FULL_DESIGN")
+    BATCAPDSN=$(expr "${POWER_SUPPLY_CHARGE_NOW}00" "/" "$POWER_SUPPLY_CHARGE_FULL_DESIGN" 2> /dev/null)
     ;;
   [1-9][0-9][0-9]*-*-[1-9][0-9]*-[0-9]*)
-    BATCRGNOW=$(expr "$POWER_SUPPLY_CHARGE_FULL" "*" "$POWER_SUPPLY_CAPACITY")
-    BATCAPDSN=$(expr "$BATCRGNOW" "/" "$POWER_SUPPLY_CHARGE_FULL_DESIGN")
+    BATCRGNOW=$(expr "$POWER_SUPPLY_CHARGE_FULL" "*" "$POWER_SUPPLY_CAPACITY" 2> /dev/null)
+    BATCAPDSN=$(expr "$BATCRGNOW" "/" "$POWER_SUPPLY_CHARGE_FULL_DESIGN" 2> /dev/null)
     ;;
   *)
-    false
+    BATCAPDSN=""
     ;;
   esac
 else
@@ -250,7 +248,7 @@ Discharging-*-[0-9]*)
   fi
   ;;
 ?*harging-*-*)
-  echo "Failed to determine battery charge: aborting."
+  echo "Failed to determine battery charge!"
   echo "Check your device before "
   if ! [ "$SETSSU" != "no" ]
   then BATTEST="ask"
@@ -273,7 +271,7 @@ KO)
   exit 1
   ;;
 ask)
-  echo "upgrading!"
+  echo "upgrading."
   echo "When a power loss occurs during the upgrade process, it will fail."
   echo -n "Do you really want to continue?"
   askyes
