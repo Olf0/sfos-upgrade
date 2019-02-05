@@ -11,6 +11,21 @@ set -euf
 #  23  "Should never be reached" *) case #1
 #  42  "Should never be reached" *) case #2
 
+askyes ()
+{
+  echo -n " (Y/N) "
+  read YN
+  case "$YN" in
+  y|Y)
+    echo
+    ;;
+  *)
+    echo "Aborted by user."
+    exit 4
+    ;;
+  esac
+}
+
 CALLED=$(basename "$0")
 OLDVERSION="$(version | rev | cut -f 2 -d ' ' | rev)"
 if [ -z "$*" ]
@@ -62,16 +77,8 @@ done
 if ! curl -s https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | fgrep -q "$NEWVERSION"
 then
   echo "$NEWVERSION is not a publicly released SailfishOS version number!"
-  echo -n "Do you really want to continue? (Y/N) "
-  read YN
-  case "$YN" in
-  y|Y)
-    echo
-    ;;
-  *)
-    exit 4
-    ;;
-  esac
+  echo -n "Do you really want to continue?"
+  askyes
 fi
 
 FREESPACE="$(df -k / | sed -n 2p | rev | grep '^/ ' | tr -s ' ' | cut -f 3 -d ' ' | rev)"
@@ -269,16 +276,8 @@ KO)
 ask)
   echo "upgrading!"
   echo "When a power loss occurs during the upgrade process, it will fail."
-  echo -n "Do you really want to continue? (Y/N) "
-  read YN
-  case "$YN" in
-  y|Y)
-    echo
-    ;;
-  *)
-    exit 4
-    ;;
-  esac
+  echo -n "Do you really want to continue?"
+  askyes
   ;;
 ok)
   true
@@ -297,19 +296,11 @@ fi
 if expr "$OLDVERSION" ">" "$NEWVERSION" > /dev/null
 then
   echo "About to DOWNGRADE SailfishOS from $OLDVERSION to $NEWVERSION!"
-  echo -n "Do you really want to do that? (Y/N) "
+  echo -n "Do you really want to do that?"
 else
-  echo -n "Do you want to upgrade SailfishOS from $OLDVERSION to $NEWVERSION? (Y/N) "
+  echo -n "Do you want to upgrade SailfishOS from $OLDVERSION to $NEWVERSION?"
 fi
-read YN
-case "$YN" in
-y|Y)
-  echo
-  ;;
-*)
-  exit 4
-  ;;
-esac
+askyes
 
 echo "For troubleshooting please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474"
 echo
