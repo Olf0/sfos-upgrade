@@ -315,7 +315,7 @@ fi
 if which patchmanager > /dev/null
 then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$LOGFILE"
-  patchmanager --unapply-all 2>> "$LOGFILE"
+  patchmanager --unapply-all 2>&1 >> "$LOGFILE"
   echo | tee -a "$LOGFILE"
 fi
 
