@@ -84,12 +84,12 @@ fi
 FREESPACE="$(df -k / | sed -n 2p | rev | grep '^/ ' | tr -s ' ' | cut -f 3 -d ' ' | rev)"
 if [ "$FREESPACE" -lt "1000000" ]
 then
-  echo "Less than 1 GB ($FREESPACE KB) of free space on root filesystem: aborting!"
+  echo "Less than 1 GB ($FREESPACE KB) of free space on the root filesystem: aborting!"
   echo "Please clean up before retrying."
   exit 1
 elif [ "$FREESPACE" -lt "1500000" ]
 then
-  echo "Less than 1,5 GB ($FREESPACE KB) of free space on root filesystem!"
+  echo "Less than 1,5 GB ($FREESPACE KB) of free space on the root filesystem!"
   echo "Please consider to abort and to clean up before retrying."
   echo
 fi
@@ -102,12 +102,12 @@ then
     ALLOCATION=$(echo "$BTRFSALLOC" | fgrep 'Allocated: ' | cut -f 2 -d ' ')
     if [ "$ALLOCATION" -ge "90" ]
     then
-      echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 90% or more: aborting!"
+      echo "Allocation (${ALLOCATION}%) of the root filesystem (BTRFS) is 90% or more: aborting!"
       echo "Please perform a btrfs-balancer run before retrying."
       exit 1
     elif [ "$ALLOCATION" -ge "85" ]
     then
-      echo "Allocation (${ALLOCATION}%) of BTRFS root filesystem is 85% or more!"
+      echo "Allocation (${ALLOCATION}%) of the root filesystem (BTRFS) is 85% or more!"
       echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
       echo
     fi
@@ -118,12 +118,12 @@ then
       BTRFSTEST="ok"
       if [ "$UNALLOCSPC" -lt "1500000000" ]
       then
-        echo "Less than 1,5 GiB unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem: aborting!"
+        echo "Less than 1,5 GiB unallocated space ($UNALLOCSPC Bytes) on the root filesystem (BTRFS): aborting!"
         echo "Please perform a btrfs-balancer run before retrying."
         exit 1
       elif [ "$UNALLOCSPC" -lt "2000000000" ]
       then
-        echo "Less than 2 GiB unallocated space ($UNALLOCSPC Bytes) on BTRFS root filesystem!"
+        echo "Less than 2 GiB unallocated space ($UNALLOCSPC Bytes) on the root filesystem (BTRFS)!"
         echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
         echo
       fi
@@ -138,12 +138,12 @@ then
       BTRFSTEST="ok"
       if [ "$UNALLOCSPC" -lt "200" ]
       then
-        echo "Less than 2 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev),$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on BTRFS root filesystem: aborting!"
+        echo "Less than 2 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev),$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS): aborting!"
         echo "Please perform a btrfs-balancer run before retrying."
         exit 1
       elif [ "$UNALLOCSPC" -lt "250" ]
       then
-        echo "Less than 2,5 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev),$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on BTRFS root filesystem!"
+        echo "Less than 2,5 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev),$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!"
         echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
         echo
       fi
@@ -151,7 +151,7 @@ then
   fi
   if [ "$BTRFSTEST" != "ok" ]
   then
-    echo "Cannot properly determine allocation of BTRFS root filesystem: aborting."
+    echo "Cannot properly determine allocation of the root filesystem (BTRFS): aborting."
     exit 5
   fi
 fi
