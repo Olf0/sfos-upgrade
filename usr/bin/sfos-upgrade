@@ -215,33 +215,33 @@ Discharging-[0-9]*-*)
   fi
   ;;
 Charging-*-[0-9]*)
-  if [ "$BATCAP" -le "25" ]
+  if [ "$POWER_SUPPLY_CAPACITY" -le "25" ]
   then
-    echo "Battery is charged 25% or less (${BATCAP}%) of its capacity!"
+    echo "Battery is charged 25% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity!"
     echo -n "Continue charging before "
     if ! [ "$SETSSU" != "no" ]
     then BATTEST="ask"
     fi
   else
     BATTEST="ok"
-    if [ "$BATCAP" -le "33" ]
+    if [ "$POWER_SUPPLY_CAPACITY" -le "33" ]
     then
-      echo "Battery is charged less than 33,3% (${BATCAP}%) of its capacity."
+      echo "Battery is charged less than 33,3% (${POWER_SUPPLY_CAPACITY}%) of its capacity."
       echo "Please continue charging throughout the upgrade process!"
       echo
     fi
   fi
   ;;
 Discharging-*-[0-9]*)
-  if [ "$BATCAP" -le "33" ]
+  if [ "$POWER_SUPPLY_CAPACITY" -le "33" ]
   then
-    echo "Battery is charged less than 33,3% (${BATCAP}%) of its capacity!"
+    echo "Battery is charged less than 33,3% (${POWER_SUPPLY_CAPACITY}%) of its capacity!"
     echo -n "Plug in a charger before "
   else
     BATTEST="ok"
-    if [ "$BATCAP" -le "50" ]
+    if [ "$POWER_SUPPLY_CAPACITY" -le "50" ]
     then
-      echo "Battery is charged 50% or less (${BATCAP}%) of its capacity."
+      echo "Battery is charged 50% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity."
       echo "Please plug in a charger before continuing."
       echo
     fi
