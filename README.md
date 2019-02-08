@@ -13,7 +13,7 @@ And it is tedious and error prone to issue multiple, critical commands manually 
 
 Safety measures:
 
-* Check free space on root filesystem.
+* Check free space on the root filesystem.
 * Check BTRFS allocation, if the root filesystem uses BTRFS.
 * Check battery state (since v1.0).
 * Check if upgrading to a correct and available SailfishOS version.
