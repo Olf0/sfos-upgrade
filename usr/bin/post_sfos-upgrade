@@ -7,7 +7,7 @@ then
   echo
 fi
 
-echo "- Cleaning logfiles of duplicate lines."
+echo "- Cleaning logfiles of duplicate entries."
 tidy_log-dupes "$@"
 
 if which store-client > /dev/null
