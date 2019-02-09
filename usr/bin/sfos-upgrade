@@ -131,7 +131,7 @@ then
     fi
   elif which btrfs > /dev/null
   then
-    BTRFSALLOC="$(btrfs filesystem df / | grep '^Data, ' | cut -f 2 -d ':' | sed 's/,/\n/g' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
+    BTRFSALLOC="$(btrfs filesystem df / | grep '^Data, ' | cut -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
     BTRFSTOTAL=$(echo "$BTRFSALLOC" | fgrep 'total=' | cut -f 2 -d '=')
     BTRFSUSED=$(echo "$BTRFSALLOC" | fgrep 'used=' | cut -f 2 -d '=')
     if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
