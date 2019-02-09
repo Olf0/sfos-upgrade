@@ -100,7 +100,7 @@ then
   if which btrfs-balancer > /dev/null
   then
     BTRFSALLOC="$(btrfs-balancer allocation / | tr -s ' ')"
-    ALLOCATION=$(echo "$BTRFSALLOC" | fgrep 'Allocated: ' | cut -f 2 -d ' ')
+    ALLOCATION=$(echo "$BTRFSALLOC" | grep '^Allocated: ' | cut -f 2 -d ' ')
     if [ "$ALLOCATION" -ge "90" ]
     then
       echo "Allocation (${ALLOCATION}%) of the root filesystem (BTRFS) is 90% or more: aborting!"
@@ -112,8 +112,8 @@ then
       echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
       echo
     fi
-    BTRFSTOTAL=$(echo "$BTRFSALLOC" | fgrep 'Total: ' | cut -f 2 -d ' ')
-    BTRFSUSED=$(echo "$BTRFSALLOC" | fgrep 'Used: ' | cut -f 2 -d ' ')
+    BTRFSTOTAL=$(echo "$BTRFSALLOC" | grep '^Total: ' | cut -f 2 -d ' ')
+    BTRFSUSED=$(echo "$BTRFSALLOC" | grep '^Used: ' | cut -f 2 -d ' ')
     if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
     then
       BTRFSTEST="ok"
@@ -132,8 +132,8 @@ then
   elif which btrfs > /dev/null
   then
     BTRFSALLOC="$(btrfs filesystem df / | grep '^Data, ' | cut -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
-    BTRFSTOTAL=$(echo "$BTRFSALLOC" | fgrep 'total=' | cut -f 2 -d '=')
-    BTRFSUSED=$(echo "$BTRFSALLOC" | fgrep 'used=' | cut -f 2 -d '=')
+    BTRFSTOTAL=$(echo "$BTRFSALLOC" | grep '^total=' | cut -f 2 -d '=')
+    BTRFSUSED=$(echo "$BTRFSALLOC" | grep '^used=' | cut -f 2 -d '=')
     if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
     then
       BTRFSTEST="ok"
