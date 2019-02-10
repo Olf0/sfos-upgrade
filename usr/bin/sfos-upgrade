@@ -1,5 +1,5 @@
 #/bin/sh
-set -euf
+set -eufC
 
 # Exit codes:
 #   0  version --dup ran without aborting (this does not imply that upgrading was successful)
