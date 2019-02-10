@@ -11,6 +11,9 @@ set -eufC
 #  23  "Should never be reached" *) case #1
 #  42  "Should never be reached" *) case #2
 
+export LC_CTYPE="POSIX"
+export LC_COLLATE="POSIX"
+
 askyes ()
 {
   echo -n " (Y/N) "
@@ -139,12 +142,12 @@ then
       BTRFSTEST="ok"
       if [ "$UNALLOCSPC" -lt "200" ]
       then
-        echo "Less than 2 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev),$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS): aborting!"
+        echo "Less than 2 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev).$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS): aborting!"
         echo "Please perform a btrfs-balancer run before retrying."
         exit 1
       elif [ "$UNALLOCSPC" -lt "250" ]
       then
-        echo "Less than 2,5 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev),$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!"
+        echo "Less than 2.5 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev).$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!"
         echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
         echo
       fi
