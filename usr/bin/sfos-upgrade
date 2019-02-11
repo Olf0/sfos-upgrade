@@ -99,7 +99,7 @@ then
   exit 1
 elif [ "$FREESPACE" -lt "1500000" ]
 then
-  echo "Less than 1,5 GB ($FREESPACE KB) of free space on the root filesystem!"
+  echo "Less than 1.5 GB ($FREESPACE KB) of free space on the root filesystem!"
   echo "Please consider to abort and to clean up before retrying."
   echo
 fi
@@ -128,7 +128,7 @@ then
       BTRFSTEST="ok"
       if [ "$UNALLOCSPC" -lt "1500000000" ]
       then
-        echo "Less than 1,5 GiB unallocated space ($UNALLOCSPC Bytes) on the root filesystem (BTRFS): aborting!"
+        echo "Less than 1.5 GiB unallocated space ($UNALLOCSPC Bytes) on the root filesystem (BTRFS): aborting!"
         echo "Please perform a btrfs-balancer run before retrying."
         exit 1
       elif [ "$UNALLOCSPC" -lt "2000000000" ]
@@ -194,7 +194,7 @@ case "${POWER_SUPPLY_STATUS}-${BATCAPDSN}-$POWER_SUPPLY_CAPACITY" in
 Charging-[0-9]*-*)
   if [ "$BATCAPDSN" -le "18" ]
   then
-    echo "Battery is charged less than 18,5% (${BATCAPDSN}%) of its original design capacity!"
+    echo "Battery is charged less than 18.5% (${BATCAPDSN}%) of its original design capacity!"
     echo -n "Continue charging before "
     if ! [ "$SETSSU" != "no" ]
     then BATTEST="ask"
@@ -218,7 +218,7 @@ Discharging-[0-9]*-*)
     BATTEST="ok"
     if [ "$BATCAPDSN" -le "37" ]
     then
-      echo "Battery is charged less than 37,5% (${BATCAPDSN}%) of its original design capacity."
+      echo "Battery is charged less than 37.5% (${BATCAPDSN}%) of its original design capacity."
       echo "Please plug in a charger before continuing."
       echo
     fi
@@ -236,7 +236,7 @@ Charging-*-[0-9]*)
     BATTEST="ok"
     if [ "$POWER_SUPPLY_CAPACITY" -le "33" ]
     then
-      echo "Battery is charged less than 33,3% (${POWER_SUPPLY_CAPACITY}%) of its capacity."
+      echo "Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity."
       echo "Please continue charging throughout the upgrade process!"
       echo
     fi
@@ -245,7 +245,7 @@ Charging-*-[0-9]*)
 Discharging-*-[0-9]*)
   if [ "$POWER_SUPPLY_CAPACITY" -le "33" ]
   then
-    echo "Battery is charged less than 33,3% (${POWER_SUPPLY_CAPACITY}%) of its capacity!"
+    echo "Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity!"
     echo -n "Plug in a charger before "
   else
     BATTEST="ok"
