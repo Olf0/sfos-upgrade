@@ -1,6 +1,13 @@
 #/bin/sh
+set -eufC
 
 CALLED=$(basename "$0")
+if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
+then
+  echo "$CALLED must be started with root privileges: aborting."
+  exit 1
+fi
+
 if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt "3" ] 2> /dev/null
 then 
   echo "Mind that $CALLED is best run on a freshly rebooted device."
