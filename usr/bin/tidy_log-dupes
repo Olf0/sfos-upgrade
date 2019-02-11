@@ -1,4 +1,5 @@
 #/bin/sh
+set -uC
 
 CALLED=$(basename "$0")
 if [ -z "$*" ]
@@ -22,6 +23,9 @@ fi
 cd "$LOGPATH" || exit $?
 
 # rm -rf UpdateTestcase-*  # Removing stale metadata downloads left over by version --dup
+
+# export LC_CTYPE="POSIX"
+# export LC_COLLATE="POSIX"
 
 TARGETS="systemupdate_*.log-dupes.txt"
 for LOGFILE in $TARGETS
