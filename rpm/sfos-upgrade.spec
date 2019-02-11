@@ -31,7 +31,7 @@ mkdir -p %{buildroot}%{_bindir}
 cp usr/bin/* %{buildroot}%{_bindir}/
 
 %files
-%defattr(0754,root,root,-)
+%defattr(0755,root,root,-)
 %{_bindir}/%{name}
 %{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
