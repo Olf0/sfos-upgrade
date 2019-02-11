@@ -1,5 +1,5 @@
 #/bin/sh
-set -eufC
+set -ufC
 
 CALLED=$(basename "$0")
 if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
