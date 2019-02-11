@@ -5,7 +5,7 @@ set -eufC
 #   0  version --dup ran without aborting (this does not imply that upgrading was successful)
 #   1  A check failed
 #   2  Help called
-#   3  Called with wrong parameters
+#   3  Called incorrectly (e.g., with wrong parameters)
 #   4  Aborted upon user interaction
 #   5  Error while interacting with the OS (reading / writing from file system, calling programs, etc.)
 #  23  "Should never be reached" *) case #1
@@ -30,6 +30,12 @@ askyes ()
 }
 
 CALLED=$(basename "$0")
+if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
+then
+  echo "$CALLED must be started with root privileges: aborting."
+  exit 3
+fi
+
 OLDVERSION="$(version | rev | cut -f 2 -d ' ' | rev)"
 if [ -z "$*" ]
 then
