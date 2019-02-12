@@ -68,9 +68,8 @@ else
 fi
 
 KNOWNSTOPVERSIONS="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5"
-# KNOWNSTOPVERSIONS="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5\n1.0.0.5"
-# v1.0.0.5 seems to be the oldest SFOS version ever deployed on real devices (on the "sbj" aka "Jolla 1 phone" aka "the first one"),
-# i.e. outside of the SailfishOS-SDK.  Thus v1.0.0.5 may not be a real "stop release" and even may not be downloadable as an upgrade.
+# 0.99.5.11, 1.0.0.5 and 1.0.1.10 are not documented to be "stop releases", taking the information of sections 4 and 5 (in combination!)
+# into account: https://jolla.zendesk.com/hc/en-us/articles/201836347#4
 STOPVERSIONS="$(curl -sS https://jolla.zendesk.com/hc/en-us/articles/201836347 | sed -n '/id="4"/,/id="5"/p' | sed -n '/<ul>/,/<\/ul>/p' | sed -n '/<li>/,/<\/li>/p' | tr '\200-\377' ' ' | cut -f 2- -d '>' | rev | cut -f 2- -d '<' | rev | cut -f 1 -d ' ' | tr -cd '0-9.\n')\n$KNOWNSTOPVERSIONS"
 for i in $(echo -e "$STOPVERSIONS" | egrep '^[1-9]\.[0-9]\.[0-9]\.[0-9]$|^[1-9]\.[0-9]\.[0-9]\.[0-9][0-9]$' | sort -u)
 do
@@ -329,8 +328,9 @@ then
   echo | tee -a "$LOGFILE"
 fi
 
-if expr "$OLDVERSION" "<" "1.0.4.20" > /dev/null
+if expr "$OLDVERSION" "<" "1.0.4.0" > /dev/null
 then
+  # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos\' repositories:" | tee -a "$LOGFILE"
   for i in $(ssu lr | fgrep 'openrepo' | cut -f 3 -d ' ')
   do
