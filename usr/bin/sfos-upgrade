@@ -253,9 +253,9 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
     echo -n "Plug in a charger before "
   else
     BATTEST="ok"
-    if ! [ "$POWER_SUPPLY_CAPACITY" -gt "50" ]
+    if ! [ "$POWER_SUPPLY_CAPACITY" -ge "50" ]
     then
-      echo "Battery is charged 50% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity."
+      echo "Battery is charged less than 50% (${POWER_SUPPLY_CAPACITY}%) of its capacity."
       echo "Please plug in a charger before continuing."
       echo
     fi
