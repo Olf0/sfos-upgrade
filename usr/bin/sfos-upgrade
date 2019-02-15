@@ -87,7 +87,7 @@ do
   fi
 done
 
-if ! curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d " " | grep -q "^$(echo $NEWVERSION | sed 's/\./\\\./g')\$"
+if ! curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -q "^$(echo $NEWVERSION | sed 's/\./\\\./g')\$"
 then
   echo "$NEWVERSION is not a publicly released SailfishOS version number!"
   echo -n "Do you really want to continue?"
