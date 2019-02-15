@@ -328,7 +328,7 @@ fi
 
 if systemctl status cron > /dev/null
 then
-  echo "- Stopping cron service:" | tee -a "$LOGFILE"
+  echo "- Stopping cron service." | tee -a "$LOGFILE"
   systemctl stop cron 2>&1 | tee -a "$LOGFILE"
   echo | tee -a "$LOGFILE"
 fi
