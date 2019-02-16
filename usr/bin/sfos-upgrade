@@ -149,12 +149,12 @@ then
     if UNALLOCSPC=$(expr "$BTRFSTOTAL" "-" "$BTRFSUSED")
     then
       BTRFSTEST="ok"
-      if ! [ "$UNALLOCSPC" -ge "205" ]
+      if ! [ "$UNALLOCSPC" -ge "200" ]
       then
         echo "Less than 2 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev).$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS): aborting!"
         echo "Please balance the btrfs root filesystem before retrying."
         exit 1
-      elif ! [ "$UNALLOCSPC" -ge "256" ]
+      elif ! [ "$UNALLOCSPC" -ge "250" ]
       then
         echo "Less than 2.5 GiB unallocated data space ($(echo $UNALLOCSPC | rev | cut -c 3- | rev).$(echo $UNALLOCSPC | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!"
         echo "Please consider to abort and to balance the btrfs root filesystem before retrying."
