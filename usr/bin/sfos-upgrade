@@ -2,7 +2,7 @@
 set -eufC
 
 # Exit codes:
-#   0  Everything worked fine: All applicable checks, all applicable, preparatory steps, and the upgrade proper
+#   0  Everything worked fine: all applicable checks, all applicable, preparatory steps, and the upgrade proper
 #   1  A check failed
 #   2  Help called
 #   3  Called incorrectly (e.g., with wrong parameters)
@@ -76,7 +76,7 @@ then
   echo "Warning: Failed to extract current \"stop releases\" from https://jolla.zendesk.com/hc/en-us/articles/201836347#4"
   echo
 fi
-for i in $(echo -e "$STOPVERSIONS" | sort -u)
+for i in $(echo -e "$STOPVERSIONS" | grep -v '^$' | sort -u)
 do
   if expr "$OLDVERSION" "<" "$i" > /dev/null && expr "$NEWVERSION" ">" "$i" > /dev/null && true
   then
