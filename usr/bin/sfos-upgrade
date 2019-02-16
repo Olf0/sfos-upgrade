@@ -7,7 +7,7 @@ set -eufC
 #   2  Help called
 #   3  Called incorrectly (e.g., with wrong parameters)
 #   4  Aborted upon user interaction
-#   5  Error while interacting with the OS (reading / writing from file system, calling programs, etc.)
+#   5  Error while interacting with the OS (reading / writing from the filesystem, calling programs, etc.)
 #   6  Error while executing one of the preparatory steps for the upgrade proper
 #  23  "Should never be reached" *) case #1
 #  42  "Should never be reached" *) case #2
