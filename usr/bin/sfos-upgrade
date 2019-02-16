@@ -89,20 +89,20 @@ done
 
 if ! curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -q "^$(echo $NEWVERSION | sed 's/\./\\\./g')\$"
 then
-  echo "$NEWVERSION is not a publicly released SailfishOS version number!"
+  echo "$NEWVERSION does not seem to be a publicly released SailfishOS version!"
   echo -n "Do you really want to continue?"
   askyes
 fi
 
 FREESPACE="$(df -k / | sed -n 2p | rev | grep '^/ ' | tr -s ' ' | cut -f 3 -d ' ' | rev)"
-if ! [ "$FREESPACE" -ge "1000000" ]
+if ! [ "$FREESPACE" -ge "524288" ]
 then
-  echo "Less than 1 GB ($FREESPACE KB) of free space on the root filesystem: aborting!"
+  echo "Less than 0.5 GB ($FREESPACE KB) of free space on the root filesystem: aborting!"
   echo "Please clean up before retrying."
   exit 1
-elif ! [ "$FREESPACE" -ge "1500000" ]
+elif ! [ "$FREESPACE" -ge "786432" ]
 then
-  echo "Less than 1.5 GB ($FREESPACE KB) of free space on the root filesystem!"
+  echo "Less than 0.75 GB ($FREESPACE KB) of free space on the root filesystem!"
   echo "Please consider to abort and to clean up before retrying."
   echo
 fi
@@ -326,17 +326,17 @@ then
   echo | tee -a "$LOGFILE"
 fi
 
-if systemctl status cron > /dev/null
+if systemctl status cron > /dev/null 2>&1
 then
   echo "- Stopping cron service." | tee -a "$LOGFILE"
   systemctl stop cron 2>&1 | tee -a "$LOGFILE"
   echo | tee -a "$LOGFILE"
 fi
 
-if which patchmanager > /dev/null
+if which patchmanager > /dev/null 2>&1
 then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$LOGFILE"
-  patchmanager --unapply-all 2>&1 >> "$LOGFILE"
+  patchmanager --unapply-all >> "$LOGFILE" 2>&1
   echo | tee -a "$LOGFILE"
 fi
 
