@@ -2,12 +2,13 @@
 set -eufC
 
 # Exit codes:
-#   0  version --dup ran without aborting (this does not imply that upgrading was successful)
+#   0  Everything worked fine: All applicable checks, all applicable, preparatory steps, and the upgrade proper
 #   1  A check failed
 #   2  Help called
 #   3  Called incorrectly (e.g., with wrong parameters)
 #   4  Aborted upon user interaction
 #   5  Error while interacting with the OS (reading / writing from file system, calling programs, etc.)
+#   6  Error while executing one of the preparatory steps for the upgrade proper
 #  23  "Should never be reached" *) case #1
 #  42  "Should never be reached" *) case #2
 
@@ -316,28 +317,44 @@ askyes
 LOGFILE="/var/log/systemupdate_${NEWVERSION}-from-${OLDVERSION}_$(date +'%F_%H-%M-%S').log-dupes.txt"
 touch "$LOGFILE" || exit 5
 
-echo "For troubleshooting, please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474" | tee -a "$LOGFILE"
+if ! set -o pipefail
+then echo "Warning: Technically unable to abort, if one of the following, preparatory steps for the upgrade proper fails." | tee -a "$LOGFILE"
+fi
+
+echo "For troubleshooting issues with the upgrade proper, please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474" | tee -a "$LOGFILE"
 echo | tee -a "$LOGFILE"
 
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
   echo "- Disabling Theme Pack Support." | tee -a "$LOGFILE"
-  /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$LOGFILE"
-  echo | tee -a "$LOGFILE"
+  if /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$LOGFILE"
+  then echo | tee -a "$LOGFILE"
+  else 
+    echo "Disabling Theme Pack Support failed: aborting!" | tee -a "$LOGFILE"
+    exit 6
+  fi
 fi
 
 if systemctl status cron > /dev/null 2>&1
 then
   echo "- Stopping cron service." | tee -a "$LOGFILE"
-  systemctl stop cron 2>&1 | tee -a "$LOGFILE"
-  echo | tee -a "$LOGFILE"
+  if systemctl stop cron 2>&1 | tee -a "$LOGFILE"
+  then echo | tee -a "$LOGFILE"
+  else 
+    echo "Stopping cron service failed: aborting!" | tee -a "$LOGFILE"
+    exit 6
+  fi
 fi
 
 if which patchmanager > /dev/null 2>&1
 then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$LOGFILE"
-  patchmanager --unapply-all >> "$LOGFILE" 2>&1
-  echo | tee -a "$LOGFILE"
+  if patchmanager --unapply-all >> "$LOGFILE" 2>&1
+  then echo | tee -a "$LOGFILE"
+  else 
+    echo "Unapplying Patchmanager-Patches failed: aborting!" | tee -a "$LOGFILE"
+    exit 6
+  fi
 fi
 
 if expr "$OLDVERSION" "<" "1.0.4.0" > /dev/null
@@ -347,20 +364,34 @@ then
   for i in $(ssu lr | fgrep 'openrepo' | cut -f 3 -d ' ')
   do
     echo "$i" | tee -a "$LOGFILE"
-    ssu dr "$i" 2>&1 | tee -a "$LOGFILE"
+    if ! ssu dr "$i" 2>&1 | tee -a "$LOGFILE"
+    then
+      echo "Disabling OpenRepos\' repository $i failed: aborting!" | tee -a "$LOGFILE"
+      exit 6
+    fi
+  fi
   done
   echo | tee -a "$LOGFILE"
 fi
 
 if [ "$SETSSU" != "no" ]
 then
-  echo "- Setting SSU version for SailfishOS:" | tee -a "$LOGFILE"
-  ssu re $NEWVERSION 2>&1 | tee -a "$LOGFILE"
-  echo | tee -a "$LOGFILE"
+  echo "- Setting SSU to SailfishOS release:" | tee -a "$LOGFILE"
+  if ssu re $NEWVERSION 2>&1 | tee -a "$LOGFILE"
+  then echo | tee -a "$LOGFILE"
+  else 
+    echo "Setting SSU to release $NEWVERSION failed: aborting!" | tee -a "$LOGFILE"
+    exit 6
+  fi
 fi
 
-echo "- Fetching and installing SailfishOS upgrade from $OLDVERSION to $NEWVERSION (this may take a while):" | tee -a "$LOGFILE"
-version --dup 2>&1 | tee -a "$LOGFILE"
+echo "- Fetching and installing the SailfishOS upgrade from $OLDVERSION to $NEWVERSION (this may take a while):" | tee -a "$LOGFILE"
+if ! version --dup 2>&1 | tee -a "$LOGFILE"
+then 
+  echo | tee -a "$LOGFILE"
+  echo "Fetching or installing the SailfishOS upgrade failed: aborting!" | tee -a "$LOGFILE"
+  exit 6
+fi
 
 echo "After rebooting, do not miss to run post_$CALLED"
 exit 0
