@@ -109,7 +109,7 @@ fi
 if mount -t btrfs | cut -f 3 -d ' ' | grep -q '^/$'
 then
   BTRFSTEST="KO"
-  if which btrfs-balancer > /dev/null
+  if which btrfs-balancer > /dev/null 2>&1
   then
     BTRFSALLOC="$(btrfs-balancer allocation / | tr -s ' ')"
     ALLOCATION=$(echo "$BTRFSALLOC" | grep '^Allocated: ' | cut -f 2 -d ' ')
@@ -141,7 +141,7 @@ then
         echo
       fi
     fi
-  elif which btrfs > /dev/null
+  elif which btrfs > /dev/null 2>&1
   then
     BTRFSALLOC="$(btrfs filesystem df / | grep '^Data, ' | cut -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
     BTRFSTOTAL=$(echo "$BTRFSALLOC" | grep '^total=' | cut -f 2 -d '=')
