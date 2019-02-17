@@ -22,7 +22,8 @@ fi
 
 cd "$logdir" || exit "$?"
 
-# rm -rf UpdateTestcase-*  # Removing stale metadata downloads left over by version --dup
+# Removing stale metadata downloads left over by version --dup
+# rm -rf UpdateTestcase-*
 
 # export LC_CTYPE="POSIX"
 # export LC_COLLATE="POSIX"
