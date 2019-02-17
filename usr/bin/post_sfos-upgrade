@@ -1,16 +1,16 @@
 #/bin/sh
 set -ufC
 
-CALLED=$(basename "$0")
+called="$(basename "$0")"
 if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
 then
-  echo "$CALLED must be started with root privileges: aborting."
+  echo "$called must be started with root privileges: aborting."
   exit 1
 fi
 
 if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt "3" ] 2> /dev/null
 then
-  echo "Mind that $CALLED is best run on a freshly rebooted device."
+  echo "Mind that $called is best run on a freshly rebooted device."
   echo
 fi
 
@@ -20,9 +20,11 @@ tidy_log-dupes "$@"
 if which store-client > /dev/null 2>&1
 then
   echo "- Removing outdated Store version info."
-  pkill store-client
-  rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
+  if ! pkill store-client
+  then echo "Warning: Failed to stop store-client."
+  fi
 fi
+rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
 
 if which zypper > /dev/null 2>&1
 then

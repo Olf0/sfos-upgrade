@@ -1,39 +1,39 @@
 #/bin/sh
 set -uC
 
-CALLED=$(basename "$0")
+called="$(basename "$0")"
 if [ -z "$*" ]
 then
-  LOGPATH="/var/log"
+  logdir="/var/log"
 else
-  LOGPATH="$1"
+  logdir="$1"
   shift
-  if [ ! -d "$LOGPATH" ] || [ -n "$*" ]
+  if [ ! -d "$logdir" ] || [ -n "$*" ]
   then
     if [ -n "$*" ]
     then
       echo "No extra parameters expected, but set: $*"
     fi
-    echo "Usage: $CALLED [<logdirectory>]"
+    echo "Usage: $called [<logdirectory>]"
     echo "Without a parameter it will use /var/log as log directory."
     exit 1
   fi
 fi
 
-cd "$LOGPATH" || exit $?
+cd "$logdir" || exit "$?"
 
 # rm -rf UpdateTestcase-*  # Removing stale metadata downloads left over by version --dup
 
 # export LC_CTYPE="POSIX"
 # export LC_COLLATE="POSIX"
 
-TARGETS="systemupdate_*.log-dupes.txt"
-for LOGFILE in $TARGETS
+targets="systemupdate_*.log-dupes.txt"
+for logfile in $targets
 do
-  if [ "$LOGFILE" != "$TARGETS" ]
+  if [ "$logfile" != "$targets" ]
   then
-    cat "$LOGFILE" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$(echo ${LOGFILE} | rev | cut -f 2- -d - | rev).txt"
-    rm "$LOGFILE"
+    cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
+    rm "$logfile"
   fi
 done
 
