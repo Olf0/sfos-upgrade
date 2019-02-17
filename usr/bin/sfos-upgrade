@@ -323,10 +323,16 @@ fi
 askyes
 
 logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
-touch "$logfile" || exit 5
+if ! touch "$logfile"
+then
+  echo "Failed to create logfile: aborting!"
+  exit 5
+fi
 
 if ! set -o pipefail
-then echo "Warning: Technically unable to abort, if one of the following, preparatory steps for the upgrade proper fails." | tee -a "$logfile"
+then
+  echo "Warning: Technically unable to abort, if one of the following, preparatory steps for the upgrade proper fails." | tee -a "$logfile"
+  echo | tee -a "$logfile"
 fi
 
 echo "For troubleshooting issues with the upgrade proper, please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474" | tee -a "$logfile"
