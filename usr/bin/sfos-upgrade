@@ -371,11 +371,11 @@ then
   fi
 fi
 
-if expr "$installed_release" '<' "1.0.4.0" > /dev/null
+if expr "$installed_release" '<' "1.0.4.0" > /dev/null && openrepos_repos=$(ssu lr | fgrep 'openrepo') && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos\' repositories:" | tee -a "$logfile"
-  for i in $(ssu lr | fgrep 'openrepo' | cut -f 3 -d ' ')
+  for i in $(echo "$openrepos_repos" | cut -f 3 -d ' ')
   do
     echo "$i" | tee -a "$logfile"
     if ! ssu dr "$i" 2>&1 | tee -a "$logfile"
