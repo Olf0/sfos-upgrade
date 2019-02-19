@@ -1,5 +1,14 @@
-#/bin/sh
+#/bin/bash
 set -eufC
+
+# Switched to use bash since version 2.1 of this script (in its first line), as this ensures that -o pipefail
+# (in line 344) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
+# https://git.merproject.org/mer-core/bash ) and consequently in SailfishOS since its beginnings (checked v1.0.0.5 per
+# curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
+# released version is available there, e.g. the first ones on https://coderus.openrepos.net/whitesoft/sailversion ).
+# In (at least) recent SailfishOS releases /bin/sh is just a symbolic link to /bin/bash anyway, but have not checked
+# that for ancient releases (which might be re-deployed after a "factory resert").
+# Nevertheless, this script is still a Bourne (no-Again) Shell script and stays free of bashisms.
 
 # Exit codes:
 #   0  Everything worked fine: all applicable checks, all applicable, preparatory steps, and the upgrade proper
