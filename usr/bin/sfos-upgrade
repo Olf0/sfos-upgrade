@@ -8,7 +8,7 @@ set -eufC
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
 # In (at least) recent SailfishOS releases /bin/sh is just a symbolic link to /bin/bash anyway, but have not checked
 # that for ancient releases (which might be re-deployed after a "factory resert").
-# Nevertheless, this script is still a Bourne (no-Again) Shell script and stays free of bashisms.
+# Nevertheless, this script is still a Bourne (no-"Again") Shell script and stays free of bashisms.
 
 # Exit codes:
 #   0  Everything worked fine: all applicable checks, all applicable, preparatory steps, and the upgrade proper
