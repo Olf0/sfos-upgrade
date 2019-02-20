@@ -7,7 +7,7 @@ set -eufC
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
 # In (at least) recent SailfishOS releases /bin/sh is just a symbolic link to /bin/bash anyway, but have not checked
-# that for ancient releases (which might be re-deployed after a "factory resert").
+# that for ancient releases (which might be re-deployed after a "factory reset").
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and stays free of bashisms.
 
 # Exit codes:
