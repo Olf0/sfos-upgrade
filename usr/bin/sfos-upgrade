@@ -80,6 +80,7 @@ else
     echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${set_ssu})."
     echo "A possible reason for this is, that the store-client ran wild."
     echo "Never mind, the version for SSU will be set anew later on."
+    echo
   fi
 fi
 
