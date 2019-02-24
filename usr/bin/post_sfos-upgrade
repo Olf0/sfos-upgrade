@@ -30,9 +30,9 @@ then
     else break
     fi
   done
+  echo
 fi
 rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
-echo
 
 if which zypper > /dev/null 2>&1
 then
@@ -41,8 +41,8 @@ then
 #  zypper clean -m
   echo "- Refreshing zypper's caches:"
   zypper refresh
+  echo
 fi
-echo
 
 echo "- Refreshing pkcon's caches:"
 pkcon refresh
