@@ -20,11 +20,9 @@ tidy_log-dupes "$@"
 if which store-client > /dev/null 2>&1
 then
   echo "- Removing outdated Store version info."
-  if ! pkill store-client
-  then echo "Warning: Failed to stop store-client."
-  fi
+  pkill store-client > /dev/null 2>&1
+  rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
 fi
-rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
 
 if which zypper > /dev/null 2>&1
 then
