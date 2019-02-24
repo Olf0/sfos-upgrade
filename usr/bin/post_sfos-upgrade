@@ -16,13 +16,23 @@ fi
 
 echo "- Cleaning logfiles of duplicate entries."
 tidy_log-dupes "$@"
+echo
 
 if which store-client > /dev/null 2>&1
 then
   echo "- Removing outdated Store version info."
-  pkill store-client > /dev/null 2>&1
+  for i in '-TERM' '-QUIT' '-HUP' '' '-KILL' '-Failed_to_kill'
+  do
+    if pgrep store-client > /dev/null
+    then
+      pkill $i store-client
+      sleep 1
+    else break
+    fi
+  done
 fi
 rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
+echo
 
 if which zypper > /dev/null 2>&1
 then
@@ -32,6 +42,7 @@ then
   echo "- Refreshing zypper's caches:"
   zypper refresh
 fi
+echo
 
 echo "- Refreshing pkcon's caches:"
 pkcon refresh
