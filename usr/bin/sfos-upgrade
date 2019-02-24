@@ -400,7 +400,7 @@ fi
 if [ -n "$set_ssu" ]
 then
   echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile"
-  if ssu re $upgrade_release 2>&1 | tee -a "$logfile"
+  if ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
   then echo | tee -a "$logfile"
   else
     echo "Setting SSU to release $upgrade_release failed: aborting!" | tee -a "$logfile"
