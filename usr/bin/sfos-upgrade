@@ -393,7 +393,6 @@ then
       echo "Disabling OpenRepos\' repository $i failed: aborting!" | tee -a "$logfile"
       exit 6
     fi
-  fi
   done
   echo | tee -a "$logfile"
 fi
