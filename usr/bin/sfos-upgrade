@@ -348,6 +348,20 @@ then
   echo | tee -a "$logfile"
 fi
 
+for i in 'cron' 'btrfs-balancer2' 'battery-notifier2'
+do
+  if systemctl status $i > /dev/null 2>&1
+  then
+    echo "- Stopping $i service." | tee -a "$logfile"
+    if systemctl stop $i 2>&1 | tee -a "$logfile"
+    then echo | tee -a "$logfile"
+    else
+      echo "Stopping $i service failed: aborting!" | tee -a "$logfile"
+      exit 6
+    fi
+  fi
+done
+
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
   echo "- Disabling Theme Pack Support." | tee -a "$logfile"
@@ -355,17 +369,6 @@ then
   then echo | tee -a "$logfile"
   else
     echo "Disabling Theme Pack Support failed: aborting!" | tee -a "$logfile"
-    exit 6
-  fi
-fi
-
-if systemctl status cron > /dev/null 2>&1
-then
-  echo "- Stopping cron service." | tee -a "$logfile"
-  if systemctl stop cron 2>&1 | tee -a "$logfile"
-  then echo | tee -a "$logfile"
-  else
-    echo "Stopping cron service failed: aborting!" | tee -a "$logfile"
     exit 6
   fi
 fi
