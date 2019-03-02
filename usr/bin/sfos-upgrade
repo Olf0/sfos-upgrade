@@ -348,7 +348,7 @@ then
   echo | tee -a "$logfile"
 fi
 
-for i in cron btrfs-balancer2 battery-notifier2
+for i in cron.timer cron.service btrfsstatuschecker.service btrfschecker.timer btrfschecker.service beforebtrfscheckertimer.service  batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service btrfs-balancer.timer btrfs-balance.service
 do
   if systemctl status "$i" > /dev/null 2>&1
   then
