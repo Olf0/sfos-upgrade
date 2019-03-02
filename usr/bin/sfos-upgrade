@@ -348,6 +348,24 @@ then
   echo | tee -a "$logfile"
 fi
 
+for i in cron.service \
+  btrfs-balancer.timer btrfs-balance.service
+  # How to query the status of and stop these units as root, which are started as user nemo?
+  #btrfsstatuschecker.service btrfschecker.timer btrfschecker.service beforebtrfscheckertimer.service \
+  #batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service
+do
+  if systemctl status "$i" > /dev/null 2>&1
+  then
+    echo "- Stopping $i" | tee -a "$logfile"
+    if systemctl stop "$i" 2>&1 | tee -a "$logfile"
+    then echo | tee -a "$logfile"
+    else
+      echo -n "Warning: Failed to stop $i!  Continue?" | tee -a "$logfile"
+      askyes
+    fi
+  fi
+done
+
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
   echo "- Disabling Theme Pack Support." | tee -a "$logfile"
@@ -355,17 +373,6 @@ then
   then echo | tee -a "$logfile"
   else
     echo "Disabling Theme Pack Support failed: aborting!" | tee -a "$logfile"
-    exit 6
-  fi
-fi
-
-if systemctl status cron > /dev/null 2>&1
-then
-  echo "- Stopping cron service." | tee -a "$logfile"
-  if systemctl stop cron 2>&1 | tee -a "$logfile"
-  then echo | tee -a "$logfile"
-  else
-    echo "Stopping cron service failed: aborting!" | tee -a "$logfile"
     exit 6
   fi
 fi
@@ -381,7 +388,7 @@ then
   fi
 fi
 
-if expr "$installed_release" '<' "1.0.4.0" > /dev/null && openrepos_repos=$(ssu lr | fgrep 'openrepo') && true
+if expr "$installed_release" '<' "1.0.4.0" > /dev/null && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos\' repositories:" | tee -a "$logfile"
