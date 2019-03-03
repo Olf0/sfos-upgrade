@@ -402,7 +402,7 @@ then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile"
   if ! patchmanager --unapply-all >> "$logfile" 2>&1
   then
-    echo "Failed to unapply all Patchmanager-Patches: aborting!" | tee -a "$logfile"
+    echo "Failed to unapply Patchmanager-Patches: aborting!" | tee -a "$logfile"
     exit 6
   fi
   echo | tee -a "$logfile"
