@@ -361,6 +361,7 @@ do
     then
       echo -n "Warning: Failed to stop $i!  Continue?" | tee -a "$logfile"
       askyes
+      echo >> "$logfile"
     else echo | tee -a "$logfile"
     fi
   fi
