@@ -348,6 +348,7 @@ then
   echo | tee -a "$logfile"
 fi
 
+emit_newline=""
 for i in 'cron.service' \
   '--user btrfsstatuschecker.service' '--user btrfschecker.timer' '--user btrfschecker.service' '--user beforebtrfscheckertimer.service' \
   '--user batterynotifierstatuschecker.service' '--user batterynotifier.timer' '--user batterynotifier.service' \
@@ -358,13 +359,17 @@ do
     this_service="$(echo $i | rev | cut -f 1 -d ' ' | rev)"
     echo "- Stopping $this_service" | tee -a "$logfile"
     if systemctl stop $(echo $i) 2>&1 | tee -a "$logfile"
-    then echo | tee -a "$logfile"
+    then emit_newline="y"
     else
       echo -n "Warning: Failed to stop ${this_service}!  Continue?" | tee -a "$logfile"
       askyes | tee -a "$logfile"
+      emit_newline="y"
     fi
   fi
 done
+if [ -n "$emit_newline" ]
+then echo | tee -a "$logfile"
+fi
 
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
