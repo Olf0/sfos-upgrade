@@ -355,12 +355,12 @@ for i in 'cron.service' \
 do
   if systemctl status $(echo $i) > /dev/null 2>&1
   then
-    thisservice="$(echo $i | rev | cut -f 1 -d ' ' | rev)"
-    echo "- Stopping $thisservice" | tee -a "$logfile"
+    this_service="$(echo $i | rev | cut -f 1 -d ' ' | rev)"
+    echo "- Stopping $this_service" | tee -a "$logfile"
     if systemctl stop $(echo $i) 2>&1 | tee -a "$logfile"
     then echo | tee -a "$logfile"
     else
-      echo -n "Warning: Failed to stop ${thisservice}!  Continue?" | tee -a "$logfile"
+      echo -n "Warning: Failed to stop ${this_service}!  Continue?" | tee -a "$logfile"
       askyes | tee -a "$logfile"
     fi
   fi
