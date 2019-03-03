@@ -391,7 +391,7 @@ then
   echo "- Disabling Theme Pack Support." | tee -a "$logfile"
   if ! /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$logfile"
   then
-    echo "Disabling Theme Pack Support failed: aborting!" | tee -a "$logfile"
+    echo "Failed to disable Theme Pack Support: aborting!" | tee -a "$logfile"
     exit 6
   fi
   echo | tee -a "$logfile"
@@ -402,7 +402,7 @@ then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile"
   if ! patchmanager --unapply-all >> "$logfile" 2>&1
   then
-    echo "Unapplying Patchmanager-Patches failed: aborting!" | tee -a "$logfile"
+    echo "Failed to unapply all Patchmanager-Patches: aborting!" | tee -a "$logfile"
     exit 6
   fi
   echo | tee -a "$logfile"
@@ -426,7 +426,7 @@ then
   echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile"
   if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
   then
-    echo "Setting SSU to release $upgrade_release failed: aborting!" | tee -a "$logfile"
+    echo "Failed to set SSU to release ${upgrade_release}: aborting!" | tee -a "$logfile"
     exit 6
   fi
   echo | tee -a "$logfile"
@@ -436,7 +436,7 @@ echo "- Fetching and installing the SailfishOS upgrade from $installed_release t
 if ! version --dup 2>&1 | tee -a "$logfile"
 then
   echo | tee -a "$logfile"
-  echo "Fetching or installing the SailfishOS upgrade failed: aborting!" | tee -a "$logfile"
+  echo "Failed to fetch or install the SailfishOS upgrade: aborting!" | tee -a "$logfile"
   exit 6
 fi
 
