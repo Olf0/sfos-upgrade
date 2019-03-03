@@ -361,13 +361,12 @@ do
   then
     this_service="$(echo $i | rev | cut -f 1 -d ' ' | rev)"
     echo "- Stopping $this_service" | tee -a "$logfile"
-    if systemctl stop $(echo $i) 2>&1 | tee -a "$logfile"
-    then emit_newline="y"
-    else
+    if ! systemctl stop $(echo $i) 2>&1 | tee -a "$logfile"
+    then
       echo -n "Warning: Failed to stop ${this_service}!  Continue?" | tee -a "$logfile"
       askyes | tee -a "$logfile"
-      emit_newline="y"
     fi
+    emit_newline="y"
   fi
 done
 if [ -n "$emit_newline" ]
