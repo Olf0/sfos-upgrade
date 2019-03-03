@@ -360,8 +360,7 @@ do
     then echo | tee -a "$logfile"
     else
       echo -n "Warning: Failed to stop $(echo $i | rev | cut -f 1 -d ' ' | rev)!  Continue?" | tee -a "$logfile"
-      askyes
-      echo >> "$logfile"
+      askyes | tee -a "$logfile"
     fi
   fi
 done
