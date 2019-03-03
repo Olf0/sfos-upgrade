@@ -348,21 +348,20 @@ then
   echo | tee -a "$logfile"
 fi
 
-for i in cron.service \
-  btrfs-balancer.timer btrfs-balance.service
-  # How to query the status of and stop these units as root, which are started as user nemo?
-  #btrfsstatuschecker.service btrfschecker.timer btrfschecker.service beforebtrfscheckertimer.service \
-  #batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service
+for i in 'cron.service' \
+  '--user btrfsstatuschecker.service' '--user btrfschecker.timer' '--user btrfschecker.service' '--user beforebtrfscheckertimer.service' \
+  '--user batterynotifierstatuschecker.service' '--user batterynotifier.timer' '--user batterynotifier.service' \
+  'btrfs-balancer.timer' 'btrfs-balance.service'
 do
-  if systemctl status "$i" > /dev/null 2>&1
+  if systemctl status $i > /dev/null 2>&1
   then
-    echo "- Stopping $i" | tee -a "$logfile"
-    if ! systemctl stop "$i" 2>&1 | tee -a "$logfile"
-    then
-      echo -n "Warning: Failed to stop $i!  Continue?" | tee -a "$logfile"
+    echo "- Stopping "$i | tee -a "$logfile"
+    if systemctl stop $i 2>&1 | tee -a "$logfile"
+    then echo | tee -a "$logfile"
+    else
+      echo -n "Warning: Failed to stop $(echo $i | rev | cut -f 1 -d ' ' | rev)!  Continue?" | tee -a "$logfile"
       askyes
       echo >> "$logfile"
-    else echo | tee -a "$logfile"
     fi
   fi
 done
