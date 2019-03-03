@@ -353,11 +353,11 @@ for i in 'cron.service' \
   '--user batterynotifierstatuschecker.service' '--user batterynotifier.timer' '--user batterynotifier.service' \
   'btrfs-balancer.timer' 'btrfs-balance.service'
 do
-  if systemctl status $i > /dev/null 2>&1
+  if systemctl status $(echo $i) > /dev/null 2>&1
   then
     thisservice="$(echo $i | rev | cut -f 1 -d ' ' | rev)"
     echo "- Stopping $thisservice" | tee -a "$logfile"
-    if systemctl stop $i 2>&1 | tee -a "$logfile"
+    if systemctl stop $(echo $i) 2>&1 | tee -a "$logfile"
     then echo | tee -a "$logfile"
     else
       echo -n "Warning: Failed to stop ${thisservice}!  Continue?" | tee -a "$logfile"
