@@ -357,11 +357,11 @@ do
   if systemctl status "$i" > /dev/null 2>&1
   then
     echo "- Stopping $i" | tee -a "$logfile"
-    if systemctl stop "$i" 2>&1 | tee -a "$logfile"
-    then echo | tee -a "$logfile"
-    else
+    if ! systemctl stop "$i" 2>&1 | tee -a "$logfile"
+    then
       echo -n "Warning: Failed to stop $i!  Continue?" | tee -a "$logfile"
       askyes
+    else echo | tee -a "$logfile"
     fi
   fi
 done
@@ -369,23 +369,23 @@ done
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
   echo "- Disabling Theme Pack Support." | tee -a "$logfile"
-  if /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$logfile"
-  then echo | tee -a "$logfile"
-  else
+  if ! /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$logfile"
+  then
     echo "Disabling Theme Pack Support failed: aborting!" | tee -a "$logfile"
     exit 6
   fi
+  echo | tee -a "$logfile"
 fi
 
 if which patchmanager > /dev/null 2>&1
 then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile"
-  if patchmanager --unapply-all >> "$logfile" 2>&1
-  then echo | tee -a "$logfile"
-  else
+  if ! patchmanager --unapply-all >> "$logfile" 2>&1
+  then
     echo "Unapplying Patchmanager-Patches failed: aborting!" | tee -a "$logfile"
     exit 6
   fi
+  echo | tee -a "$logfile"
 fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
@@ -404,12 +404,12 @@ fi
 if [ -n "$set_ssu" ]
 then
   echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile"
-  if ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
-  then echo | tee -a "$logfile"
-  else
+  if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
+  then
     echo "Setting SSU to release $upgrade_release failed: aborting!" | tee -a "$logfile"
     exit 6
   fi
+  echo | tee -a "$logfile"
 fi
 
 echo "- Fetching and installing the SailfishOS upgrade from $installed_release to $upgrade_release (this may take a while):" | tee -a "$logfile"
