@@ -30,7 +30,7 @@ askyes ()
   read yn
   case "$yn" in
   y|Y)
-    echo
+    true
     ;;
   *)
     echo "Aborted by user."
@@ -110,6 +110,7 @@ then
   echo "$upgrade_release does not seem to be a publicly released SailfishOS version!"
   echo -n "Do you really want to continue?"
   askyes
+  echo
 fi
 
 if mount -t btrfs | cut -f 3 -d ' ' | grep -q '^/$'
@@ -308,6 +309,7 @@ ask)
   echo "When a power loss occurs during the upgrade process, it will fail."
   echo -n "Do you really want to continue?"
   askyes
+  echo
   ;;
 ok)
   true
@@ -331,6 +333,7 @@ else
   echo -n "Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?"
 fi
 askyes
+echo
 
 logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
 if ! touch "$logfile"
