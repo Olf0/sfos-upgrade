@@ -105,7 +105,7 @@ do
   fi
 done
 
-if ! curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -q "^$(echo $upgrade_release | sed 's/\./\\\./g')\$"
+if ! curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
 then
   echo "$upgrade_release does not seem to be a publicly released SailfishOS version!"
   echo -n "Do you really want to continue?"
