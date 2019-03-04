@@ -61,7 +61,7 @@ else
     exit 3
   fi
   case "$upgrade_release" in
-  [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[0-9][0-9])
+  [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9])
     true
     ;;
   -h|--help)
@@ -88,7 +88,7 @@ known_stop_releases="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n
 # 0.99.5.11, 1.0.0.5 and 1.0.1.10 are not documented to be "stop releases",
 # taking the information of sections 4 and 5 (in combination!) at
 # https://jolla.zendesk.com/hc/en-us/articles/201836347#4 into account.
-if ! recent_stop_releases="$(curl -sS https://jolla.zendesk.com/hc/en-us/articles/201836347 | sed -n '/id="4"/,/id="5"/p' | sed -n '/<ul>/,/<\/ul>/p' | sed -n '/<li>/,/<\/li>/p' | sed 's/<[^>]*>/\n/g' | tr -c '.0-9' '\n' | egrep '^[1-9]\.[0-9]\.[0-9]\.[0-9]$|^[1-9]\.[0-9]\.[0-9]\.[0-9][0-9]$')"
+if ! recent_stop_releases="$(curl -sS https://jolla.zendesk.com/hc/en-us/articles/201836347 | sed -n '/id="4"/,/id="5"/p' | sed -n '/<ul>/,/<\/ul>/p' | sed -n '/<li>/,/<\/li>/p' | sed 's/<[^>]*>/\n/g' | tr -c '.0-9' '\n' | egrep '^[1-9]\.[0-9]\.[0-9]\.[0-9]$|^[1-9]\.[0-9]\.[0-9]\.[1-9][0-9]$')"
 then
   echo "Warning: Failed to extract the current \"stop releases\" from https://jolla.zendesk.com/hc/en-us/articles/201836347#4"
   echo
