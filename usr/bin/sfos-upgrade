@@ -97,7 +97,7 @@ for i in $(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$
 do
   if expr "$installed_release" '<' "$i" > /dev/null && expr "$upgrade_release" '>' "$i" > /dev/null && true
   then
-    echo "Trying to upgrade from $installed_release to ${upgrade_release}, which would \"jump over\" the stop release ${i}!"
+    echo "Trying to upgrade from $installed_release to ${upgrade_release}, which would omit installing $i as a stop release!"
     echo "Hence upgrading to $i instead."
     echo
     upgrade_release="$i"
