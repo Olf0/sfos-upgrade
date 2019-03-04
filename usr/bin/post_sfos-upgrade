@@ -25,7 +25,7 @@ then
   do
     if pgrep store-client > /dev/null
     then
-      pkill $i store-client
+      pkill $(echo $i) store-client
       sleep 1
     else break
     fi

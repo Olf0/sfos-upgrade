@@ -30,7 +30,7 @@ askyes ()
   read yn
   case "$yn" in
   y|Y)
-    echo
+    true
     ;;
   *)
     echo "Aborted by user."
@@ -110,6 +110,7 @@ then
   echo "$upgrade_release does not seem to be a publicly released SailfishOS version!"
   echo -n "Do you really want to continue?"
   askyes
+  echo
 fi
 
 if mount -t btrfs | cut -f 3 -d ' ' | grep -q '^/$'
@@ -308,6 +309,7 @@ ask)
   echo "When a power loss occurs during the upgrade process, it will fail."
   echo -n "Do you really want to continue?"
   askyes
+  echo
   ;;
 ok)
   true
@@ -331,6 +333,7 @@ else
   echo -n "Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?"
 fi
 askyes
+echo
 
 logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
 if ! touch "$logfile"
@@ -348,58 +351,59 @@ then
   echo | tee -a "$logfile"
 fi
 
-for i in cron.service \
-  btrfs-balancer.timer btrfs-balance.service
-  # How to query the status of and stop these units as root, which are started as user nemo?
-  #btrfsstatuschecker.service btrfschecker.timer btrfschecker.service beforebtrfscheckertimer.service \
-  #batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service
+emit_newline=""
+for i in 'cron.service' \
+  '--user btrfsstatuschecker.service' '--user btrfschecker.timer' '--user btrfschecker.service' '--user beforebtrfscheckertimer.service' \
+  '--user batterynotifierstatuschecker.service' '--user batterynotifier.timer' '--user batterynotifier.service' \
+  'btrfs-balancer.timer' 'btrfs-balance.service'
 do
-  if systemctl status "$i" > /dev/null 2>&1
+  if systemctl status $(echo $i) > /dev/null 2>&1
   then
-    echo "- Stopping $i" | tee -a "$logfile"
-    if systemctl stop "$i" 2>&1 | tee -a "$logfile"
-    then echo | tee -a "$logfile"
-    else
-      echo -n "Warning: Failed to stop ${i}!  Continue?" | tee -a "$logfile"
-      askyes
+    this_service="$(echo $i | rev | cut -f 1 -d ' ' | rev)"
+    echo "- Stopping $this_service" | tee -a "$logfile"
+    if ! systemctl stop $(echo $i) 2>&1 | tee -a "$logfile"
+    then
+      echo -n "Warning: Failed to stop ${this_service}!  Continue?" | tee -a "$logfile"
+      askyes | tee -a "$logfile"
     fi
+    emit_newline="y"
   fi
 done
+if [ -n "$emit_newline" ]
+then echo | tee -a "$logfile"
+fi
 
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
   echo "- Disabling Theme Pack Support." | tee -a "$logfile"
-  if /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$logfile"
-  then echo | tee -a "$logfile"
-  else
+  if ! /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$logfile"
+  then
     echo "Disabling Theme Pack Support failed: aborting!" | tee -a "$logfile"
     exit 6
   fi
+  echo | tee -a "$logfile"
 fi
 
 if which patchmanager > /dev/null 2>&1
 then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile"
-  if patchmanager --unapply-all >> "$logfile" 2>&1
-  then echo | tee -a "$logfile"
-  else
+  if ! patchmanager --unapply-all >> "$logfile" 2>&1
+  then
     echo "Unapplying Patchmanager-Patches failed: aborting!" | tee -a "$logfile"
     exit 6
   fi
+  echo | tee -a "$logfile"
 fi
 
-if expr "$installed_release" '<' "1.0.4.0" > /dev/null && openrepos_repos="$(ssu lr | sed -n '/Enabled/,/Disabled/p' | fgrep 'openrepo')" && true
+# Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
+if expr "$installed_release" '<' "1.0.4.0" > /dev/null && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile"
   for i in $(echo "$openrepos_repos" | cut -f 3 -d ' ')
   do
     echo "$i" | tee -a "$logfile"
-    if ! ssu dr "$i" 2>&1 | tee -a "$logfile"
-    then
-      echo "Disabling OpenRepos' repository $i failed: aborting!" | tee -a "$logfile"
-      exit 6
-    fi
+    ssu dr "$i" 2>&1 | tee -a "$logfile"
   done
   echo | tee -a "$logfile"
 fi
@@ -407,12 +411,12 @@ fi
 if [ -n "$set_ssu" ]
 then
   echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile"
-  if ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
-  then echo | tee -a "$logfile"
-  else
+  if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
+  then
     echo "Setting SSU to release $upgrade_release failed: aborting!" | tee -a "$logfile"
     exit 6
   fi
+  echo | tee -a "$logfile"
 fi
 
 echo "- Fetching and installing the SailfishOS upgrade from $installed_release to $upgrade_release (this may take a while):" | tee -a "$logfile"
