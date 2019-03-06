@@ -53,7 +53,8 @@ then
   set_ssu=""
   upgrade_release="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
 else
-  set_ssu="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
+  set_ssu="yes"
+  ssu_set="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
   upgrade_release="$1"
   shift
   if [ -n "$*" ]
@@ -76,9 +77,9 @@ else
     exit 3
     ;;
   esac
-  if [ "$set_ssu" != "$installed_release" ]
+  if [ "$ssu_set" != "$installed_release" ]
   then
-    echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${set_ssu})."
+    echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${ssu_set})."
     echo "A possible reason for this is, that the store-client ran wild."
     echo "Never mind, the version for SSU will be set anew later on."
     echo
