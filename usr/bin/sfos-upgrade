@@ -411,7 +411,7 @@ then
 fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
-if expr "$installed_release" '<' "1.0.4.0" > /dev/null && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
+if expr "$installed_release" '<' "1.0.4.20" > /dev/null && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile"
