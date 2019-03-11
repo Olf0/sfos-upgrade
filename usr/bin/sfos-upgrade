@@ -93,6 +93,7 @@ known_stop_releases="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n
 if ! recent_stop_releases="$(curl -sS https://jolla.zendesk.com/hc/en-us/articles/201836347 | sed -n '/id="4"/,/id="5"/p' | sed -n '/<ul>/,/<\/ul>/p' | sed -n '/<li>/,/<\/li>/p' | sed 's/<[^>]*>/\n/g' | tr -c '.0-9' '\n' | egrep '^[1-9]\.[0-9]\.[0-9]\.[0-9]$|^[1-9]\.[0-9]\.[0-9]\.[1-9][0-9]$')"
 then
   echo "Warning: Failed to extract the current \"stop releases\" from https://jolla.zendesk.com/hc/en-us/articles/201836347#4"
+  echo "Hence using an internal, potentially outdated list of stop releases instead."
   echo
 fi
 for i in $(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$' | sort -u)
@@ -100,7 +101,13 @@ do
   if expr "$installed_release" '<' "$i" > /dev/null && expr "$upgrade_release" '>' "$i" > /dev/null && true
   then
     echo "Trying to upgrade from $installed_release to ${upgrade_release}, which would omit installing $i as a stop release!"
-    echo "Hence upgrading to $i instead."
+    if [ -n "$set_ssu" ]
+    then echo "Thus upgrading to $i instead."
+    else 
+     echo -n "Set SSU to $i before upgrading (a negative reply aborts)?"
+     askyes
+     set_ssu="yes"
+    fi
     echo
     upgrade_release="$i"
     break
@@ -417,7 +424,7 @@ then
 fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
-if expr "$installed_release" '<' "1.0.4.0" > /dev/null && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
+if expr "$installed_release" '<' "1.0.4.20" > /dev/null && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile"
