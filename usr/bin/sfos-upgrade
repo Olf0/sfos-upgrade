@@ -86,6 +86,20 @@ else
   fi
 fi
 
+if ! sfos_releases="$(curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
+then
+  echo "Notice: Failed to retrieve list of SailfishOS releases, hence unable to check the validity of version number \"${upgrade_release}\"."
+  echo -n "Do you want to continue?"
+  askyes
+  echo
+elif ! echo "$sfos_releases" | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
+then
+  echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version."
+  echo -n "Do you really want to continue?" 
+  askyes 
+  echo
+fi
+
 known_stop_releases="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5"
 # 0.99.5.11, 1.0.0.5 and 1.0.1.10 are not documented to be "stop releases",
 # taking the information of sections 4 and 5 (in combination!) at
@@ -113,20 +127,6 @@ do
     break
   fi
 done
-
-if ! sfos_releases="$(curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
-then
-  echo "Notice: Failed to retrieve list of SailfishOS releases, hence unable to check the validity of version number \"${upgrade_release}\"."
-  echo -n "Do you want to continue?"
-  askyes
-  echo
-elif ! echo "$sfos_releases" | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
-then
-  echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version."
-  echo -n "Do you really want to continue?" 
-  askyes 
-  echo
-fi
 
 if mount -t btrfs | cut -f 3 -d ' ' | grep -q '^/$'
 then
