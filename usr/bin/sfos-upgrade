@@ -94,7 +94,7 @@ then
   echo
 elif ! echo "$sfos_releases" | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
 then
-  echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version."
+  echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!"
   echo -n "Do you really want to continue?" 
   askyes 
   echo
@@ -114,7 +114,7 @@ for i in $(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$
 do
   if expr "$installed_release" '<' "$i" > /dev/null && expr "$upgrade_release" '>' "$i" > /dev/null && true
   then
-    echo "Trying to upgrade from $installed_release to ${upgrade_release}, which would omit installing $i as a stop release!"
+    echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $i as a stop release!"
     if [ -n "$set_ssu" ]
     then echo "Thus upgrading to $i instead."
     else 
@@ -122,8 +122,8 @@ do
      askyes
      set_ssu="yes"
     fi
-    echo
     upgrade_release="$i"
+    echo
     break
   fi
 done
@@ -137,12 +137,12 @@ then
     btrfs_alloc_percent="$(echo "$btrfs_allocation" | grep '^Allocated: ' | cut -f 2 -d ' ')"
     if ! [ "$btrfs_alloc_percent" -lt "90" ]
     then
-      echo "Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 90% or more: aborting!"
+      echo "Aborting: Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 90% or more!"
       echo "Please perform a btrfs-balancer run before retrying."
       exit 1
     elif ! [ "$btrfs_alloc_percent" -lt "85" ]
     then
-      echo "Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 85% or more!"
+      echo "Notice: Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 85% or more!"
       echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
       echo
     fi
@@ -153,12 +153,12 @@ then
       btrfs_check="ok"
       if ! [ "$btrfs_unallocated" -ge "1610612736" ]
       then
-        echo "Less than 1.5 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS): aborting!"
+        echo "Aborting: Less than 1.5 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!"
         echo "Please perform a btrfs-balancer run before retrying."
         exit 1
       elif ! [ "$btrfs_unallocated" -ge "2147483648" ]
       then
-        echo "Less than 2 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!"
+        echo "Notice: Less than 2 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!"
         echo "Please consider to abort and to perform a btrfs-balancer run before retrying."
         echo
       fi
@@ -173,12 +173,12 @@ then
       btrfs_check="ok"
       if ! [ "$btrfs_unallocated" -ge "200" ]
       then
-        echo "Less than 2 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS): aborting!"
+        echo "Aborting: Less than 2 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!"
         echo "Please balance the btrfs root filesystem before retrying."
         exit 1
       elif ! [ "$btrfs_unallocated" -ge "250" ]
       then
-        echo "Less than 2.5 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!"
+        echo "Notice: Less than 2.5 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!"
         echo "Please consider to abort and to balance the btrfs root filesystem before retrying."
         echo
       fi
@@ -186,19 +186,19 @@ then
   fi
   if [ "$btrfs_check" != "ok" ]
   then
-    echo "Cannot properly determine allocation of the root filesystem (BTRFS): aborting."
+    echo "Aborting: Cannot properly determine allocation of the root filesystem (BTRFS)."
     exit 5
   fi
 else
   free_space="$(df -k / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -f 3 -d ' ' | rev)"
   if ! [ "$free_space" -ge "524288" ]
   then
-    echo "Less than 0.5 GiB ($free_space KiB) of free space on the root filesystem: aborting!"
+    echo "Aborting: Less than 0.5 GiB ($free_space KiB) of free space on the root filesystem!"
     echo "Please clean up or enlarge the root filesystem before retrying."
     exit 1
   elif ! [ "$free_space" -ge "786432" ]
   then
-    echo "Less than 0.75 GiB ($free_space KiB) of free space on the root filesystem!"
+    echo "Notice: Less than 0.75 GiB ($free_space KiB) of free space on the root filesystem!"
     echo "Please consider to abort and to clean up or enlarge the root filesystem before retrying."
     echo
   fi
@@ -225,7 +225,7 @@ then
     ;;
   esac
 else
-  echo "Failed to read battery information: aborting."
+  echo "Aborting: Failed to read battery information."
   exit 5
 fi
 battery_check="KO"
@@ -233,7 +233,7 @@ case "${POWER_SUPPLY_STATUS}-${power_supply_capacity_design}-$POWER_SUPPLY_CAPAC
 Charging-[0-9]*-*|Full-[0-9]*-*)
   if ! [ "$power_supply_capacity_design" -gt "18" ]
   then
-    echo "Battery is charged less than 18.5% (${power_supply_capacity_design}%) of its original design capacity!"
+    echo "Warning: Battery is charged less than 18.5% (${power_supply_capacity_design}%) of its original design capacity!"
     echo -n "Continue charging before "
     if [ -z "$set_ssu" ]
     then battery_check="ask"
@@ -242,7 +242,7 @@ Charging-[0-9]*-*|Full-[0-9]*-*)
     battery_check="ok"
     if ! [ "$power_supply_capacity_design" -gt "25" ]
     then
-      echo "Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity."
+      echo "Notice: Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity."
       echo "Please continue charging throughout the upgrade process!"
       echo
     fi
@@ -251,13 +251,13 @@ Charging-[0-9]*-*|Full-[0-9]*-*)
 *-[0-9]*-*)
   if ! [ "$power_supply_capacity_design" -gt "25" ]
   then
-    echo "Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity!"
+    echo "Warning: Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity!"
     echo -n "Plug in a charger before "
   else
     battery_check="ok"
     if ! [ "$power_supply_capacity_design" -gt "37" ]
     then
-      echo "Battery is charged less than 37.5% (${power_supply_capacity_design}%) of its original design capacity."
+      echo "Notice: Battery is charged less than 37.5% (${power_supply_capacity_design}%) of its original design capacity."
       echo "Please plug in a charger before continuing."
       echo
     fi
@@ -266,7 +266,7 @@ Charging-[0-9]*-*|Full-[0-9]*-*)
 Charging-*-[0-9]*|Full-*-[0-9]*)
   if ! [ "$POWER_SUPPLY_CAPACITY" -gt "25" ]
   then
-    echo "Battery is charged 25% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity!"
+    echo "Warning: Battery is charged 25% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity!"
     echo -n "Continue charging before "
     if [ -z "$set_ssu" ]
     then battery_check="ask"
@@ -275,7 +275,7 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
     battery_check="ok"
     if ! [ "$POWER_SUPPLY_CAPACITY" -gt "33" ]
     then
-      echo "Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity."
+      echo "Notice: Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity."
       echo "Please continue charging throughout the upgrade process!"
       echo
     fi
@@ -284,27 +284,27 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
 *-*-[0-9]*)
   if ! [ "$POWER_SUPPLY_CAPACITY" -gt "33" ]
   then
-    echo "Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity!"
+    echo "Warning: Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity!"
     echo -n "Plug in a charger before "
   else
     battery_check="ok"
     if ! [ "$POWER_SUPPLY_CAPACITY" -ge "50" ]
     then
-      echo "Battery is charged less than 50% (${POWER_SUPPLY_CAPACITY}%) of its capacity."
+      echo "Notice: Battery is charged less than 50% (${POWER_SUPPLY_CAPACITY}%) of its capacity."
       echo "Please plug in a charger before continuing."
       echo
     fi
   fi
   ;;
 ?*-*-*)
-  echo "Failed to determine battery charge!"
+  echo "Warning: Failed to determine battery charge!"
   echo "Check your device before "
   if [ -z "$set_ssu" ]
   then battery_check="ask"
   fi
   ;;
 *-*-*)
-  echo "Failed to determine battery charging state!"
+  echo "Warning: Failed to determine battery charging state!"
   echo "Check your device before "
   if [ -z "$set_ssu" ]
   then battery_check="ask"
@@ -336,16 +336,16 @@ esac
 
 if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt "5" ] 2> /dev/null
 then
-  echo "Mind that $called is best run on a freshly rebooted device."
+  echo "Notice: Mind that $called is best run on a freshly rebooted device."
   echo
 fi
 
 if expr "$installed_release" '>' "$upgrade_release" > /dev/null
 then
-  echo "About to DOWNGRADE SailfishOS from $installed_release to $upgrade_release!"
+  echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to $upgrade_release!"
   echo -n "Do you really want to do that?"
 else
-  echo -n "Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?"
+  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?"
 fi
 askyes
 echo
@@ -353,11 +353,11 @@ echo
 logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
 if ! touch "$logfile"
 then
-  echo "Failed to create logfile: aborting!"
+  echo "Aborting: Failed to create logfile!"
   exit 5
 fi
 
-echo "For troubleshooting issues with the upgrade proper, please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474" | tee -a "$logfile"
+echo "Notice: For troubleshooting issues with the upgrade proper, please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474" | tee -a "$logfile"
 echo | tee -a "$logfile"
 
 if ! set -o pipefail
@@ -376,7 +376,7 @@ do
     echo "- Stopping $i" | tee -a "$logfile"
     if ! systemctl --user stop "$i" 2>&1 | tee -a "$logfile"
     then
-      echo -n "Warning: Failed to stop $i (user)!  Continue?" | tee -a "$logfile"
+      echo -n "Notice: Failed to stop $i (user)!  Continue?" | tee -a "$logfile"
       askyes | tee -a "$logfile"
     fi
     emit_newline="y"
@@ -391,7 +391,7 @@ do
     echo "- Stopping $i" | tee -a "$logfile"
     if ! systemctl stop "$i" 2>&1 | tee -a "$logfile"
     then
-      echo -n "Warning: Failed to stop $i (system)!  Continue?" | tee -a "$logfile"
+      echo -n "Notice: Failed to stop $i (system)!  Continue?" | tee -a "$logfile"
       askyes | tee -a "$logfile"
     fi
     emit_newline="y"
@@ -406,7 +406,7 @@ then
   echo "- Disabling Theme Pack Support." | tee -a "$logfile"
   if ! /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$logfile"
   then
-    echo "Failed to disable Theme Pack Support: aborting!" | tee -a "$logfile"
+    echo "Aborting: Failed to disable Theme Pack Support!" | tee -a "$logfile"
     exit 6
   fi
   echo | tee -a "$logfile"
@@ -417,7 +417,7 @@ then
   echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile"
   if ! patchmanager --unapply-all >> "$logfile" 2>&1
   then
-    echo "Failed to unapply Patchmanager-Patches: aborting!" | tee -a "$logfile"
+    echo "Aborting: Failed to unapply Patchmanager-Patches!" | tee -a "$logfile"
     exit 6
   fi
   echo | tee -a "$logfile"
@@ -441,7 +441,7 @@ then
   echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile"
   if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
   then
-    echo "Failed to set SSU to release ${upgrade_release}: aborting!" | tee -a "$logfile"
+    echo "Aborting: Failed to set SSU to release ${upgrade_release}!" | tee -a "$logfile"
     exit 6
   fi
   echo | tee -a "$logfile"
