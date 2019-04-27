@@ -385,7 +385,7 @@ done
 for i in \
   cron.service \
   btrfs-balancer.timer btrfs-balance.service \
-  alien-service-manager.service alien-settings.service aliendalvik.service
+  aliendalvik.service alien-settings.service alien-service-manager.service
 do
   if systemctl status "$i" > /dev/null 2>&1
   then
