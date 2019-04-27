@@ -369,7 +369,8 @@ fi
 emit_newline=""
 for i in \
   btrfsstatuschecker.service btrfschecker.timer btrfschecker.service beforebtrfscheckertimer.service \
-  batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service
+  batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service \
+  osmscout-server.socket osmscout-server.service
 do
   if systemctl --user status "$i" > /dev/null 2>&1
   then
