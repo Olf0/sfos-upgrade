@@ -403,6 +403,22 @@ if [ -n "$emit_newline" ]
 then echo | tee -a "$logfile"
 fi
 
+for i in store-client harbour-storeman harbour-warehouse harbour-osmscout-server
+do
+  if pgrep "$i" > /dev/null 2>&1
+  then
+    echo "- Stopping $i" | tee -a "$logfile"
+    if ! pkill "$i" 2>&1 | tee -a "$logfile"
+    then
+      echo -n "Notice: Failed to stop $i (running process)!  Continue?" | tee -a "$logfile"
+      askyes | tee -a "$logfile"
+    fi
+    emit_newline="y"
+done
+if [ -n "$emit_newline" ]
+then echo | tee -a "$logfile"
+fi
+
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
   echo "- Disabling Theme Pack Support." | tee -a "$logfile"
