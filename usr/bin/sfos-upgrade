@@ -368,6 +368,7 @@ fi
 
 emit_newline=""
 for i in \
+  osupdate-check.timer osupdate-check.service \
   btrfsstatuschecker.service btrfschecker.timer btrfschecker.service beforebtrfscheckertimer.service \
   batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service \
   osmscout-server.socket osmscout-server.service
