@@ -401,7 +401,7 @@ do
     emit_newline="y"
   fi
 done
-for i in store-client harbour-storema harbour-warehou harbour-osmscou pkcon zypper
+for i in store-client harbour-storema harbour-warehou harbour-osmscou pkcon zypper rpm
 do
   if pgrep "$i" > /dev/null 2>&1
   then
