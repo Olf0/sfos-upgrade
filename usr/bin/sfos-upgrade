@@ -413,6 +413,7 @@ do
       askyes | tee -a "$logfile"
     fi
     emit_newline="y"
+  fi
 done
 if [ -n "$emit_newline" ]
 then echo | tee -a "$logfile"
