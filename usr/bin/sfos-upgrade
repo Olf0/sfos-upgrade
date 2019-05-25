@@ -81,7 +81,7 @@ else
   then
     echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${ssu_set})."
     echo "A possible reason for this is, that the \'sailfish-osupdateservice osupdate-check\' invoked by osupdate-check.service"
-    echo "(which is regularly triggered by osupdate-check.timer) or by the store-client seems to do more than just checking"
+    echo "(which is regularly triggered by osupdate-check.timer) and maybe also by the store-client seems to do more than just checking"
     echo "(e.g., setting ssu to the recent release version or next stop release)."
     echo "Never mind, the version for SSU will be set correctly again, later on."
     echo
