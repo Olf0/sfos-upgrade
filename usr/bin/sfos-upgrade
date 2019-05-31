@@ -51,8 +51,6 @@ askyes ()
 compare_versions ()
 {
   # Returns 0 if A = B, 1 if A < B, 2 if A > B, 3 if incomparable, and 4 if not called with two parameters
-  version_a="$1"
-  version_b="$2"
   if [ "$#" -ne "2" ]
   then
     echo "Two parameters expected, but $# received!"
@@ -385,27 +383,6 @@ then
   echo
 fi
 
-grade=""
-for i in 1 2 3 4
-do
-  inst_substr="$(echo "$installed_release" | cut -f "$i" -d '.')"
-  upgr_substr="$(echo "$upgrade_release" | cut -f "$i" -d '.')"
-  if [ "$inst_substr" -eq "$upgr_substr" ]
-  then 
-    grade="same"
-  elif [ "$inst_substr" -lt "$upgr_substr" ]
-  then
-    grade="up"
-    break
-  elif [ "$inst_substr" -gt "$upgr_substr" ]
-  then
-    grade="down"
-    break
-  else
-    echo "Aborting: Failed to compare installed version with version to upgrade to!"
-    exit 6
-  fi
-done
 case "$grade" in
 up)
   ;;
@@ -414,7 +391,7 @@ down)
 same)
   ;;
 *)
-  exit 13
+  exit 42
   ;;
 esac
 
