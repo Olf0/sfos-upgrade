@@ -342,6 +342,27 @@ then
   echo
 fi
 
+grade=""
+for i in 1 2 3 4
+do
+  inst_substr="$(echo "$installed_release" | cut -f "$i" -d '.')"
+  upgr_substr="$(echo "$upgrade_release" | cut -f "$i" -d '.')"
+  if [ "$inst_substr" -lt "$upgr_substr" ]
+  then
+    grade="up"
+    break
+  elif  [ "$inst_substr" -lt "$upgr_substr" ]
+  then
+    grade="down"
+    break
+  elif
+  then
+    grade="same"
+  else
+    echo "Error: Failed to compare installed version with version to upgrade to!"
+    exit 6
+  fi
+done
 if expr "$installed_release" '>' "$upgrade_release" > /dev/null
 then
   echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to $upgrade_release!"
