@@ -27,6 +27,11 @@ export LC_COLLATE="POSIX"
 
 askyes ()
 {
+  if [ -n "$*" ]
+  then
+    echo "No parameters expected, but set: $*"
+    return 1
+  fi 
   echo -n " (Y/N) "
   read yn
   case "$yn" in
@@ -43,13 +48,14 @@ askyes ()
 
 compare_versions ()
 {
-  # Returns 0 if A = B, 1 if A < B, 2 if A > B, and 3 if incomparable
+  # Returns 0 if A = B, 1 if A < B, 2 if A > B, 3 if incomparable, and 4 if not called with two parameters
   version_a="$1"
-  shift
-  version_b="$1"
-  shift
-  
-
+  version_b="$2"
+  if [ "$#" -ne "2" ]
+  then
+    echo "Two parameters expected, but $# received!"
+    return 4
+  fi 
   for i in 1 2 3 4
   do
     a_substring="$(echo "$version_a" | cut -f "$i" -d '.')"
@@ -70,7 +76,7 @@ compare_versions ()
       break
     fi
   done
-  return $ret
+  return "$ret"
 }
 
 called="$(basename "$0")"
