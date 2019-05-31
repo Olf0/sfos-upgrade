@@ -363,13 +363,12 @@ do
     exit 6
   fi
 done
-case "$grade" 
-in
-  "up")
+case "$grade" in
+  up)
   ;;
-  "down")
+  down)
   ;;
-  "same")
+  same)
   ;;
   *)
   ;;
