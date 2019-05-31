@@ -41,7 +41,7 @@ askyes ()
   esac
   if [ -n "$*" ]
   then
-    echo "No parameters expected, but set: $*"
+    echo "Notice: No parameters expected, but set: $*"
     return 1
   else 
     return 0
@@ -53,7 +53,7 @@ compare_versions ()
   # Returns 0 if A = B, 1 if A < B, 2 if A > B, 3 if incomparable, and 4 if not called with two parameters
   if [ "$#" -ne "2" ]
   then
-    echo "Two parameters expected, but $# received!"
+    echo "Error: Two parameters expected, but $# received!"
     return 4
   fi
   version_a="$1" 
@@ -383,25 +383,21 @@ then
   echo
 fi
 
-case "$grade" in
-up)
+compare_versions "$installed_release" "$upgrade_release"
+case "$?" in
+0)
   ;;
-down)
+1)
+  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?"
   ;;
-same)
+2)
+  echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to $upgrade_release!"
+  echo -n "Do you really want to do that?" 
   ;;
 *)
   exit 42
   ;;
 esac
-
-if expr "$installed_release" '>' "$upgrade_release" > /dev/null
-then
-  echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to $upgrade_release!"
-  echo -n "Do you really want to do that?"
-else
-  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?"
-fi
 askyes
 echo
 
