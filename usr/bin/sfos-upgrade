@@ -62,7 +62,7 @@ compare_versions ()
   do
     a_substring="$(echo "$version_a" | cut -f "$i" -d '.')"
     b_substring="$(echo "$version_b" | cut -f "$i" -d '.')" 
-    if [ "$a_substrimg" -eq "$b_substring" ]
+    if [ "$a_substrimg" = "$b_substring" ]
     then
       ret=0
     elif [ "$a_substring" -lt "$b_substring" ]
@@ -155,7 +155,7 @@ then
 fi
 for i in $(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$' | sort -u)
 do
-  if expr "$installed_release" '<' "$i" > /dev/null && expr "$upgrade_release" '>' "$i" > /dev/null && true
+  if [ "$(compare_versions "$installed_release" "$i"; echo "$?")" = "1" ] && [ "$(compare_versions "$upgrade_release" "$i"; echo "$?")" = "2" ] && true
   then
     echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $i as a stop release!"
     if [ -n "$set_ssu" ]
@@ -491,7 +491,7 @@ then
 fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
-if expr "$installed_release" '<' "1.0.4.20" > /dev/null && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
+if [ "$(compare_versions "$installed_release" "1.0.4.20"; echo "$?")" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile"
