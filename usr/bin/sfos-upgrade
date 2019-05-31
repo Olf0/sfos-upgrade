@@ -19,19 +19,15 @@ set -eufC
 #   4  Aborted upon user interaction
 #   5  Error while interacting with the OS (reading / writing from the filesystem, calling programs, etc.)
 #   6  Error while executing one of the preparatory steps for the upgrade proper
-#  23  "Should never be reached" *) case #1
-#  42  "Should never be reached" *) case #2
+#  13  "Should never be reached" *) case #1
+#  23  "Should never be reached" *) case #2
+#  42  "Should never be reached" *) case #3
 
 export LC_CTYPE="POSIX"
 export LC_COLLATE="POSIX"
 
 askyes ()
 {
-  if [ -n "$*" ]
-  then
-    echo "No parameters expected, but set: $*"
-    return 1
-  fi 
   echo -n " (Y/N) "
   read yn
   case "$yn" in
@@ -43,7 +39,13 @@ askyes ()
     exit 4
     ;;
   esac
-  return 0
+  if [ -n "$*" ]
+  then
+    echo "No parameters expected, but set: $*"
+    return 1
+  else 
+    return 0
+  fi
 }
 
 compare_versions ()
@@ -55,7 +57,9 @@ compare_versions ()
   then
     echo "Two parameters expected, but $# received!"
     return 4
-  fi 
+  fi
+  version_a="$1" 
+  version_b="$2"
   for i in 1 2 3 4
   do
     a_substring="$(echo "$version_a" | cut -f "$i" -d '.')"
@@ -352,7 +356,7 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
   fi
   ;;
 *)
-  exit 42
+  exit 13
   ;;
 esac
 case "$battery_check" in
