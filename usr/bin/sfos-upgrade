@@ -359,18 +359,19 @@ do
     grade="down"
     break
   else
-    echo "Error: Failed to compare installed version with version to upgrade to!"
+    echo "Aborting: Failed to compare installed version with version to upgrade to!"
     exit 6
   fi
 done
 case "$grade" in
-  up)
+up)
   ;;
-  down)
+down)
   ;;
-  same)
+same)
   ;;
-  *)
+*)
+  exit 13
   ;;
 esac
 
