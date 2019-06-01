@@ -151,19 +151,19 @@ then
   echo "Hence using an internal, potentially outdated list of stop releases instead."
   echo
 fi
-for i in $(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$' | sort -u)
+for stop_release in $(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$' | sort -u)
 do
-  if [ "$(compare_versions "$installed_release" "$i"; echo "$?")" = "1" ] && [ "$(compare_versions "$upgrade_release" "$i"; echo "$?")" = "2" ] && true
+  if [ "$( ( compare_versions "$installed_release" "$stop_release" ); echo "$?")" = "1" ] && [ "$( ( compare_versions "$upgrade_release" "$stop_release" ); echo "$?")" = "2" ] && true
   then
-    echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $i as a stop release!"
+    echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!"
     if [ -n "$set_ssu" ]
-    then echo "Thus upgrading to $i instead."
+    then echo "Thus upgrading to $stop_release instead."
     else
-     echo -n "Set SSU to $i before upgrading (a negative reply aborts)?"
+     echo -n "Set SSU to $stop_release before upgrading (a negative reply aborts)?"
      askyes
      set_ssu="yes"
     fi
-    upgrade_release="$i"
+    upgrade_release="$stop_release"
     echo
     break
   fi
