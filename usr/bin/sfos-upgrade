@@ -60,8 +60,8 @@ compare_versions ()
   version_b="$2"
   for i in 1 2 3 4
   do
-    a_substring="$(echo "$version_a" | cut -f "$i" -d '.')"
-    b_substring="$(echo "$version_b" | cut -f "$i" -d '.')" 
+    a_substring="$(echo "$version_a" | cut -s -f "$i" -d '.')"
+    b_substring="$(echo "$version_b" | cut -s -f "$i" -d '.')" 
     if [ "$a_substrimg" = "$b_substring" ]
     then
       ret=0
@@ -75,6 +75,7 @@ compare_versions ()
       break
     else
       ret=3
+      echo "Error: Version strings are not comparable!"
       break
     fi
   done
@@ -88,7 +89,7 @@ then
   exit 3
 fi
 
-installed_release="$(version | rev | cut -f 2 -d ' ' | rev)"
+installed_release="$(version | rev | cut -s -f 2 -d ' ' | rev)"
 if [ -z "$*" ]
 then
   set_ssu=""
@@ -171,7 +172,7 @@ do
   fi
 done
 
-if mount -t btrfs | cut -f 3 -d ' ' | grep -q '^/$'
+if mount -t btrfs | cut -s -f 3 -d ' ' | grep -q '^/$'
 then
   btrfs_check="KO"
   if which btrfs-balancer > /dev/null 2>&1
@@ -208,7 +209,7 @@ then
     fi
   elif which btrfs > /dev/null 2>&1
   then
-    btrfs_allocation="$(btrfs filesystem df / | grep '^Data, ' | cut -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
+    btrfs_allocation="$(btrfs filesystem df / | grep '^Data, ' | cut -s -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
     btrfs_total="$(echo "$btrfs_allocation" | grep '^total=' | cut -f 2 -d '=')"
     btrfs_used="$(echo "$btrfs_allocation" | grep '^used=' | cut -f 2 -d '=')"
     if btrfs_unallocated="$(expr "$btrfs_total" '-' "$btrfs_used")"
@@ -233,7 +234,7 @@ then
     exit 5
   fi
 else
-  free_space="$(df -k / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -f 3 -d ' ' | rev)"
+  free_space="$(df -k / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)"
   if ! [ "$free_space" -ge "524288" ]
   then
     echo "Aborting: Less than 0.5 GiB ($free_space KiB) of free space on the root filesystem!"
@@ -495,7 +496,7 @@ if [ "$(compare_versions "$installed_release" "1.0.4.20"; echo "$?")" = "1" ] &&
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile"
-  for i in $(echo "$openrepos_repos" | cut -f 3 -d ' ')
+  for i in $(echo "$openrepos_repos" | cut -s -f 3 -d ' ')
   do
     echo "$i" | tee -a "$logfile"
     ssu dr "$i" 2>&1 | tee -a "$logfile"
