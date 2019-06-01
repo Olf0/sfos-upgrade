@@ -381,7 +381,7 @@ then
   echo
 fi
 
-compare_versions "$installed_release" "$upgrade_release"
+( compare_versions "$installed_release" "$upgrade_release" )
 case "$?" in
 0)
   echo -n "Notice: Do you want to ensure the completeness of this SailfishOS $upgrade_release installation?"
@@ -417,47 +417,47 @@ then
 fi
 
 emit_newline=""
-for i in \
+for user_unit in \
   osupdate-check.timer osupdate-check.service \
   btrfsstatuschecker.service btrfschecker.timer btrfschecker.service beforebtrfscheckertimer.service \
   batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service \
   osmscout-server.socket osmscout-server.service
 do
-  if systemctl --user status "$i" > /dev/null 2>&1
+  if systemctl --user status "$user_unit" > /dev/null 2>&1
   then
-    echo "- Stopping $i" | tee -a "$logfile"
-    if ! systemctl --user stop "$i" 2>&1 | tee -a "$logfile"
+    echo "- Stopping $user_unit" | tee -a "$logfile"
+    if ! systemctl --user stop "$user_unit" 2>&1 | tee -a "$logfile"
     then
-      echo -n "Notice: Failed to stop $i (user)!  Continue?" | tee -a "$logfile"
+      echo -n "Notice: Failed to stop $user_unit (user)!  Continue?" | tee -a "$logfile"
       askyes | tee -a "$logfile"
     fi
     emit_newline="y"
   fi
 done
-for i in \
+for system_unit in \
   cron.service \
   btrfs-balancer.timer btrfs-balance.service \
   aliendalvik.service alien-settings.service alien-service-manager.service
 do
-  if systemctl status "$i" > /dev/null 2>&1
+  if systemctl status "$system_unit" > /dev/null 2>&1
   then
-    echo "- Stopping $i" | tee -a "$logfile"
-    if ! systemctl stop "$i" 2>&1 | tee -a "$logfile"
+    echo "- Stopping $system_unit" | tee -a "$logfile"
+    if ! systemctl stop "$system_unit" 2>&1 | tee -a "$logfile"
     then
-      echo -n "Notice: Failed to stop $i (system)!  Continue?" | tee -a "$logfile"
+      echo -n "Notice: Failed to stop $system_unit (system)!  Continue?" | tee -a "$logfile"
       askyes | tee -a "$logfile"
     fi
     emit_newline="y"
   fi
 done
-for i in store-client harbour-storema harbour-warehou harbour-osmscou pkcon zypper rpm
+for process in store-client harbour-storema harbour-warehou harbour-osmscou pkcon zypper rpm
 do
-  if pgrep "$i" > /dev/null 2>&1
+  if pgrep "$process" > /dev/null 2>&1
   then
-    echo "- Stopping $i" | tee -a "$logfile"
-    if ! pkill "$i" 2>&1 | tee -a "$logfile"
+    echo "- Stopping $process" | tee -a "$logfile"
+    if ! pkill "$process" 2>&1 | tee -a "$logfile"
     then
-      echo -n "Notice: Failed to stop $i (process)!  Continue?" | tee -a "$logfile"
+      echo -n "Notice: Failed to stop $process (process)!  Continue?" | tee -a "$logfile"
       askyes | tee -a "$logfile"
     fi
     emit_newline="y"
@@ -490,14 +490,14 @@ then
 fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
-if [ "$(compare_versions "$installed_release" "1.0.4.20"; echo "$?")" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
+if [ "$( ( compare_versions "$installed_release" "1.0.4.20" ); echo "$?")" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile"
-  for i in $(echo "$openrepos_repos" | cut -s -f 3 -d ' ')
+  for open_repo in $(echo "$openrepos_repos" | cut -s -f 3 -d ' ')
   do
-    echo "$i" | tee -a "$logfile"
-    ssu dr "$i" 2>&1 | tee -a "$logfile"
+    echo "$open_repo" | tee -a "$logfile"
+    ssu dr "$open_repo" 2>&1 | tee -a "$logfile"
   done
   echo | tee -a "$logfile"
 fi
