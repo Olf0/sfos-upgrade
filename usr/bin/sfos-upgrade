@@ -28,20 +28,20 @@ export LC_COLLATE="POSIX"
 
 askyes ()
 {
-  echo -n " (Y/N) "
+  echo -n " (Y/N) " 1>&2
   read yn
   case "$yn" in
   y|Y)
     true
     ;;
   *)
-    echo "Aborted by user."
+    echo "Aborting upon user request." 1>&2
     exit 4
     ;;
   esac
   if [ -n "$*" ]
   then
-    echo "Notice: No parameters expected, but set: $*"
+    echo "Notice: No parameters expected, but \"$*\" set." 1>&2
     return 1
   else
     return 0
@@ -53,7 +53,7 @@ compare_versions ()
   # Returns 0 if A = B, 1 if A < B, 2 if A > B, 3 if incomparable, and 4 if not called with two parameters
   if [ "$#" -ne "2" ]
   then
-    echo "Error: Two parameters expected, but $# received!"
+    echo "Error: Two parameters expected, but $# received!" 1>&2
     return 4
   fi
   version_a="$1"
@@ -71,7 +71,7 @@ compare_versions ()
       then
         return 2
       else
-        echo "Error: Version strings are not comparable!"
+        echo "Error: Version strings are not comparable!" 1>&2
         return 3
       fi
     fi
@@ -82,7 +82,7 @@ compare_versions ()
 called="$(basename "$0")"
 if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
 then
-  echo "Aborting: $called must be started with root privileges."
+  echo "Aborting: $called must be started with root privileges." 1>&2
   exit 3
 fi
 
@@ -98,7 +98,7 @@ else
   shift
   if [ -n "$*" ]
   then
-    echo "No extra parameters expected, but set: $*"
+    echo "Aborting: No extra parameters expected, but \"$*\" set." 1>&2
     exit 3
   fi
   case "$upgrade_release" in
@@ -112,7 +112,7 @@ else
     exit 2
     ;;
   *)
-    echo "Aborting: Inorrect version format provided, $upgrade_release"
+    echo "Aborting: Inorrect version format \"$upgrade_release\" provided." 1>&2
     exit 3
     ;;
   esac
@@ -121,22 +121,22 @@ else
     echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${ssu_set})."
     echo "A possible reason for this is, that the \'sailfish-osupdateservice osupdate-check\' invoked by osupdate-check.service"
     echo "(which is regularly triggered by osupdate-check.timer) does more than just checking (in SailfishOS 3.0.2 and earlier)"
-    echo "(e.g., setting ssu to the recent release version or next stop release)."
-    echo "Never mind, the version for SSU will be set correctly again, later on."
-    echo
+    echo "(e.g., setting ssu to the recent release version or next stop release)." 1>&2
+    echo "Never mind, the version for SSU will be set correctly again, later on." 1>&2
+    echo 1>&2
   fi
 fi
 
 if ! sfos_releases="$(curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
 then
-  echo "Notice: Failed to retrieve list of SailfishOS releases, hence unable to check the validity of version number \"${upgrade_release}\"."
-  echo -n "Do you want to continue?"
+  echo "Notice: Failed to retrieve list of SailfishOS releases, hence unable to check the validity of version number \"${upgrade_release}\"." 1>&2
+  echo -n "Do you want to continue?" 1>&2
   askyes
   echo
 elif ! echo "$sfos_releases" | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
 then
-  echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!"
-  echo -n "Do you really want to continue?"
+  echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!" 1>&2
+  echo -n "Do you really want to continue?" 1>&2
   askyes
   echo
 fi
