@@ -43,7 +43,7 @@ askyes ()
   then
     echo "Notice: No parameters expected, but set: $*"
     return 1
-  else 
+  else
     return 0
   fi
 }
@@ -56,12 +56,12 @@ compare_versions ()
     echo "Error: Two parameters expected, but $# received!"
     return 4
   fi
-  version_a="$1" 
+  version_a="$1"
   version_b="$2"
   for i in 1 2 3 4
   do
     a_substring="$(echo "$version_a" | cut -s -f "$i" -d '.')"
-    b_substring="$(echo "$version_b" | cut -s -f "$i" -d '.')" 
+    b_substring="$(echo "$version_b" | cut -s -f "$i" -d '.')"
     if [ "$a_substrimg" = "$b_substring" ]
     then
       ret=0
@@ -139,8 +139,8 @@ then
 elif ! echo "$sfos_releases" | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
 then
   echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!"
-  echo -n "Do you really want to continue?" 
-  askyes 
+  echo -n "Do you really want to continue?"
+  askyes
   echo
 fi
 
@@ -161,7 +161,7 @@ do
     echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $i as a stop release!"
     if [ -n "$set_ssu" ]
     then echo "Thus upgrading to $i instead."
-    else 
+    else
      echo -n "Set SSU to $i before upgrading (a negative reply aborts)?"
      askyes
      set_ssu="yes"
@@ -394,7 +394,7 @@ case "$?" in
   ;;
 2)
   echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to $upgrade_release!"
-  echo -n "Do you really want to do that?" 
+  echo -n "Do you really want to do that?"
   ;;
 *)
   exit 42
