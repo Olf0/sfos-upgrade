@@ -62,7 +62,7 @@ compare_versions ()
   do
     a_substring="$(echo "$version_a" | cut -s -f "$i" -d '.')"
     b_substring="$(echo "$version_b" | cut -s -f "$i" -d '.')"
-    if [ "$a_substrimg" = "$b_substring" ]
+    if [ "$a_substring" = "$b_substring" ]
     then
       ret=0
     elif [ "$a_substring" -lt "$b_substring" ]
