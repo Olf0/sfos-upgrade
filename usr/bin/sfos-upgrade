@@ -3,7 +3,7 @@ set -o posix
 set -eufC
 
 # Switched to use bash since version 2.1 of this script (in its first two lines), as this ensures that -o pipefail
-# (in line 349) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
+# (in line 416) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
 # https://git.merproject.org/mer-core/bash ) and consequently in SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
@@ -387,6 +387,7 @@ fi
 compare_versions "$installed_release" "$upgrade_release"
 case "$?" in
 0)
+  echo -n "Notice: Do you want to ensure the completeness of this SailfishOS $upgrade_release installation?"
   ;;
 1)
   echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?"
