@@ -29,7 +29,7 @@ export LC_COLLATE="POSIX"
 
 askyes ()
 {
-  # All its output goes to STDOUT, but it exits directly.
+  # All its output goes to STDOUT, although it exits directly.
   echo -n " (Y/N) "
   read yn
   case "$yn" in
@@ -44,14 +44,14 @@ askyes ()
   if [ -n "$*" ]
   then
     echo "Notice: No parameters expected, but \"$*\" set."
-    exit 7
+    ret=2
   fi
   return "$ret"
 }
 
 compare_versions ()
 {
-  # Returns 0 if A = B, 1 if A < B, 2 if A > B, 3 if incomparable, and 4 if not called with two parameters.
+  # Returns 0 if A = B, 1 if A < B, 2 if A > B.
   # The result is solely provided in the return code, all error messages go directly to STDERR followed by exiting
   if [ "$#" -ne "2" ]
   then
@@ -72,9 +72,11 @@ compare_versions ()
     elif [ "$a_substring" -lt "$b_substring" ]
     then
       ret=1
+      break
     elif [ "$a_substring" -gt "$b_substring" ]
     then
       ret=2
+      break
     else
       echo "Aborting: Version strings are not comparable!" 1>&2
       exit 3
@@ -389,20 +391,28 @@ fi
 ( compare_versions "$installed_release" "$upgrade_release" )
 case "$?" in
 0)
-  echo -n "Notice: Do you want to ensure the completeness of this SailfishOS $upgrade_release installation?"
+  echo -n "Notice: Do you want to ensure this SailfishOS $upgrade_release installation to be complete and up to date?" 1>&2
   ;;
 1)
-  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?"
+  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?" 1>&2
   ;;
 2)
-  echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to $upgrade_release!"
-  echo -n "Do you really want to do that?"
+  if [ -z "$set_ssu" ]
+  then
+    echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}."
+    echo "This may make SailfishOS not working properly!"
+    echo -n "Do you really want to do that?" 1>&2
+  else
+    echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}!"
+    echo "Though this may make SailfishOS not working properly, a downgrade can be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter."
+    exit 3
+  fi
   ;;
 *)
   exit 42
   ;;
 esac
-askyes
+askyes 1>&2
 echo
 
 logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
