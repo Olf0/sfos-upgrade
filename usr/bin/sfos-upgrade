@@ -19,6 +19,7 @@ set -eufC
 #   4  Aborted upon user interaction
 #   5  Error while interacting with the OS (reading / writing from the filesystem, calling programs, etc.)
 #   6  Error while executing one of the preparatory steps for the upgrade proper
+#   7  Error internal to sfos-upgrade
 #  13  "Should never be reached" *) case #1
 #  23  "Should never be reached" *) case #2
 #  42  "Should never be reached" *) case #3
@@ -43,7 +44,7 @@ askyes ()
   if [ -n "$*" ]
   then
     echo "Notice: No parameters expected, but \"$*\" set."
-    exit 6
+    exit 7
   fi
   return "$ret"
 }
@@ -51,11 +52,11 @@ askyes ()
 compare_versions ()
 {
   # Returns 0 if A = B, 1 if A < B, 2 if A > B, 3 if incomparable, and 4 if not called with two parameters.
-  # All its output goes directly to STDERR, the result is provided in the return code (and it never exits).
+  # The result is solely provided in the return code, all error messages go directly to STDERR followed by exiting
   if [ "$#" -ne "2" ]
   then
-    echo "Error: Two parameters expected, but $# received!" 1>&2
-    return 4
+    echo "Aborting: Two parameters expected, but $# received!" 1>&2
+    exit 7
   fi
   version_a="$1"
   version_b="$2"
@@ -63,24 +64,24 @@ compare_versions ()
   field_count=4
   while [ "$field" -le "$field_count" ]
   do
-    a_substring="$(echo "$version_a" | cut -s -f "$dot" -d '.')"
-    b_substring="$(echo "$version_b" | cut -s -f "$dot" -d '.')"
-    if ! [ "$a_substring" = "$b_substring" ]
+    a_substring="$(echo "$version_a" | cut -s -f "$field" -d '.')"
+    b_substring="$(echo "$version_b" | cut -s -f "$field" -d '.')"
+    if [ "$a_substring" = "$b_substring" ]
     then
-      if [ "$a_substring" -lt "$b_substring" ]
-      then
-        return 1
-      elif [ "$a_substring" -gt "$b_substring" ]
-      then
-        return 2
-      else
-        echo "Error: Version strings are not comparable!" 1>&2
-        return 3
-      fi
+      ret=0
+    elif [ "$a_substring" -lt "$b_substring" ]
+    then
+      ret=1
+    elif [ "$a_substring" -gt "$b_substring" ]
+    then
+      ret=2
+    else
+      echo "Aborting: Version strings are not comparable!" 1>&2
+      exit 3
     fi
   field="$(expr "$field" '+' "1")"
   done
-  return 0
+  return "$ret"
 }
 
 called="$(basename "$0")"
@@ -368,7 +369,7 @@ ask)
   echo "upgrading." 1>&2
   echo "When a power loss occurs during the upgrade process, it will fail." 1>&2
   echo -n "Do you really want to continue?" 1>&2
-  askyes
+  askyes 1>&2
   echo 1>&2
   ;;
 ok)
