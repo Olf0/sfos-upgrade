@@ -43,7 +43,7 @@ askyes ()
   esac
   if [ -n "$*" ]
   then
-    echo "Notice: No parameters expected, but \"$*\" set."
+    echo "Warning: No parameters expected, but \"$*\" set."
     ret=2
   fi
   return "$ret"
@@ -168,7 +168,9 @@ do
     ( compare_versions "$stop_release" "$upgrade_release" )
     if [ "$?" = "2" ]
     then
-      echo "Aborting: "
+      echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which is \"across\" the stop release ${stop_release}!" 1>&2
+      echo "Doing that would likely make this SailfishOS installation unusable." 1>&2
+      exit 3
     fi
     ;;
   2)
@@ -520,7 +522,8 @@ then
 fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
-if [ "$( ( compare_versions "$installed_release" "1.0.4.20" ); echo "$?")" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
+( compare_versions "$installed_release" "1.0.4.20" )
+if [ "$?" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile" 1>&2
