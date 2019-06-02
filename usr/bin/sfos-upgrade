@@ -16,7 +16,7 @@ set -eufC
 #   1  A check failed
 #   2  Help called
 #   3  Called incorrectly (e.g., with wrong parameters)
-#   4  Aborted upon user interaction
+#   4  Aborted upon user request
 #   5  Error while interacting with the OS (reading / writing from the filesystem, calling programs, etc.)
 #   6  Error while executing one of the preparatory steps for the upgrade proper
 #   7  Error internal to sfos-upgrade
