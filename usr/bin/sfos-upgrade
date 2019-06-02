@@ -170,7 +170,7 @@ do
     then
       echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which is \"across\" the stop release ${stop_release}!" 1>&2
       echo "Doing that would likely make this SailfishOS installation unusable." 1>&2
-      echo "The only way to do this properly is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
+      echo "The only way to achieve this properly is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
       exit 3
     fi
     ;;
@@ -419,12 +419,12 @@ case "$?" in
   then
     echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}." 1>&2
     echo "This may make this SailfishOS installation not working properly!" 1>&2
-    echo "Note that the proper way to do this is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
+    echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
     echo -n "Do you really want to do that?" 1>&2
   else
     echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}!" 1>&2
     echo "Though this may make this SailfishOS installation not working properly, a downgrade can be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." 1>&2
-    echo "Note that the proper way to do this is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
+    echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
     exit 3
   fi
   ;;
