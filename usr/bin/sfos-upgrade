@@ -52,7 +52,7 @@ askyes ()
 compare_versions ()
 {
   # Returns 0 if A = B, 1 if A < B, 2 if A > B.
-  # The result is solely provided in the return code, all error messages go directly to STDERR followed by exiting.
+  # The result is solely provided per return code, all error messages go directly to STDERR followed by exiting.
   if [ "$#" -ne "2" ]
   then
     echo "Aborting: Two parameters expected, but $# received!" 1>&2
