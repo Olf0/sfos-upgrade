@@ -43,7 +43,7 @@ askyes ()
   esac
   if [ -n "$*" ]
   then
-    echo "Warning: No parameters expected, but \"$*\" set."
+    echo "Warning due to internal error: The function askyes expects no parameters, but was called with \"${*}\"."
     ret=2
   fi
   return "$ret"
@@ -55,7 +55,7 @@ compare_versions ()
   # The result is solely provided per return code, all error messages go directly to STDERR followed by exiting.
   if [ "$#" -ne "2" ]
   then
-    echo "Aborting: Two parameters expected, but $# received!" 1>&2
+    echo "Aborting due to internal error: The function compare_versions expects two parameters, but was called with ${#}!" 1>&2
     exit 7
   fi
   version_a="$1"
@@ -76,7 +76,7 @@ compare_versions ()
       ret=2
       break
     else
-      echo "Aborting: Version strings are not comparable!" 1>&2
+      echo "Aborting due to internal error in function compare_versions: Version strings \"${version_a}\" and \"${version_b}\" are not comparable!" 1>&2
       exit 3
     fi
   done
@@ -535,9 +535,7 @@ fi
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
 ( compare_versions "$installed_release" "1.0.4.20" )
 ret="$?"
-if [ "$ret" -gt "2" ]
-then exit "$ret"
-elif [ "$ret" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
+if [ "$ret" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile" 1>&2
@@ -547,12 +545,14 @@ then
     ssu dr "$open_repo" 2>&1 | tee -a "$logfile" 1>&2
   done
   echo | tee -a "$logfile" 1>&2
+elif [ "$ret" -gt "2" ]
+then exit "$ret"
 fi
 
 if [ -n "$set_ssu" ]
 then
   echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile" 1>&2
-  if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile" 1>&2
+  if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
   then
     echo "Aborting: Failed to set SSU to release ${upgrade_release}!" | tee -a "$logfile" 1>&2
     exit 6
