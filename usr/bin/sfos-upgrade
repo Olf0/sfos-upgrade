@@ -55,7 +55,7 @@ compare_versions ()
   # The result is solely provided per return code, all error messages go directly to STDERR followed by exiting.
   if [ "$#" -ne "2" ]
   then
-    echo "Aborting due to internal error: The function compare_versions expects two parameters, but was called with ${#}!" 1>&2
+    echo "Aborting due to internal error: The function compare_versions expects two parameters, but was called with ${#}!" >&2
     exit 7
   fi
   version_a="$1"
@@ -76,7 +76,7 @@ compare_versions ()
       ret=2
       break
     else
-      echo "Aborting due to internal error in function compare_versions: Version strings \"${version_a}\" and \"${version_b}\" are not comparable!" 1>&2
+      echo "Aborting due to internal error in function compare_versions: Version strings \"${version_a}\" and \"${version_b}\" are not comparable!" >&2
       exit 3
     fi
   done
@@ -88,7 +88,7 @@ compare_versions ()
 called="$(basename "$0")"
 if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
 then
-  echo "Aborting: $called must be started with root privileges." 1>&2
+  echo "Aborting: $called must be started with root privileges." >&2
   exit 3
 fi
 
@@ -104,7 +104,7 @@ else
   shift
   if [ -n "$*" ]
   then
-    echo "Aborting: No extra parameters expected, but \"${*}\" set." 1>&2
+    echo "Aborting: No extra parameters expected, but \"${*}\" set." >&2
     exit 3
   fi
   case "$upgrade_release" in
@@ -118,7 +118,7 @@ else
     exit 2
     ;;
   *)
-    echo "Aborting: Inorrect version format \"${upgrade_release}\" provided." 1>&2
+    echo "Aborting: Inorrect version format \"${upgrade_release}\" provided." >&2
     exit 3
     ;;
   esac
@@ -127,24 +127,24 @@ else
     echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${ssu_set})."
     echo "A possible reason for this is, that the \'sailfish-osupdateservice osupdate-check\' invoked by osupdate-check.service"
     echo "(which is regularly triggered by osupdate-check.timer) does more than just checking (in SailfishOS 3.0.2 and earlier)"
-    echo "(e.g., setting ssu to the recent release version or next stop release)." 1>&2
-    echo "Never mind, the version for SSU will be set correctly again, later on." 1>&2
-    echo 1>&2
+    echo "(e.g., setting ssu to the recent release version or next stop release)." >&2
+    echo "Never mind, the version for SSU will be set correctly again, later on." >&2
+    echo >&2
   fi
 fi
 
 if ! sfos_releases="$(curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
 then
-  echo "Notice: Failed to retrieve list of SailfishOS releases, hence unable to check the validity of version number \"${upgrade_release}\"." 1>&2
-  echo -n "Do you want to continue?" 1>&2
-  askyes 1>&2
-  echo 1>&2
+  echo "Notice: Failed to retrieve list of SailfishOS releases, hence unable to check the validity of version number \"${upgrade_release}\"." >&2
+  echo -n "Do you want to continue?" >&2
+  askyes >&2
+  echo >&2
 elif ! echo "$sfos_releases" | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
 then
-  echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!" 1>&2
-  echo -n "Do you really want to continue?" 1>&2
-  askyes 1>&2
-  echo 1>&2
+  echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!" >&2
+  echo -n "Do you really want to continue?" >&2
+  askyes >&2
+  echo >&2
 fi
 
 known_stop_releases="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5"
@@ -153,9 +153,9 @@ known_stop_releases="3.0.0.8\n2.2.0.29\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n
 # https://jolla.zendesk.com/hc/en-us/articles/201836347#4 into account.
 if ! recent_stop_releases="$(curl -sS https://jolla.zendesk.com/hc/en-us/articles/201836347 | sed -n '/id="4"/,/id="5"/p' | sed -n '/<ul>/,/<\/ul>/p' | sed -n '/<li>/,/<\/li>/p' | sed 's/<[^>]*>/\n/g' | tr -c '.0-9' '\n' | egrep '^[1-9]\.[0-9]\.[0-9]\.[0-9]$|^[1-9]\.[0-9]\.[0-9]\.[1-9][0-9]$')"
 then
-  echo "Warning: Failed to extract the current \"stop releases\" from https://jolla.zendesk.com/hc/en-us/articles/201836347#4" 1>&2
-  echo "Hence using an internal, potentially outdated list of stop releases instead." 1>&2
-  echo 1>&2
+  echo "Warning: Failed to extract the current \"stop releases\" from https://jolla.zendesk.com/hc/en-us/articles/201836347#4" >&2
+  echo "Hence using an internal, potentially outdated list of stop releases instead." >&2
+  echo >&2
 fi
 for stop_release in $(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$' | sort -u)
 do
@@ -167,9 +167,9 @@ do
     ret="$?"
     if [ "$ret" = "2" ]
     then
-      echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which is \"across\" the stop release ${stop_release}!" 1>&2
-      echo "Doing that would likely make this SailfishOS installation unusable." 1>&2
-      echo "The only way to achieve this properly is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
+      echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which is \"across\" the stop release ${stop_release}!" >&2
+      echo "Doing that would likely make this SailfishOS installation unusable." >&2
+      echo "The only way to achieve this properly is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
       exit 3
     elif [ "$ret" -gt "2" ]
     then exit "$ret"
@@ -180,16 +180,16 @@ do
     ret="$?"
     if [ "$ret" = "1" ]
     then
-      echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" 1>&2
+      echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" >&2
       if [ -n "$set_ssu" ]
-      then echo "Thus upgrading to $stop_release instead." 1>&2
+      then echo "Thus upgrading to $stop_release instead." >&2
       else
-       echo -n "Set SSU to $stop_release before upgrading (a negative reply aborts)?" 1>&2
-       askyes 1>&2
+       echo -n "Set SSU to $stop_release before upgrading (a negative reply aborts)?" >&2
+       askyes >&2
        set_ssu="yes"
       fi
       upgrade_release="$stop_release"
-      echo 1>&2
+      echo >&2
       break
     elif [ "$ret" -gt "2" ]
     then exit "$ret"
@@ -210,14 +210,14 @@ then
     btrfs_alloc_percent="$(echo "$btrfs_allocation" | grep '^Allocated: ' | cut -f 2 -d ' ')"
     if ! [ "$btrfs_alloc_percent" -lt "90" ]
     then
-      echo "Aborting: Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 90% or more!" 1>&2
-      echo "Please perform a btrfs-balancer run before retrying." 1>&2
+      echo "Aborting: Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 90% or more!" >&2
+      echo "Please perform a btrfs-balancer run before retrying." >&2
       exit 1
     elif ! [ "$btrfs_alloc_percent" -lt "85" ]
     then
-      echo "Warning: Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 85% or more!" 1>&2
-      echo "Please consider to abort and to perform a btrfs-balancer run before retrying." 1>&2
-      echo 1>&2
+      echo "Warning: Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 85% or more!" >&2
+      echo "Please consider to abort and to perform a btrfs-balancer run before retrying." >&2
+      echo >&2
     fi
     btrfs_total="$(echo "$btrfs_allocation" | grep '^Total: ' | cut -f 2 -d ' ')"
     btrfs_used="$(echo "$btrfs_allocation" | grep '^Used: ' | cut -f 2 -d ' ')"
@@ -226,14 +226,14 @@ then
       btrfs_check="ok"
       if ! [ "$btrfs_unallocated" -ge "1610612736" ]
       then
-        echo "Aborting: Less than 1.5 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!" 1>&2
-        echo "Please perform a btrfs-balancer run before retrying." 1>&2
+        echo "Aborting: Less than 1.5 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!" >&2
+        echo "Please perform a btrfs-balancer run before retrying." >&2
         exit 1
       elif ! [ "$btrfs_unallocated" -ge "2147483648" ]
       then
-        echo "Warning: Less than 2 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!" 1>&2
-        echo "Please consider to abort and to perform a btrfs-balancer run before retrying." 1>&2
-        echo 1>&2
+        echo "Warning: Less than 2 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!" >&2
+        echo "Please consider to abort and to perform a btrfs-balancer run before retrying." >&2
+        echo >&2
       fi
     fi
   elif which btrfs > /dev/null 2>&1
@@ -246,34 +246,34 @@ then
       btrfs_check="ok"
       if ! [ "$btrfs_unallocated" -ge "200" ]
       then
-        echo "Aborting: Less than 2 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!" 1>&2
-        echo "Please balance the btrfs root filesystem before retrying." 1>&2
+        echo "Aborting: Less than 2 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!" >&2
+        echo "Please balance the btrfs root filesystem before retrying." >&2
         exit 1
       elif ! [ "$btrfs_unallocated" -ge "250" ]
       then
-        echo "Warning: Less than 2.5 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!" 1>&2
-        echo "Please consider to abort and to balance the btrfs root filesystem before retrying." 1>&2
-        echo 1>&2
+        echo "Warning: Less than 2.5 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!" >&2
+        echo "Please consider to abort and to balance the btrfs root filesystem before retrying." >&2
+        echo >&2
       fi
     fi
   fi
   if [ "$btrfs_check" != "ok" ]
   then
-    echo "Aborting: Cannot properly determine allocation of the root filesystem (BTRFS)." 1>&2
+    echo "Aborting: Cannot properly determine allocation of the root filesystem (BTRFS)." >&2
     exit 5
   fi
 else
   free_space="$(df -k / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)"
   if ! [ "$free_space" -ge "524288" ]
   then
-    echo "Aborting: Less than 0.5 GiB ($free_space KiB) of free space on the root filesystem!" 1>&2
-    echo "Please clean up or enlarge the root filesystem before retrying." 1>&2
+    echo "Aborting: Less than 0.5 GiB ($free_space KiB) of free space on the root filesystem!" >&2
+    echo "Please clean up or enlarge the root filesystem before retrying." >&2
     exit 1
   elif ! [ "$free_space" -ge "786432" ]
   then
-    echo "Warning: Less than 0.75 GiB ($free_space KiB) of free space on the root filesystem!" 1>&2
-    echo "Please consider to abort and to clean up or enlarge the root filesystem before retrying." 1>&2
-    echo 1>&2
+    echo "Warning: Less than 0.75 GiB ($free_space KiB) of free space on the root filesystem!" >&2
+    echo "Please consider to abort and to clean up or enlarge the root filesystem before retrying." >&2
+    echo >&2
   fi
 fi
 
@@ -298,7 +298,7 @@ then
     ;;
   esac
 else
-  echo "Aborting: Failed to read battery information." 1>&2
+  echo "Aborting: Failed to read battery information." >&2
   exit 5
 fi
 battery_check="KO"
@@ -306,8 +306,8 @@ case "${POWER_SUPPLY_STATUS}-${power_supply_capacity_design}-$POWER_SUPPLY_CAPAC
 Charging-[0-9]*-*|Full-[0-9]*-*)
   if ! [ "$power_supply_capacity_design" -gt "18" ]
   then
-    echo "Warning: Battery is charged less than 18.5% (${power_supply_capacity_design}%) of its original design capacity!" 1>&2
-    echo -n "Continue charging before " 1>&2
+    echo "Warning: Battery is charged less than 18.5% (${power_supply_capacity_design}%) of its original design capacity!" >&2
+    echo -n "Continue charging before " >&2
     if [ -z "$set_ssu" ]
     then battery_check="ask"
     fi
@@ -315,32 +315,32 @@ Charging-[0-9]*-*|Full-[0-9]*-*)
     battery_check="ok"
     if ! [ "$power_supply_capacity_design" -gt "25" ]
     then
-      echo "Notice: Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity." 1>&2
-      echo "Please continue charging throughout the upgrade process!" 1>&2
-      echo 1>&2
+      echo "Notice: Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity." >&2
+      echo "Please continue charging throughout the upgrade process!" >&2
+      echo >&2
     fi
   fi
   ;;
 *-[0-9]*-*)
   if ! [ "$power_supply_capacity_design" -gt "25" ]
   then
-    echo "Warning: Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity!" 1>&2
-    echo -n "Plug in a charger before " 1>&2
+    echo "Warning: Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity!" >&2
+    echo -n "Plug in a charger before " >&2
   else
     battery_check="ok"
     if ! [ "$power_supply_capacity_design" -gt "37" ]
     then
-      echo "Notice: Battery is charged less than 37.5% (${power_supply_capacity_design}%) of its original design capacity." 1>&2
-      echo "Please plug in a charger before continuing." 1>&2
-      echo 1>&2
+      echo "Notice: Battery is charged less than 37.5% (${power_supply_capacity_design}%) of its original design capacity." >&2
+      echo "Please plug in a charger before continuing." >&2
+      echo >&2
     fi
   fi
   ;;
 Charging-*-[0-9]*|Full-*-[0-9]*)
   if ! [ "$POWER_SUPPLY_CAPACITY" -gt "25" ]
   then
-    echo "Warning: Battery is charged 25% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity!" 1>&2
-    echo -n "Continue charging before " 1>&2
+    echo "Warning: Battery is charged 25% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity!" >&2
+    echo -n "Continue charging before " >&2
     if [ -z "$set_ssu" ]
     then battery_check="ask"
     fi
@@ -348,37 +348,37 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
     battery_check="ok"
     if ! [ "$POWER_SUPPLY_CAPACITY" -gt "33" ]
     then
-      echo "Notice: Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity." 1>&2
-      echo "Please continue charging throughout the upgrade process!" 1>&2
-      echo 1>&2
+      echo "Notice: Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity." >&2
+      echo "Please continue charging throughout the upgrade process!" >&2
+      echo >&2
     fi
   fi
   ;;
 *-*-[0-9]*)
   if ! [ "$POWER_SUPPLY_CAPACITY" -gt "33" ]
   then
-    echo "Warning: Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity!" 1>&2
-    echo -n "Plug in a charger before " 1>&2
+    echo "Warning: Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity!" >&2
+    echo -n "Plug in a charger before " >&2
   else
     battery_check="ok"
     if ! [ "$POWER_SUPPLY_CAPACITY" -ge "50" ]
     then
-      echo "Notice: Battery is charged less than 50% (${POWER_SUPPLY_CAPACITY}%) of its capacity." 1>&2
-      echo "Please plug in a charger before continuing." 1>&2
-      echo 1>&2
+      echo "Notice: Battery is charged less than 50% (${POWER_SUPPLY_CAPACITY}%) of its capacity." >&2
+      echo "Please plug in a charger before continuing." >&2
+      echo >&2
     fi
   fi
   ;;
 ?*-*-*)
-  echo "Warning: Failed to determine battery charge!" 1>&2
-  echo "Check your device before " 1>&2
+  echo "Warning: Failed to determine battery charge!" >&2
+  echo "Check your device before " >&2
   if [ -z "$set_ssu" ]
   then battery_check="ask"
   fi
   ;;
 *-*-*)
-  echo "Warning: Failed to determine battery charging state!" 1>&2
-  echo "Check your device before " 1>&2
+  echo "Warning: Failed to determine battery charging state!" >&2
+  echo "Check your device before " >&2
   if [ -z "$set_ssu" ]
   then battery_check="ask"
   fi
@@ -389,15 +389,15 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
 esac
 case "$battery_check" in
 KO)
-  echo "retrying: aborting!" 1>&2
+  echo "retrying: aborting!" >&2
   exit 1
   ;;
 ask)
-  echo "upgrading." 1>&2
-  echo "When a power loss occurs during the upgrade process, it will fail." 1>&2
-  echo -n "Do you really want to continue?" 1>&2
-  askyes 1>&2
-  echo 1>&2
+  echo "upgrading." >&2
+  echo "When a power loss occurs during the upgrade process, it will fail." >&2
+  echo -n "Do you really want to continue?" >&2
+  askyes >&2
+  echo >&2
   ;;
 ok)
   true
@@ -409,30 +409,30 @@ esac
 
 if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt "5" ] 2> /dev/null
 then
-  echo "Notice: Mind that $called is best run on a freshly rebooted device." 1>&2
-  echo 1>&2
+  echo "Notice: Mind that $called is best run on a freshly rebooted device." >&2
+  echo >&2
 fi
 
 ( compare_versions "$installed_release" "$upgrade_release" )
 ret="$?"
 case "$ret" in
 0)
-  echo -n "Notice: Do you want to ensure this SailfishOS $upgrade_release installation to be complete and up to date?" 1>&2
+  echo -n "Notice: Do you want to ensure this SailfishOS $upgrade_release installation to be complete and up to date?" >&2
   ;;
 1)
-  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to ${upgrade_release}?" 1>&2
+  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to ${upgrade_release}?" >&2
   ;;
 2)
   if [ -z "$set_ssu" ]
   then
-    echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}." 1>&2
-    echo "This may make this SailfishOS installation not working properly!" 1>&2
-    echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
-    echo -n "Do you really want to do that?" 1>&2
+    echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}." >&2
+    echo "This may make this SailfishOS installation not working properly!" >&2
+    echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
+    echo -n "Do you really want to do that?" >&2
   else
-    echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}!" 1>&2
-    echo "Though this may make this SailfishOS installation not working properly, a downgrade can be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." 1>&2
-    echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." 1>&2
+    echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}!" >&2
+    echo "Though this may make this SailfishOS installation not working properly, a downgrade can be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." >&2
+    echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     exit 3
   fi
   ;;
@@ -440,23 +440,23 @@ case "$ret" in
   exit "$ret"
   ;;
 esac
-askyes 1>&2
-echo 1>&2
+askyes >&2
+echo >&2
 
 logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
 if ! touch "$logfile"
 then
-  echo "Aborting: Failed to create logfile!" 1>&2
+  echo "Aborting: Failed to create logfile!" >&2
   exit 5
 fi
 
-echo "Notice: For troubleshooting issues with the upgrade proper, please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474" | tee -a "$logfile" 1>&2
-echo | tee -a "$logfile" 1>&2
+echo "Notice: For troubleshooting issues with the upgrade proper, please consult https://jolla.zendesk.com/hc/en-us/articles/360005795474" | tee -a "$logfile" >&2
+echo | tee -a "$logfile" >&2
 
 if ! set -o pipefail
 then
-  echo "Warning: Technically unable to abort, if one of the following, preparatory steps for the upgrade proper fails." | tee -a "$logfile" 1>&2
-  echo | tee -a "$logfile" 1>&2
+  echo "Warning: Technically unable to abort, if one of the following, preparatory steps for the upgrade proper fails." | tee -a "$logfile" >&2
+  echo | tee -a "$logfile" >&2
 fi
 
 emit_newline=""
@@ -468,11 +468,11 @@ for user_unit in \
 do
   if systemctl --user status "$user_unit" > /dev/null 2>&1
   then
-    echo "- Stopping $user_unit" | tee -a "$logfile" 1>&2
-    if ! systemctl --user stop "$user_unit" 2>&1 | tee -a "$logfile" 1>&2
+    echo "- Stopping $user_unit" | tee -a "$logfile" >&2
+    if ! systemctl --user stop "$user_unit" 2>&1 | tee -a "$logfile" >&2
     then
-      echo -n "Notice: Failed to stop $user_unit (user)!  Continue?" | tee -a "$logfile" 1>&2
-      askyes | tee -a "$logfile" 1>&2
+      echo -n "Notice: Failed to stop $user_unit (user)!  Continue?" | tee -a "$logfile" >&2
+      askyes | tee -a "$logfile" >&2
     fi
     emit_newline="y"
   fi
@@ -484,11 +484,11 @@ for system_unit in \
 do
   if systemctl status "$system_unit" > /dev/null 2>&1
   then
-    echo "- Stopping $system_unit" | tee -a "$logfile" 1>&2
-    if ! systemctl stop "$system_unit" 2>&1 | tee -a "$logfile" 1>&2
+    echo "- Stopping $system_unit" | tee -a "$logfile" >&2
+    if ! systemctl stop "$system_unit" 2>&1 | tee -a "$logfile" >&2
     then
-      echo -n "Notice: Failed to stop $system_unit (system)!  Continue?" | tee -a "$logfile" 1>&2
-      askyes | tee -a "$logfile" 1>&2
+      echo -n "Notice: Failed to stop $system_unit (system)!  Continue?" | tee -a "$logfile" >&2
+      askyes | tee -a "$logfile" >&2
     fi
     emit_newline="y"
   fi
@@ -497,39 +497,39 @@ for process in store-client harbour-storema harbour-warehou harbour-osmscou pkco
 do
   if pgrep "$process" > /dev/null 2>&1
   then
-    echo "- Stopping $process" | tee -a "$logfile" 1>&2
-    if ! pkill "$process" 2>&1 | tee -a "$logfile" 1>&2
+    echo "- Stopping $process" | tee -a "$logfile" >&2
+    if ! pkill "$process" 2>&1 | tee -a "$logfile" >&2
     then
-      echo -n "Notice: Failed to stop $process (process)!  Continue?" | tee -a "$logfile" 1>&2
-      askyes | tee -a "$logfile" 1>&2
+      echo -n "Notice: Failed to stop $process (process)!  Continue?" | tee -a "$logfile" >&2
+      askyes | tee -a "$logfile" >&2
     fi
     emit_newline="y"
   fi
 done
 if [ -n "$emit_newline" ]
-then echo | tee -a "$logfile" 1>&2
+then echo | tee -a "$logfile" >&2
 fi
 
 if [ -x /usr/share/harbour-themepacksupport/ocr.sh ]
 then
-  echo "- Disabling Theme Pack Support." | tee -a "$logfile" 1>&2
-  if ! /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$logfile" 1>&2
+  echo "- Disabling Theme Pack Support." | tee -a "$logfile" >&2
+  if ! /usr/share/harbour-themepacksupport/ocr.sh 2>&1 | tee -a "$logfile" >&2
   then
-    echo "Aborting: Failed to disable Theme Pack Support!" | tee -a "$logfile" 1>&2
+    echo "Aborting: Failed to disable Theme Pack Support!" | tee -a "$logfile" >&2
     exit 6
   fi
-  echo | tee -a "$logfile" 1>&2
+  echo | tee -a "$logfile" >&2
 fi
 
 if which patchmanager > /dev/null 2>&1
 then
-  echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile" 1>&2
+  echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile" >&2
   if ! patchmanager --unapply-all >> "$logfile" 2>&1
   then
-    echo "Aborting: Failed to unapply Patchmanager-Patches!" | tee -a "$logfile" 1>&2
+    echo "Aborting: Failed to unapply Patchmanager-Patches!" | tee -a "$logfile" >&2
     exit 6
   fi
-  echo | tee -a "$logfile" 1>&2
+  echo | tee -a "$logfile" >&2
 fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
@@ -538,36 +538,36 @@ ret="$?"
 if [ "$ret" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
-  echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile" 1>&2
+  echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile" >&2
   for open_repo in $(echo "$openrepos_repos" | cut -s -f 3 -d ' ')
   do
-    echo "$open_repo" | tee -a "$logfile" 1>&2
-    ssu dr "$open_repo" 2>&1 | tee -a "$logfile" 1>&2
+    echo "$open_repo" | tee -a "$logfile" >&2
+    ssu dr "$open_repo" 2>&1 | tee -a "$logfile" >&2
   done
-  echo | tee -a "$logfile" 1>&2
+  echo | tee -a "$logfile" >&2
 elif [ "$ret" -gt "2" ]
 then exit "$ret"
 fi
 
 if [ -n "$set_ssu" ]
 then
-  echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile" 1>&2
+  echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile" >&2
   if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
   then
-    echo "Aborting: Failed to set SSU to release ${upgrade_release}!" | tee -a "$logfile" 1>&2
+    echo "Aborting: Failed to set SSU to release ${upgrade_release}!" | tee -a "$logfile" >&2
     exit 6
   fi
-  echo | tee -a "$logfile" 1>&2
+  echo | tee -a "$logfile" >&2
 fi
 
-echo "- Fetching and installing the SailfishOS upgrade from $installed_release to $upgrade_release (this may take a while):" | tee -a "$logfile" 1>&2
+echo "- Fetching and installing the SailfishOS upgrade from $installed_release to $upgrade_release (this may take a while):" | tee -a "$logfile" >&2
 if ! version --dup 2>&1 | tee -a "$logfile"
 then
-  echo | tee -a "$logfile" 1>&2
-  echo "Aborting: Failed to fetch or install the SailfishOS upgrade!" | tee -a "$logfile" 1>&2
+  echo | tee -a "$logfile" >&2
+  echo "Aborting: Failed to fetch or install the SailfishOS upgrade!" | tee -a "$logfile" >&2
   exit 6
 fi
 
-echo "Notice: After rebooting, do not miss to run post_$called" 1>&2
+echo "Notice: After rebooting, do not miss to run post_$called" >&2
 exit 0
 
