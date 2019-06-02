@@ -104,7 +104,7 @@ else
   shift
   if [ -n "$*" ]
   then
-    echo "Aborting: No extra parameters expected, but \"${*}\" set." >&2
+    echo "Aborting: No extra parameters expected, but called with \"${*}\"." >&2
     exit 3
   fi
   case "$upgrade_release" in
@@ -124,10 +124,8 @@ else
   esac
   if [ "$ssu_set" != "$installed_release" ]
   then
-    echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${ssu_set})."
-    echo "A possible reason for this is, that the \'sailfish-osupdateservice osupdate-check\' invoked by osupdate-check.service"
-    echo "(which is regularly triggered by osupdate-check.timer) does more than just checking (in SailfishOS 3.0.2 and earlier)"
-    echo "(e.g., setting ssu to the recent release version or next stop release)." >&2
+    echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${ssu_set})." >&2
+    echo "A possible reason for this is, that the \'sailfish-osupdateservice osupdate-check\' invoked by osupdate-check.service (which is regularly triggered by osupdate-check.timer) does more than just checking (in SailfishOS 3.0.2 and earlier): E.g., setting ssu to the recent release version or next stop release." >&2
     echo "Never mind, the version for SSU will be set correctly again, later on." >&2
     echo >&2
   fi
