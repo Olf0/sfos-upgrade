@@ -28,6 +28,7 @@ export LC_COLLATE="POSIX"
 
 askyes ()
 {
+  # All its output goes to STDOUT, but it exits directly.
   echo -n " (Y/N) "
   read yn
   case "$yn" in
@@ -42,14 +43,15 @@ askyes ()
   if [ -n "$*" ]
   then
     echo "Notice: No parameters expected, but \"$*\" set."
-    ret=2
+    exit 6
   fi
   return "$ret"
 }
 
 compare_versions ()
 {
-  # Returns 0 if A = B, 1 if A < B, 2 if A > B, 3 if incomparable, and 4 if not called with two parameters
+  # Returns 0 if A = B, 1 if A < B, 2 if A > B, 3 if incomparable, and 4 if not called with two parameters.
+  # All its output goes directly to STDERR, the result is provided in the return code (and it never exits).
   if [ "$#" -ne "2" ]
   then
     echo "Error: Two parameters expected, but $# received!" 1>&2
@@ -57,7 +59,9 @@ compare_versions ()
   fi
   version_a="$1"
   version_b="$2"
-  for dot in 1 2 3 4
+  field=1
+  field_count=4
+  while [ "$field" -le "$field_count" ]
   do
     a_substring="$(echo "$version_a" | cut -s -f "$dot" -d '.')"
     b_substring="$(echo "$version_b" | cut -s -f "$dot" -d '.')"
@@ -74,6 +78,7 @@ compare_versions ()
         return 3
       fi
     fi
+  field="$(expr "$field" '+' "1")"
   done
   return 0
 }
