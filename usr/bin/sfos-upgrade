@@ -420,7 +420,7 @@ case "$ret" in
   echo -n "Notice: Do you want to ensure this SailfishOS $upgrade_release installation to be complete and up to date?" 1>&2
   ;;
 1)
-  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to $upgrade_release?" 1>&2
+  echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to ${upgrade_release}?" 1>&2
   ;;
 2)
   if [ -z "$set_ssu" ]
