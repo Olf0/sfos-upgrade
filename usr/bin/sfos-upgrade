@@ -82,7 +82,7 @@ compare_versions ()
         break
       fi
     done
-  echo "$field"
+    echo "$field"
   fi
   return "$ret"
 }
