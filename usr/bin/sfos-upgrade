@@ -122,13 +122,30 @@ else
     exit 3
     ;;
   esac
-  if [ "$ssu_set" != "$installed_release" ]
-  then
-    echo "Notice: The installed version $installed_release differs from the one currently set for SSU (${ssu_set})." >&2
+  ( compare_versions "$installed_release" "$ssu_set" )
+  ret="$?"
+  case "$ret" in
+  0)
+    true
+    ;;
+  1)
+    echo "Notice: The installed version $installed_release is smaller than the one currently set for SSU (${ssu_set})." >&2
     echo "A possible reason for this is, that the \'sailfish-osupdateservice osupdate-check\' invoked by osupdate-check.service (which is regularly triggered by osupdate-check.timer) does more than just checking (in SailfishOS 3.0.2 and earlier): E.g., setting ssu to the recent release version or next stop release." >&2
     echo "Never mind, the version for SSU will be set correctly again, later on." >&2
     echo >&2
-  fi
+    ;;
+  2)
+    echo "Warning: The installed version $installed_release is greater than the one currently set for SSU (${ssu_set})." >&2
+    echo "This is quite unusual!" >&2
+    echo "Nevertheless, the version for SSU will be set correctly again, later on." >&2
+    echo -n "Do you want to continue?" >2&
+    askyes >2&
+    echo >&2
+    ;;
+  *)
+    exit "$ret"
+    ;;
+  esac
 fi
 
 if ! sfos_releases="$(curl -sS https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
