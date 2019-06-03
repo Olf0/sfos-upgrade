@@ -55,7 +55,7 @@ compare_versions ()
   # The result is solely provided per return code, all error messages go directly to STDERR.
   if [ "$#" != "2" ]
   then
-    echo "Aborting due to internal error: The function compare_versions expects two parameters, but was called with ${#}!" >&2
+    echo "Aborting due to internal error: The function compare_versions expects 2 parameters, but was called with ${#}!" >&2
     ret=7
   else
     version_a="$1"
