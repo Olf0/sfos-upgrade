@@ -181,8 +181,9 @@ then
 fi
 for stop_release in $(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$' | sort -u)
 do
-  field="$(( compare_versions "$stop_release" "$installed_release" ); ret="$?")"
-  case "${ret}-$field" in
+  ( compare_versions "$stop_release" "$installed_release" ) > /dev/null
+  ret="$?"
+  case "$ret" in
   [01])
     field="$(( compare_versions "$stop_release" "$upgrade_release" ); ret="$?")"
     # A general downgrade check is performed later; this solely deals with downgrading "below" or "across" stop releases.
@@ -204,16 +205,16 @@ do
       exit 3
       ;;
     *)
+      echo "Comparing versions in \"stop release\" check failed."
       exit "$ret"
       ;;
     esac
     ;;
-
   2-?)
     ( compare_versions "$stop_release" "$upgrade_release" ) > /dev/null
     ret="$?"
-    if [ "$ret" = "1" ]
-    then
+    case "$ret" in
+    1)
       echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" >&2
       if [ -n "$set_ssu" ]
       then echo "Thus upgrading to $stop_release instead." >&2
@@ -225,12 +226,18 @@ do
       upgrade_release="$stop_release"
       echo >&2
       break
-    elif [ "$ret" -gt "2" ]
-    then exit "$ret"
-    fi
+      ;;
+    [02])
+      break
+      ;;
+    *)
+      echo "Comparing versions in \"stop release\" check failed."
+      exit "$ret"
+      ;;
+    esac
     ;;
   *)
-    echo "Comparing versions in \"stop release\" check failed!"
+    echo "Comparing versions in \"stop release\" check failed."
     exit "$ret"
     ;;
   esac
