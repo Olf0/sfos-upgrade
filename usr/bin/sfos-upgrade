@@ -186,14 +186,14 @@ do
   case "$ret" in
   [01])
     field="$(( compare_versions "$stop_release" "$upgrade_release" ); ret="$?")"
-    # A general downgrade check is performed later; this solely deals with downgrading "below" or "across" stop releases.
+    # A general downgrade check is performed later; this solely deals with downgrading "below" stop releases.
     case "${ret}-$field" in
     [01]-?)
       true
       ;;
     2-4)
       echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which downgrades \"below\" the stop release $stop_release." >&2
-      echo "While downgrading between \"point releases\" seems to be generally feasible, doing so \"across\" or \"below\" a stop release bears the little extra danger of the changes making it a stop release not all being introduced with SailfishOS $(echo "$stop_release" | cut -f -3 -d '.').0 (e.g. with $stop_release and thus potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
+      echo "While downgrading between \"point releases\" seems to be generally feasible, doing so \"below\" a stop release bears the little extra danger of the changes making it a stop release not all being introduced with SailfishOS $(echo "$stop_release" | cut -f -3 -d '.').0 (e.g. with $stop_release and thus potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
       echo "The only absolutely safe way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
       echo >&2
       break
@@ -205,7 +205,7 @@ do
       exit 3
       ;;
     *)
-      echo "Comparing versions in \"stop release\" check failed."
+      echo "Comparing versions in \"stop releases\" check failed."
       exit "$ret"
       ;;
     esac
@@ -231,13 +231,13 @@ do
       break
       ;;
     *)
-      echo "Comparing versions in \"stop release\" check failed."
+      echo "Comparing versions in \"stop releases\" check failed."
       exit "$ret"
       ;;
     esac
     ;;
   *)
-    echo "Comparing versions in \"stop release\" check failed."
+    echo "Comparing versions in \"stop releases\" check failed."
     exit "$ret"
     ;;
   esac
