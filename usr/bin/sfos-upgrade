@@ -205,7 +205,7 @@ do
       exit 3
       ;;
     *)
-      echo "Comparing versions in \"stop releases\" check failed."
+      echo "Comparing versions in \"stop releases\" check failed." >&2
       exit "$ret"
       ;;
     esac
@@ -232,13 +232,13 @@ do
       break
       ;;
     *)
-      echo "Comparing versions in \"stop releases\" check failed."
+      echo "Comparing versions in \"stop releases\" check failed." >&2
       exit "$ret"
       ;;
     esac
     ;;
   *)
-    echo "Comparing versions in \"stop releases\" check failed."
+    echo "Comparing versions in \"stop releases\" check failed." >&2
     exit "$ret"
     ;;
   esac
@@ -506,6 +506,7 @@ case "$ret" in
   esac
   ;;
 *)
+  echo "Comparing versions failed, when asking user to finally perform up-, same- or down-grading SailfishOS." >&2
   exit "$ret"
   ;;
 esac
@@ -615,7 +616,9 @@ then
   done
   echo | tee -a "$logfile" >&2
 elif [ "$ret" -gt "2" ]
-then exit "$ret"
+then
+  echo "Comparing versions in \"upgrading from below SailfishOS 1.0.4.20\" check failed." >&2
+  exit "$ret"
 fi
 
 if [ -n "$set_ssu" ]
