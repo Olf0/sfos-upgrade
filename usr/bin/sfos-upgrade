@@ -175,7 +175,7 @@ known_stop_releases="3.0.0.8\n2.2.0.29\n2.0.5.6\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1
 # https://together.jolla.com/question/207172/downgrade-sailfish-os/?answer=207190#post-id-207190
 # Also added 1.0.0.5 as a precaution, because it seems to be the oldest widely deployed SailfishOS
 # release (i.e., *on* and hence also *in* the "factory images" of the first commercially distributed
-# Jolla 1 phones), thus being the oldest widely tested one to upgrade from (and Jolla may assume
+# Jolla 1 phones), thus being the oldest one widely tested to upgrade from (and Jolla may assume
 # only early developers to have ever obtained an earlier release on their Jolla 1 phones, hence
 # not mentioning 1.0.0.5 in Jolla's "official" guides as a stop release).
 if ! recent_stop_releases="$(curl -sS https://jolla.zendesk.com/hc/en-us/articles/201836347 | sed -n '/id="4"/,/id="5"/p' | sed -n '/<ul>/,/<\/ul>/p' | sed -n '/<li>/,/<\/li>/p' | sed 's/<[^>]*>/\n/g' | tr -c '.0-9' '\n' | egrep '^[1-9]\.[0-9]\.[0-9]\.[0-9]$|^[1-9]\.[0-9]\.[0-9]\.[1-9][0-9]$')"
