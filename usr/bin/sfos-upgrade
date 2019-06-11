@@ -207,38 +207,38 @@ then
         ( compare_versions "$stop_release" "$upgrade_release" ) > /dev/null
         ret="$?"
         case "$ret" in
-          1)
-            echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" >&2
-            if [ -n "$set_ssu" ]
-            then echo "Thus upgrading to $stop_release instead." >&2
+        1)
+          echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" >&2
+          if [ -n "$set_ssu" ]
+          then echo "Thus upgrading to $stop_release instead." >&2
             else
-              echo -n "Set SSU to $stop_release before upgrading (a negative reply aborts)?" >&2
-              askyes >&2
-              set_ssu="yes"
-            fi
-            upgrade_release="$stop_release"
-            echo >&2
-            break
-            ;;
-          [02]) # A general downgrade check is performed later; this solely deals with downgrading "below" stop releases (here: "or not").
-            break
-            ;;
-          *)
-            echo "Comparing versions in \"stop releases\" check failed." >&2
-            exit "$ret"
-            ;;
-          esac
+            echo -n "Set SSU to $stop_release before upgrading (a negative reply aborts)?" >&2
+            askyes >&2
+            set_ssu="yes"
+          fi
+          upgrade_release="$stop_release"
+          echo >&2
+          break
+          ;;
+        [02]) # A general downgrade check is performed later; this solely deals with downgrading "below" stop releases (here: "or not").
+          break
           ;;
         *)
           echo "Comparing versions in \"stop releases\" check failed." >&2
           exit "$ret"
           ;;
         esac
-      done
-      ;;
-    2)  # Downgrade
-      for stop_release in $(echo "$all_stop_releases" | sort -r)
-      do
+        ;;
+      *)
+        echo "Comparing versions in \"stop releases\" check failed." >&2
+        exit "$ret"
+        ;;
+      esac
+    done
+    ;;
+  2)  # Downgrade
+    for stop_release in $(echo "$all_stop_releases" | sort -r)
+    do
       ( compare_versions "$stop_release" "$upgrade_release" ) > /dev/null
       ret="$?"
       case "$ret" in
