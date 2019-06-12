@@ -29,9 +29,15 @@ export LC_COLLATE="POSIX"
 
 askyes ()
 {
-  # All its output goes to STDOUT, although it exits directly.
+  # All its regular output goes to STDOUT (only warnings go to STDERR)
+  # and it exits (instead of returning) when the user asks to abort.
   echo -n " (Y/N) "
   read yn
+  if [ -n "$*" ]
+  then 
+    echo "Warning due to internal error: The function askyes expects no parameters, but was called with \"${*}\"." >&2 
+    retc=2 
+  fi
   case "$yn" in
   y|Y)
     retc=0
@@ -41,11 +47,11 @@ askyes ()
     exit 4
     ;;
   esac
-  if [ -n "$*" ]
-  then
-    echo "Warning due to internal error: The function askyes expects no parameters, but was called with \"${*}\"."
-    retc=2
-  fi
+
+
+
+
+
   return "$retc"
 }
 
@@ -398,7 +404,7 @@ POWER_SUPPLY_CHARGE_FULL_DESIGN=""
 battery_info=""
 for i in /sys/class/power_supply/battery /sys/class/power_supply/*_battery
 do
-  if . ${i}/uevent > /dev/null 2>&1
+  if { . ${i}/uevent; } > /dev/null 2>&1
   then
     battery_info="sourced"
     break
