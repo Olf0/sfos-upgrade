@@ -129,8 +129,8 @@ else
     ;;
   esac
   ( compare_versions "$installed_release" "$ssu_set" ) > /dev/null
-  ret="$?"
-  case "$ret" in
+  ret_s="$?"
+  case "$ret_s" in
   0)
     true
     ;;
@@ -151,7 +151,7 @@ else
     ;;
   *)
     echo "Comparing versions in check for the installed version differing from the one currently set for SSU failed." >&2
-    exit "$ret"
+    exit "$ret_s"
     ;;
   esac
 fi
@@ -537,8 +537,8 @@ then
   echo >&2
 fi
 
-field="$( ( compare_versions "$installed_release" "$upgrade_release" ); ret="$?")"
-case "$ret" in
+field_u="$( ( compare_versions "$installed_release" "$upgrade_release" ); ret_u="$?")"
+case "$ret_u" in
 0)
   echo -n "Notice: Do you want to ensure this SailfishOS $upgrade_release installation to be complete and up to date?" >&2
   ;;
@@ -546,7 +546,7 @@ case "$ret" in
   echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to ${upgrade_release}?" >&2
   ;;
 2)
-  case "$field$set_ssu" in
+  case "$field_u$set_ssu" in
   4)
     echo "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     echo "Nevertheless this may make this SailfishOS installation not working properly." >&2
@@ -579,7 +579,7 @@ case "$ret" in
   ;;
 *)
   echo "Comparing versions failed, when asking user to finally perform up-, same- or down-grading SailfishOS." >&2
-  exit "$ret"
+  exit "$ret_u"
   ;;
 esac
 askyes >&2
@@ -676,8 +676,8 @@ fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
 ( compare_versions "$installed_release" "1.0.4.20" ) > /dev/null
-ret="$?"
-if [ "$ret" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
+ret_o="$?"
+if [ "$ret_o" = "1" ] && openrepos_repos="$(ssu lr | fgrep 'openrepo')" && true
 then
   # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
   echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile" >&2
@@ -687,10 +687,10 @@ then
     ssu dr "$open_repo" 2>&1 | tee -a "$logfile" >&2
   done
   echo | tee -a "$logfile" >&2
-elif [ "$ret" -gt "2" ]
+elif [ "$ret_o" -gt "2" ]
 then
   echo "Comparing versions in \"upgrading from below SailfishOS 1.0.4.20\" check failed." >&2
-  exit "$ret"
+  exit "$ret_o"
 fi
 
 if [ -n "$set_ssu" ]
