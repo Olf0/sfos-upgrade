@@ -23,6 +23,7 @@ Safety measures:
 * Terminate running processes, which may disturb upgrading SailfishOS (since v2.7).
 * Disable all OpenRepos' repositories, when upgrading from a SailfishOS version below 1.0.4 (since v0.4).
 * Emit a warning when downgrading.
+* Prevent downgrades, which would likely break the SailfishOS installation (since v3).
 <br />
 
 Usage (as root user):
