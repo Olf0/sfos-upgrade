@@ -34,7 +34,7 @@ askyes ()
   echo -n " (Y/N) "
   read yn
   if [ -n "$*" ]
-  then 
+  then
     echo "Warning due to internal error: The function askyes expects no parameters, but was called with \"${*}\"." >&2
     retc=3
   fi
