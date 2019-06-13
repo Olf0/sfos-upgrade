@@ -548,22 +548,22 @@ l?)
   echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to ${upgrade_release}?" >&2
   ;;
 g?)
-  case "$field_u$set_ssu" in
-  4)
+  case "$compar_u$set_ssu" in
+  g4)
     echo "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     echo "Nevertheless this may make this SailfishOS installation not working properly." >&2
     echo "Note that the "official" (i.e. approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     echo "Though you can try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     echo -n "Do you want to do that?" >&2
     ;;
-  4?*)
+  g4?*)
     echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     echo "Nevertheless this may make this SailfishOS installation not working properly." >&2
     echo "Note that the "official" (i.e. approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     echo "Though you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     echo -n "Do you really want to do that?" >&2
     ;;
-  ?)
+  g?)
     echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their minor version." >&2
     echo "This might make this SailfishOS installation not working properly!" >&2
     echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
