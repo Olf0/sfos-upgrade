@@ -3,7 +3,7 @@ set -o posix
 set -eufC
 
 # Switched to use bash since version 2.1 of this script (in its first two lines), as this ensures that -o pipefail
-# (in line 604) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
+# (in line 606) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
 # https://git.merproject.org/mer-core/bash ) and consequently in SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
@@ -53,7 +53,7 @@ askyes ()
 compare_versions ()
 {
   # Emits "e" (equal) if A = B, "l" (lesser) if A < B, "g" (greater) if A > B to STDOUT or "x" if A and B are not comparable, immediately
-  # followed by the number of the first field {1..4} from the left, in which the a mismatch occurred (hence always "e4" for a match).
+  # followed by the number of the first field {1..4} from the left, in which the mismatch occurred (hence always "e4" for a match).
   # Returns 1 if version strings are not comparable and 3 if not called with two arguments.
   if [ "$#" != "2" ]
   then
