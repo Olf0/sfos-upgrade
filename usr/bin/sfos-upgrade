@@ -36,7 +36,7 @@ askyes ()
   if [ -n "$*" ]
   then 
     echo "Warning due to internal error: The function askyes expects no parameters, but was called with \"${*}\"." >&2
-    retc=2 
+    retc=3
   fi
   case "$yn" in
   y|Y)
@@ -52,36 +52,38 @@ askyes ()
 
 compare_versions ()
 {
-  # Emits "e" (equal) if A = B, "l" (lesser) if A < B, "g" (greater) if A > B to STDOUT, immediately followed by the
-  # number of the first field {1..4} from the left, in which the a mismatch occurred (hence always "e4" for a match).
-  # Returns 3 if version strings are not comparable and 7 if not called with two arguments.
+  # Emits "e" (equal) if A = B, "l" (lesser) if A < B, "g" (greater) if A > B to STDOUT or "x" if A and B are not comparable, immediately
+  # followed by the number of the first field {1..4} from the left, in which the a mismatch occurred (hence always "e4" for a match).
+  # Returns 1 if version strings are not comparable and 3 if not called with two arguments.
   if [ "$#" != "2" ]
   then
-    echo "Aborting due to internal error: The function compare_versions expects 2 parameters, but was called with ${#}!" >&2
-    retc=7
+    echo "Warning due to internal error: The function compare_versions expects 2 parameters, but was called with ${#}!" >&2
+    retc=3
   else
     version_a="$1"
     version_b="$2"
     retc=0
+    comparison="e"
     for field_num in 1 2 3 4
     do
       a_substring="$(echo "$version_a" | cut -s -f "$field_num" -d '.')"
       b_substring="$(echo "$version_b" | cut -s -f "$field_num" -d '.')"
-      if [ "$a_substring" = "$b_substring" ]
+      if [ "$a_substring" != "$b_substring" ]
       then
-        comparison="e"
-      elif [ "$a_substring" -lt "$b_substring" ]
-      then
-        comparison="l"
-        break
-      elif [ "$a_substring" -gt "$b_substring" ]
-      then
-        comparison="g"
-        break
-      else
-        echo "Aborting due to internal error in function compare_versions: Version strings \"${version_a}\" and \"${version_b}\" are not comparable!" >&2
-        retc=3
-        break
+        if [ "$a_substring" -lt "$b_substring" ]
+        then
+          comparison="l"
+          break
+        elif [ "$a_substring" -gt "$b_substring" ]
+        then
+          comparison="g"
+          break
+        else
+          echo "Warning from function compare_versions: Version strings \"${version_a}\" and \"${version_b}\" are not comparable!" >&2
+          retc=1
+          comparison="x"
+          break
+        fi
       fi
     done
     echo "$comparison$field_num"
