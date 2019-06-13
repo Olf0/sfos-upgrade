@@ -3,7 +3,7 @@ set -o posix
 set -eufC
 
 # Switched to use bash since version 2.1 of this script (in its first two lines), as this ensures that -o pipefail
-# (in line 600) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
+# (in line 604) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
 # https://git.merproject.org/mer-core/bash ) and consequently in SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
@@ -190,6 +190,11 @@ then
   then
     echo "Warning: Failed to extract the current \"stop releases\" from https://jolla.zendesk.com/hc/en-us/articles/201836347#4" >&2
     echo "Hence using an internal, potentially outdated list of stop releases instead." >&2
+    if [ -z "$set_ssu" ]
+    then echo -n "Do you want to continue?" >&2
+    else echo -n "Do you really want to continue?" >&2
+    fi
+    askyes >&2
     echo >&2
   fi
   all_stop_releases="$(echo -e "${recent_stop_releases}\n$known_stop_releases" | grep -v '^$' | sort -u)"
