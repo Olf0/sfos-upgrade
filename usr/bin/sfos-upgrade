@@ -202,8 +202,8 @@ then
     for stop_release in $all_stop_releases
     do
       compar1="$(compare_versions "$stop_release" "$installed_release")"
-		      case "$compar1" in
-	      [el]?)
+      case "$compar1" in
+      [el]?)
         true
         ;;
       g?)  # Hit the first stop release, which is greater than the installed release.
