@@ -407,9 +407,9 @@ POWER_SUPPLY_CHARGE_FULL=""
 POWER_SUPPLY_CHARGE_FULL_DESIGN=""
 # References: https://www.kernel.org/doc/Documentation/power/power_supply_class.txt and https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-class-power
 battery_info=""
-for i in /sys/class/power_supply/battery /sys/class/power_supply/*_battery
+for battery_uevents in /sys/class/power_supply/battery /sys/class/power_supply/*_battery
 do
-  if { . ${i}/uevent; } > /dev/null 2>&1
+  if [ "$battery_uevents" != "/sys/class/power_supply/*_battery" ] && { . "${battery_uevents}/uevent"; } > /dev/null 2>&1 && true
   then
     battery_info="sourced"
     break
