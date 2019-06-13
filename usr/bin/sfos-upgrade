@@ -138,7 +138,7 @@ else
   l?)
     echo "Notice: The installed version $installed_release is smaller than the one currently set for SSU (${ssu_set})." >&2
     echo -n "A possible reason for this is, that the \'sailfish-osupdateservice osupdate-check\' invoked by osupdate-check.service (which is regularly triggered by osupdate-check.timer)" >&2
-    echo " does more than just checking (in SailfishOS 3.0.2 and earlier): E.g., setting ssu to the recent release version or next stop release." >&2
+    echo " does more than just checking (observed with SailfishOS 3.0.2 and earlier): E.g., setting ssu to the recent release version or next stop release." >&2
     echo "Never mind, the version for SSU will be set correctly again, later on." >&2
     echo >&2
     ;;
@@ -576,17 +576,21 @@ g?)
     echo "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     echo -n "Do you really want to do that?" >&2
     ;;
-  *)
+  g?*)
     echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)!" >&2
     echo "Though this might make this SailfishOS installation not working properly, this downgrade may be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." >&2
     echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     echo "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)."
     exit 3
     ;;
+  *)
+    echo "Comparing versions failed, when finally asking user if to perform a downgrade of SailfishOS." >&2
+    exit 7
+    ;;
   esac
   ;;
 *)
-  echo "Comparing versions failed, when asking user to finally perform up-, same- or down-grading SailfishOS." >&2
+  echo "Comparing versions failed, when finally asking user if to perform the up-, same- or down-grade of SailfishOS." >&2
   exit 7
   ;;
 esac
