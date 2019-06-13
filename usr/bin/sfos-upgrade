@@ -3,7 +3,7 @@ set -o posix
 set -eufC
 
 # Switched to use bash since version 2.1 of this script (in its first two lines), as this ensures that -o pipefail
-# (in line 604) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
+# (in line 605) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
 # https://git.merproject.org/mer-core/bash ) and consequently in SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
@@ -569,14 +569,14 @@ g?)
     echo -n "Do you really want to do that?" >&2
     ;;
   g?)
-    echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their minor version." >&2
+    echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)." >&2
     echo "This might make this SailfishOS installation not working properly!" >&2
     echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     echo "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     echo -n "Do you really want to do that?" >&2
     ;;
   *)
-    echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their minor version!" >&2
+    echo "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)!" >&2
     echo "Though this might make this SailfishOS installation not working properly, this downgrade may be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." >&2
     echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     echo "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)."
