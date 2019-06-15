@@ -266,7 +266,7 @@ then
           ;;
         g4)
           echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which downgrades to a \"point release\" \"below\" the stop release $stop_release." >&2
-          echo "While downgrading between \"point releases\" seems to be generally feasible, doing so \"below\" a stop release bears the little extra danger of the changes making it a stop release not all being introduced with SailfishOS $(echo "$stop_release" | cut -f -3 -d '.').0 (e.g. with ${stop_release}, and thus potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
+          echo "While downgrading between \"point releases\" seems to be generally feasible, doing so \"below\" a stop release implies the danger of the changes making it a stop release not all being introduced with SailfishOS $(echo "$stop_release" | cut -f -3 -d '.').0 (e.g. with ${stop_release}, and thus potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
           echo "The only absolutely safe way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version.  Although one may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
           echo >&2
           break
@@ -294,7 +294,7 @@ then
           ;;
         g4)
           echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which downgrades to a \"point release\" \"within\" the stop release range $(echo "$stop_release" | cut -f -3 -d '.').x!" >&2
-          echo "While downgrading between \"point releases\" seems to be generally feasible, doing so \"below\" a stop release bears the little extra danger of the changes making it a stop release not all being introduced with SailfishOS $(echo "$stop_release" | cut -f -3 -d '.').0 (e.g. with ${installed_release}, and hence potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
+          echo "While downgrading between \"point releases\" seems to be generally feasible, doing so \"below\" a stop release implies the danger of the changes making it a stop release not all being introduced with SailfishOS $(echo "$stop_release" | cut -f -3 -d '.').0 (e.g. with ${installed_release}, and hence potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
           echo "The only absolutely safe way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version.  Although one may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
           echo >&2
           break
