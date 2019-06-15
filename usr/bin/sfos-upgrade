@@ -213,9 +213,6 @@ then
     do
       compar1="$(compare_versions "$stop_release" "$installed_release")"
       case "$compar1" in
-      [el]?)
-        true
-        ;;
       g?)  # Hit the first stop release, which is greater than the installed release.
         compar2="$(compare_versions "$stop_release" "$upgrade_release")"
         case "$compar2" in
@@ -232,7 +229,7 @@ then
           echo >&2
           break
           ;;
-        [eg]?) # A general downgrade check is performed later; this solely deals with downgrading "below" stop releases (here: "or not").
+        [eg]?)  # A general downgrade check is performed later; this solely deals with downgrading "below" stop releases (here: "or not").
           break
           ;;
         *)
@@ -240,6 +237,9 @@ then
           exit 7
           ;;
         esac
+        ;;
+      [el]?)  # Continue looping
+        true
         ;;
       *)
         echo "Comparing versions in \"stop releases\" check #1a failed." >&2
@@ -255,9 +255,6 @@ then
       # A general downgrade check is performed later; this solely deals with downgrading "below" stop releases.
       compar1="$(compare_versions "$stop_release" "$installed_release")"
       case "$compar1" in
-      g?)
-        true
-        ;;
       [el]?)  # Hit the first stop release, which is lesser or equal to the installed release.
         compar2="$(compare_versions "$stop_release" "$upgrade_release")"
         case "$compar2" in
@@ -310,6 +307,9 @@ then
           exit 7
           ;;
         esac
+        ;;
+      g?)  # Continue looping
+        true
         ;;
       *)
         echo "Comparing versions in \"stop releases\" check #1b failed." >&2
