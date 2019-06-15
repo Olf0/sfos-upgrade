@@ -255,7 +255,7 @@ then
       # A general downgrade check is performed later; this solely deals with downgrading "below" stop releases.
       compar1="$(compare_versions "$stop_release" "$installed_release")"
       case "$compar1" in
-      [el]?)  # Hit the first stop release, which is lesser or equal to the installed release.
+      [el]?)  # Hit the first stop release, which is lesser or equal than the installed release.
         compar2="$(compare_versions "$stop_release" "$upgrade_release")"
         case "$compar2" in
         [el]?)  # A general downgrade check is performed later; this solely deals with downgrading "below" stop releases (here: "or not").
@@ -280,7 +280,7 @@ then
           ;;
         esac
         ;;
-      g4)
+      g4)  # Hit the first stop release, which is greater but in the same stop release range (i.e. only differs by the "point release" number) than the installed release.
         compar2="$(compare_versions "$stop_release" "$upgrade_release")"
         case "$compar2" in
         [el]?)
@@ -291,7 +291,7 @@ then
           ;;
         g4)
           echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which downgrades to a \"point release\" \"within\" the stop release range $(echo "$stop_release" | cut -f -3 -d '.').x!" >&2
-          echo "While downgrading between \"point releases\" seems to be generally feasible, doing so \"below\" a stop release implies the danger of the changes making it a stop release not all being introduced with SailfishOS $(echo "$stop_release" | cut -f -3 -d '.').0 (e.g. with ${installed_release}, and hence potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
+          echo "While downgrading between \"point releases\" seems to be generally feasible, doing so \"within\" a stop release range implies the danger of the changes making it a stop release not all being introduced with SailfishOS $(echo "$stop_release" | cut -f -3 -d '.').0 (e.g. with ${installed_release}, and hence potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
           echo "The only absolutely safe way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version.  Although one may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
           echo >&2
           break
