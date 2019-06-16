@@ -697,7 +697,7 @@ l???|??l?)
   if openrepos_repos="$(ssu lr | fgrep 'openrepo')"
   then
     # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
-    echo "- Disabling OpenRepos' repositories:" | tee -a "$logfile" >&2
+    echo "- Disabling OpenRepos' repositories (*grading from or to below 1.0.4.20):" | tee -a "$logfile" >&2
     for open_repo in $(echo "$openrepos_repos" | cut -s -f 3 -d ' ')
     do
       echo "$open_repo" | tee -a "$logfile" >&2
@@ -707,7 +707,7 @@ l???|??l?)
   fi
   ;;
 *)
-  echo "Comparing versions in \"upgrading from below SailfishOS 1.0.4.20\" check failed." >&2
+  echo "Comparing versions in \"*grading from or to below SailfishOS 1.0.4.20\" check failed." >&2
   exit 7
   ;;
 esac
