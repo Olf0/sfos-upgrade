@@ -544,7 +544,8 @@ then
   echo >&2
 fi
 
-case "$compar0" in
+compar_u="$(compare_versions "$installed_release" "$upgrade_release")"
+case "$compar_u" in
 e4)
   echo -n "Notice: Do you want to ensure this SailfishOS $upgrade_release installation to be complete and up to date?" >&2
   ;;
@@ -552,7 +553,7 @@ l?)
   echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to ${upgrade_release}?" >&2
   ;;
 g?)
-  case "$compar0$set_ssu" in
+  case "$compar_u$set_ssu" in
   g4)
     echo "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     echo "Nevertheless this may make this SailfishOS installation not working properly." >&2
