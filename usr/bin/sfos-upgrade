@@ -175,8 +175,9 @@ then
   echo >&2
 fi
 
-if [ "$installed_release" != "$upgrade_release" ]
-then
+if [ "$installed_release" = "$upgrade_release" ]
+then compar0="e4"
+else
   known_stop_releases="3.0.0.8\n2.2.0.29\n2.0.5.6\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5\n1.0.0.5"
   # 0.99.5.11, 1.0.0.5 and 1.0.1.10 are not documented to be "stop releases",
   # taking the information of sections 4 and 5 (in combination!) at
@@ -544,16 +545,15 @@ then
   echo >&2
 fi
 
-compar_u="$(compare_versions "$installed_release" "$upgrade_release")"
-case "$compar_u" in
-e?)
+case "$compar0" in
+e4)
   echo -n "Notice: Do you want to ensure this SailfishOS $upgrade_release installation to be complete and up to date?" >&2
   ;;
 l?)
   echo -n "Notice: Do you want to upgrade SailfishOS from $installed_release to ${upgrade_release}?" >&2
   ;;
 g?)
-  case "$compar_u$set_ssu" in
+  case "$compar0$set_ssu" in
   g4)
     echo "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     echo "Nevertheless this may make this SailfishOS installation not working properly." >&2
