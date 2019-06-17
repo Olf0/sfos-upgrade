@@ -29,18 +29,17 @@ export LC_COLLATE="POSIX"
 
 askyes ()
 {
-  # All its regular output goes to STDOUT (only warnings go to STDERR)
-  # and it exits (instead of returning) when the user asks to abort.
+  # All its regular output goes to STDOUT (only warnings go to STDERR, plus 
+  # returning "1" then) and it returns "4" when the user asks to abort.
   echo -n " (Y/N) "
   read yn
-  retcode=1
   case "$yn" in
   y|Y)
     retcode=0
     ;;
   *)
     echo "Aborting upon user request."
-    exit 4
+    retcode=1
     ;;
   esac
   if [ -n "$*" ]
