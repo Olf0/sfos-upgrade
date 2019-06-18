@@ -27,6 +27,11 @@ set -eufC
 export LC_CTYPE="POSIX"
 export LC_COLLATE="POSIX"
 
+exiting ()
+{
+  ssu re "$(version | rev | cut -s -f 2 -d ' ' | rev)"
+}
+
 askyes ()
 {
   # All its regular output goes to STDOUT (only warnings go to STDERR, plus 
@@ -100,17 +105,48 @@ then
   exit 3
 fi
 
-
-if osupdate_check="$(/usr/libexec/sailfish-osupdateservice osupdate-check > /dev/null
-2>&1 > /dev/null)" && [ -z "$osupdate_check" ] && true
-then true 
-else
-  echo "Aborting, because sailfish-osupdateservice osupdate-check emitted to STDERR:"
-  echo "$osupdate_check"
-  exit 5
-fi
-
 installed_release="$(version | rev | cut -s -f 2 -d ' ' | rev)"
+
+case "$#" in
+0)
+1)
+  case "$1" in
+  [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9])
+    upgrade_release="$1"
+    ;;
+  -a|--auto)  # Determinining next installable release per Jolla tools
+    if osupdate_check="$(/usr/libexec/sailfish-osupdateservice osupdate-check 2>&1 > /dev/null)" && [ -z "$osupdate_check" ] && true
+    then
+      upgrade_release="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
+    else
+      echo "Aborting, because sailfish-osupdateservice osupdate-check emitted to STDERR:"
+      echo "$osupdate_check"
+      exit 5
+    fi
+    ;;
+  -s|--ssu)  # Extracting upgrade release from SSU
+    upgrade_release="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
+    ;;
+  -h|--help)
+    echo "Usage: $called <version>|-a|-auto|-s|-ssu|-h|--help"
+    echo "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
+    echo "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
+    exit 2
+    ;;
+  *)
+    echo "Aborting: Inorrect option or version format \"${upgrade_release}\" provided." >&2
+    exit 3
+    ;;
+  esac
+  ;;
+*)
+  echo "Aborting: No extra parameters expected, but called with \"${*}\"." >&2
+  exit 3
+  ;;
+esac
+
+
+
 if [ -z "$*" ]
 then
   set_ssu=""
@@ -118,28 +154,14 @@ then
 else
   set_ssu="yes"
   ssu_set="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
-  upgrade_release="$1"
+  
   shift
   if [ -n "$*" ]
   then
     echo "Aborting: No extra parameters expected, but called with \"${*}\"." >&2
     exit 3
   fi
-  case "$upgrade_release" in
-  [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9])
-    true
-    ;;
-  -h|--help)
-    echo "Usage: $called [<version>]"
-    echo "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
-    echo "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
-    exit 2
-    ;;
-  *)
-    echo "Aborting: Inorrect version format \"${upgrade_release}\" provided." >&2
-    exit 3
-    ;;
-  esac
+  
   compar_s="$(compare_versions "$installed_release" "$ssu_set")"
   case "$compar_s" in
   e?)
@@ -604,8 +626,6 @@ g?)
   ;;
 esac
 askyes >&2
-
-    ssu re "$(version | rev | cut -s -f 2 -d ' ' | rev)"
 echo >&2
 
 logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
