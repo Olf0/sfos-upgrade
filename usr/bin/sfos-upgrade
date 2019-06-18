@@ -604,6 +604,8 @@ g?)
   ;;
 esac
 askyes >&2
+
+    ssu re "$(version | rev | cut -s -f 2 -d ' ' | rev)"
 echo >&2
 
 logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
