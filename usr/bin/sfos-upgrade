@@ -30,7 +30,7 @@ export LC_COLLATE="POSIX"
 askyes ()
 {
   # All its regular output goes to STDOUT (only warnings go to STDERR, plus 
-  # returning "1" then) and it returns "4" when the user asks to abort.
+  # returning "3" then) and it returns "1" when the user asks to abort.
   echo -n " (Y/N) "
   read yn
   case "$yn" in
@@ -98,6 +98,16 @@ if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
 then
   echo "Aborting: $called must be started with root privileges." >&2
   exit 3
+fi
+
+
+if osupdate_check="$(/usr/libexec/sailfish-osupdateservice osupdate-check > /dev/null
+2>&1 > /dev/null)" && [ -z "$osupdate_check" ] && true
+then true 
+else
+  echo "Aborting, because sailfish-osupdateservice osupdate-check emitted to STDERR:"
+  echo "$osupdate_check"
+  exit 5
 fi
 
 installed_release="$(version | rev | cut -s -f 2 -d ' ' | rev)"
