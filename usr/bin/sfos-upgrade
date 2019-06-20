@@ -29,6 +29,11 @@ export LC_COLLATE="POSIX"
 
 aborting ()
 {
+  if [ "$#" != "1" ]
+  then
+    echo "Warning due to internal error: The function aborting expects a single parameter, but was called with ${#}!" >&2
+    retc=3
+  fi
   ssu re "$(version | rev | cut -s -f 2 -d ' ' | rev)"
 }
 
@@ -96,8 +101,13 @@ compare_versions ()
   return "$retc"
 }
 
-check_upgrade_version ()
+check_releases ()
 {
+  if [ "$#" != "2" ]
+  then
+    echo "Warning due to internal error: The function check_releases expects 2 parameters, but was called with ${#}!" >&2
+    retc=3
+  fi
 }
 
 # Main script
