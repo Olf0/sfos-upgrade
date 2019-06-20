@@ -27,7 +27,7 @@ set -eufC
 export LC_CTYPE="POSIX"
 export LC_COLLATE="POSIX"
 
-exiting ()
+aborting ()
 {
   ssu re "$(version | rev | cut -s -f 2 -d ' ' | rev)"
 }
@@ -94,6 +94,10 @@ compare_versions ()
     echo "$comparison$field_num"
   fi
   return "$retc"
+}
+
+check_upgrade_version ()
+{
 }
 
 # Main script
