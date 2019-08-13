@@ -101,7 +101,7 @@ then
   exit 3
 fi
 
-installed_release="$(version | grep '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*' -o)"
+installed_release="$(version | grep -o ' [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | cut -c 2- | sed -n '1p')"
 if [ -z "$*" ]
 then
   set_ssu=""
