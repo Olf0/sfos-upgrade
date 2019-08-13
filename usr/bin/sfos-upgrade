@@ -361,7 +361,7 @@ then
     fi
   elif which btrfs > /dev/null 2>&1
   then
-    btrfs_allocation="$(btrfs filesystem df / | grep '^Data' | cut -s -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
+    btrfs_allocation="$(btrfs filesystem df / | grep -m 1 '^Data' | cut -s -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
     btrfs_total="$(echo "$btrfs_allocation" | grep '^total=' | cut -f 2 -d '=')"
     btrfs_used="$(echo "$btrfs_allocation" | grep '^used=' | cut -f 2 -d '=')"
     if btrfs_unallocated="$(expr "$btrfs_total" '-' "$btrfs_used")"
