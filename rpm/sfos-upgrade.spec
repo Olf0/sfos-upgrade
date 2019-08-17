@@ -11,6 +11,7 @@ URL:           https://github.com/Olf0/%{name}
 Source:        %{name}-%{version}-%{release}.tar.gz
 Source1:       https://github.com/Olf0/%{name}/archive/%{version}-%{release}.tar.gz
 BuildArch:     noarch
+BuildRequires: curl
 Requires:      ssu
 Requires:      sailfish-version
 Requires:      curl
@@ -22,8 +23,8 @@ With a version number provided as parameter it sets SSU to this version and in r
 Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.
 
 %prep
-if [ -f %{version}-%{release}.tar.gz ]
-then mv -f %{version}-%{release}.tar.gz %{name}-%{version}-%{release}.tar.gz
+if [ ! -e %{source} ]
+then curl -sSLo %{source} %{source1}
 fi
 %setup -n %{name}-%{version}-%{release}
 
