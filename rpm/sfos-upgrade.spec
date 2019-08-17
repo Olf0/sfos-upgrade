@@ -23,8 +23,8 @@ With a version number provided as parameter it sets SSU to this version and in r
 Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.
 
 %prep
-if [ ! -e %{source} ]
-then curl -sSLo %{source} %{source1}
+if [ -d SOURCES ] && [ ! -e SOURCES/%{source} ] && true
+then curl -sSLo SOURCES/%{source} %{source1}
 fi
 %setup -n %{name}-%{version}-%{release}
 
