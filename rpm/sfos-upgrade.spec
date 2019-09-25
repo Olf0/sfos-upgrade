@@ -1,7 +1,7 @@
 Name:          sfos-upgrade
 Summary:       Scripts for safe and automated upgrading of SailfishOS with logging
 Version:       3.2
-Release:       3
+Release:       4
 Group:         System/Base
 Distribution:  SailfishOS
 Vendor:        olf
@@ -22,8 +22,11 @@ With a version number provided as parameter it sets SSU to this version and in r
 Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.
 
 %prep
-if [ -d SOURCES ] && [ ! -e SOURCES/%{source} ] && true
-then curl -sSLo SOURCES/%{source} %{source1}
+if [ -d SOURCES ] && [ ! -f "SOURCES/$(basename %{source})" ] && true
+then
+  cd SOURCES
+  curl -sSLO %{source}
+  cd ..
 fi
 %setup -n %{name}-%{version}-%{release}
 
