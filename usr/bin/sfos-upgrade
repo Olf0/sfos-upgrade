@@ -756,7 +756,7 @@ l???|??l?)
   ;;
 esac
 
-if [ -n "$set_ssu" ]
+if [ -n "$set_ssu" ]  # ToDo: Always set ssu in release mode.
 then
   echo "- Setting SSU to SailfishOS release:" | tee -a "$logfile" >&2
   if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
@@ -767,6 +767,9 @@ then
   echo | tee -a "$logfile" >&2
 fi
 
+case "$upgrade_method" in
+version)
+  
 echo "- Fetching and installing the SailfishOS upgrade from $installed_release to $upgrade_release (this may take a while):" | tee -a "$logfile" >&2
 if ! version --dup 2>&1 | tee -a "$logfile"
 then
@@ -774,6 +777,19 @@ then
   echo "Aborting: Failed to fetch or install the SailfishOS upgrade!" | tee -a "$logfile" >&2
   exit 6
 fi
+;;
+zypper)
+  zypper refresh
+  zypper update
+  ;;
+pkcon)
+  pkcon refresh
+  pkcon update
+  ;;
+*)
+  false
+  ;;
+esac
 
 echo "Notice: After rebooting, do not miss to run post_$called" >&2
 exit 0
