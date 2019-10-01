@@ -1,5 +1,4 @@
-#!/bin/bash
-set -o posix
+#!/bin/bash -o posix
 set -eufC
 
 # Switched to use bash since version 2.1 of this script (in its first two lines), as this ensures that -o pipefail
