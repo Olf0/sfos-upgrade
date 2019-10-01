@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 set -ufC
 
 called="$(basename "$0")"
