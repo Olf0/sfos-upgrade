@@ -1,6 +1,10 @@
 #!/bin/sh
 set -uC
 
+export LANG="C"  # Engineering English only
+export LC_CTYPE="POSIX"
+export LC_COLLATE="POSIX"
+
 called="$(basename "$0")"
 if [ -z "$*" ]
 then
@@ -24,9 +28,6 @@ cd "$logdir" || exit "$?"
 
 # Removing stale metadata downloads left over by version --dup
 # rm -rf UpdateTestcase-*
-
-# export LC_CTYPE="POSIX"
-# export LC_COLLATE="POSIX"
 
 targets="systemupdate_*.log-dupes.txt"
 for logfile in $targets
