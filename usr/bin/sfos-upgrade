@@ -23,6 +23,7 @@ set -eufC
 #  23  "Should never be reached" *) case #2
 #  42  "Should never be reached" *) case #3
 
+export LANG="C"  # Engineering English only
 export LC_CTYPE="POSIX"
 export LC_COLLATE="POSIX"
 
