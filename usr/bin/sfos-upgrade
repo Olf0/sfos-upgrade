@@ -784,7 +784,7 @@ zypper)
   ;;
 pkcon)
   pkcon refresh
-  pkcon update
+  pkcon -py update >> direct-log
   ;;
 *)
   false
