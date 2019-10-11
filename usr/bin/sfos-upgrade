@@ -780,7 +780,7 @@ fi
 ;;
 zypper)
   zypper refresh
-  zypper update
+  zypper update -ly *or* zypper dup -l  /  zypper dup -l --allow-downgrade
   ;;
 pkcon)
   pkcon refresh
