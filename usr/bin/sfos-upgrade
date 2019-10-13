@@ -783,7 +783,7 @@ fi
 ssu_domain="$(ssu domain -s)"
 
   case "$upgrade_method" in
-  "version--dup")
+  version)
      if [ -x /usr/bin/rnd-dist-upgrade ] 
      then
        # Developer mode installed: Use rnd-dist-upgrade directly.
