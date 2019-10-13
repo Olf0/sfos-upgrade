@@ -778,13 +778,51 @@ then
   exit 6
 fi
 ;;
+
+---------
+ssu_domain="$(ssu domain -s)"
+
+  case "$upgrade_method" in
+  "version--dup")
+     if [ -x /usr/bin/rnd-dist-upgrade ] 
+     then
+       # Developer mode installed: Use rnd-dist-upgrade directly.
+       /usr/bin/rnd-dist-upgrade
+    elif [ $(id -u) == 0 ]
+    then
+       # Developer mode is not installed, but running as root: Use pkcon.
+       pkcon refresh
+       device_model=`ssu model -s | tr '[A-Z]' '[a-z]' | sed 's/ /_/g'`
+       pkcon upgrade-system "jolla-configuration-$device_model" complete
+       echo
+       echo "REBOOT NOW, unless you need to investigate update issues, or know what "
+       echo "you're doing (or both)."
+       echo "All bugs you encounter until reboot are features unless you meet one of the"
+       echo "criteria from the previous sentence."
+     else
+       echo
+       echo "Enable developer mode to use rnd-dist-upgrade, or run as root."
+       echo
+     fi
+     ;;
+  "")
+    if [ -f /etc/os-release ]
+    then
+       . /etc/os-release
+      echo $PRETTY_NAME
+    else
+      echo "release file does not exist"
+    fi
+    ;;
+  esac
+---------
 zypper)
   zypper refresh
   zypper update -ly *or* zypper dup -l  /  zypper dup -l --allow-downgrade
   ;;
 pkcon)
   pkcon refresh
-  pkcon -py update >> direct-log
+  pkcon -py dist-update >> direct-log
   ;;
 *)
   false
