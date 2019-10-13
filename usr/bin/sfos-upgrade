@@ -782,14 +782,17 @@ fi
 ---------
 ssu_domain="$(ssu domain -s)"
 
-  case "$upgrade_method" in
-  version)
-     if [ -x /usr/bin/rnd-dist-upgrade ] 
-     then
-       # Developer mode installed: Use rnd-dist-upgrade directly.
-       /usr/bin/rnd-dist-upgrade
-    elif [ $(id -u) == 0 ]
-    then
+case "$upgrade_method" in
+rnd-dist-upgrade)
+  if [ -x /usr/bin/rnd-dist-upgrade ] 
+  then
+    # Developer mode installed: Use rnd-dist-upgrade directly.
+    /usr/bin/rnd-dist-upgrade
+  fi
+  ;;
+pkcon)
+  if [ $(id -u) == 0 ]
+  then
        # Developer mode is not installed, but running as root: Use pkcon.
        pkcon refresh
        device_model=`ssu model -s | tr '[A-Z]' '[a-z]' | sed 's/ /_/g'`
@@ -808,7 +811,7 @@ ssu_domain="$(ssu domain -s)"
   "")
     if [ -f /etc/os-release ]
     then
-       . /etc/os-release
+      . /etc/os-release
       echo $PRETTY_NAME
     else
       echo "release file does not exist"
@@ -818,7 +821,7 @@ ssu_domain="$(ssu domain -s)"
 ---------
 zypper)
   zypper refresh
-  zypper update -ly *or* zypper dup -l  /  zypper dup -l --allow-downgrade
+  zypper dup -ly  *or* zypper dup -ly --allow-downgrade
   ;;
 pkcon)
   pkcon refresh
