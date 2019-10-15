@@ -52,3 +52,4 @@ echo "- Refreshing pkcon's caches:"
 pkcon refresh
 
 sync
+
