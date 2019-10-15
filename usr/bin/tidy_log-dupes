@@ -29,12 +29,18 @@ cd "$logdir" || exit "$?"
 # Removing stale metadata downloads left over by version --dup
 # rm -rf UpdateTestcase-*
 
+if ! set -o pipefail
+then
+  echo "Notice: This shell does not support \"-o pipefail\"." >&2
+fi
+
 targets="systemupdate_*.log-dupes.txt"
 for logfile in $targets
 do
   if [ "$logfile" != "$targets" ]
   then
-    cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt" \
+    tidied_log="$(echo "$logfile" | rev | cut -s -f 2- -d '-' | rev).txt"
+    cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log" \
     && rm -f "$logfile"
   fi
 done
