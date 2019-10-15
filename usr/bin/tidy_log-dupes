@@ -34,8 +34,8 @@ for logfile in $targets
 do
   if [ "$logfile" != "$targets" ]
   then
-    cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
-    rm "$logfile"
+    cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt" \
+    && rm -f "$logfile"
   fi
 done
 
