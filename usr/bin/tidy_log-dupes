@@ -16,7 +16,7 @@ else
   then
     if [ -n "$*" ]
     then
-      echo "No extra parameters expected, but set: $*"
+      echo "No extra parameters expected, but set: $*" >&2
     fi
     echo "Usage: $called [<logdirectory>]"
     echo "Without a parameter it will use /var/log as log directory."
