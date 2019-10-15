@@ -729,6 +729,7 @@ then
   exit 6
 fi
 
+sync
 echo "Notice: After rebooting, do not miss to run post_$called" >&2
 exit 0
 
