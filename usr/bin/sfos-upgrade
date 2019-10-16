@@ -1,9 +1,10 @@
 #!/bin/bash -o posix
 set -eufC
 
-# Switched to use bash since version 2.1 of this script (in its first two lines), as this ensures that -o pipefail
-# (in line 609) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04 (see
-# https://git.merproject.org/mer-core/bash ) and consequently in SailfishOS since its beginnings (checked v1.0.0.5 per
+# Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
+# (in line 609) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
+# SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
 # In (at least) recent SailfishOS releases /bin/sh is just a symbolic link to /bin/bash anyway, but have not checked
@@ -101,7 +102,7 @@ then
   exit 3
 fi
 
-installed_release="$(version | grep -o ' [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | cut -c 2- | sed -n '1p')"
+installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | sed -n '1p')"
 if [ -z "$*" ]
 then
   set_ssu=""
