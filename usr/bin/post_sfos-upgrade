@@ -51,5 +51,6 @@ fi
 echo "- Refreshing pkcon's caches:"
 pkcon refresh
 
+# Syncing, as I could not determine if pkcon and zypper already do that:
 sync
 
