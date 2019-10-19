@@ -730,7 +730,9 @@ then
   exit 6
 fi
 
+# Syncing, as I could not determine if /usr/bin/version rsp. /usr/bin/rnd-dist-upgrade *and* /usr/bin/pkcon (called by version) already do that:
 sync
+
 echo "Notice: After rebooting, do not miss to run post_$called" >&2
 exit 0
 
