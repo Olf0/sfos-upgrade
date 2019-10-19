@@ -39,7 +39,7 @@ for logfile in $targets
 do
   if [ "$logfile" != "$targets" ]
   then
-    tidied_log="$(echo "$logfile" | rev | cut -s -f 2- -d '-' | rev).txt"
+    tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
     cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log" \
     && rm -f "$logfile"
   fi
