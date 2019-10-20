@@ -2,7 +2,7 @@
 set -eufC
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 612) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 613) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -409,9 +409,10 @@ POWER_SUPPLY_CHARGE_FULL_DESIGN=""
 # References: https://www.kernel.org/doc/Documentation/power/power_supply_class.txt and https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-class-power
 set +f
 battery_info=""
-for battery_uevents in /sys/class/power_supply/*battery*
+battery_path="/sys/class/power_supply/*battery*"
+for battery_uevents in $battery_path
 do
-  if [ "$battery_uevents" != "/sys/class/power_supply/*battery*" ] && { source "${battery_uevents}/uevent"; } > /dev/null 2>&1 && true
+  if [ "$battery_uevents" != "$battery_path" ] && { source "${battery_uevents}/uevent"; } > /dev/null 2>&1 && true
   then
     battery_info="sourced"
     break
