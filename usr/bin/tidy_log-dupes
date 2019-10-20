@@ -24,7 +24,7 @@ else
   fi
 fi
 
-cd "$logdir" || exit "$?"
+cd "$logdir" || exit $?
 
 # Removing stale metadata downloads left over by version --dup
 # rm -rf UpdateTestcase-*
