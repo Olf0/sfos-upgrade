@@ -38,7 +38,7 @@ do
   if [ "$logfile" != "$targets" ]
   then
     tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
-    if cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log" \
+    if cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log"
     then rm -f "$logfile"
     else retc=1
     fi
