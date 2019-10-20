@@ -7,16 +7,14 @@ export LC_COLLATE="POSIX"
 
 called="$(basename "$0")"
 if [ -z "$*" ]
-then
-  logdir="/var/log"
+then logdir="/var/log"
 else
   logdir="$1"
   shift
   if [ ! -d "$logdir" ] || [ -n "$*" ]
   then
     if [ -n "$*" ]
-    then
-      echo "No extra parameters expected, but set: $*" >&2
+    then echo "No extra parameters expected, but set: $*" >&2
     fi
     echo "Usage: $called [<logdirectory>]"
     echo "Without a parameter it will use /var/log as log directory."
@@ -30,8 +28,7 @@ cd "$logdir" || exit $?
 # rm -rf UpdateTestcase-*
 
 if ! set -o pipefail
-then
-  echo "Notice: This shell does not support \"-o pipefail\"." >&2
+then echo "Notice: This shell does not support \"-o pipefail\"." >&2
 fi
 
 retc=0
