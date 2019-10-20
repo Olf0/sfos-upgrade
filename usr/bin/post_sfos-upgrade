@@ -28,11 +28,10 @@ then
   for i in '-TERM' '-QUIT' '-HUP' '' '-KILL' '-Failed_to_kill_store-client'
   do
     if pgrep store-client > /dev/null
-    then
-      pkill $(echo $i) store-client
-      sleep 1
-    else break
+    then pkill $(echo $i) store-client
+    else break  
     fi
+  sleep 1
   done
   echo
 fi
@@ -42,14 +41,14 @@ if which zypper > /dev/null 2>&1
 then
 #  No need to be "brutal":
 #  echo "- Cleaning zypper's caches:"
-#  zypper clean -m
+#  zypper clean -m || exit $?
   echo "- Refreshing zypper's caches:"
-  zypper refresh
+  zypper refresh || exit $?
   echo
 fi
 
 echo "- Refreshing pkcon's caches:"
-pkcon refresh
+pkcon refresh || exit $?
 
 # Syncing, as I could not determine if pkcon and zypper already do that:
 sync
