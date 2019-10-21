@@ -68,7 +68,7 @@ do
 done
 case $retc in
 [1-9]|[1-9][0-9]|1[0-1][0-9])
-  echo "Warning: Failed to tidy $retc of $logs_count log file(s) in $logdir : The(se) untidied file(s) remain!" >&2
+  echo "Warning: Failed to tidy $retc of $logs_count log file(s) in $logdir : The(se) untidied file(s) remain(s)!" >&2
   ;;
 120)
   echo "Warning: Failed to tidy 120 or more of $logs_count log files in $logdir : These untidied files remain!" >&2
