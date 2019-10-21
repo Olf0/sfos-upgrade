@@ -68,13 +68,13 @@ do
 done
 case $retc in
 [1-9]|[1-9][0-9]|1[0-1][0-9])
-  echo "Warning: Failed to tidy $retc of $logs_count log file(s)!"
+  echo "Warning: Failed to tidy $retc of $logs_count log file(s)!" >&2
   ;;
 120)
-  echo "Warning: Failed to tidy 120 or more of $logs_count log files!"
+  echo "Warning: Failed to tidy 120 or more of $logs_count log files!" >&2
   ;;
 121)
-  echo "Notice: Found no log file to tidy."
+  echo "Notice: Found no log file to tidy." >&2
   ;;
 # *)  # Omitting general case.
   # For 0 (all fine), 123 (cannot access logdir), 124 (error parsing parameters) and 126 (called help):
