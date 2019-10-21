@@ -8,7 +8,7 @@ set -uC
 # 121     : Not a single logfile to tidy found
 # 123     : Log directory is not accessible
 # 124     : Error parsing parameters
-# 125     : Help called
+# 126     : Help called
 
 export LANG="C"  # Engineering English only
 export LC_CTYPE="POSIX"
@@ -22,7 +22,7 @@ else
   logdir="$1"
   shift
   if [ "$logdir" = "-h" ] || [ "$logdir" = "--help" ]
-  then retc=125
+  then retc=126
   elif [ ! -d "$logdir" ]
   then
     echo "$logdir is not a directory!" >&2
