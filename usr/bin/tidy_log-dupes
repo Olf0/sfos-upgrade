@@ -77,8 +77,7 @@ case "$retc" in
   echo "Notice: Found no log file to tidy." >&2
   ;;
 # *)  # Omitting general case.
-  # For 0 (all fine), 123 (cannot access logdir), 124 (error parsing parameters) and 126 (called help):
-  # Do nothing.
+  # For 0 (all fine) and other (unlikely) cases, which got this far: Do nothing.
 # ;;
 esac
 
