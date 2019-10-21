@@ -20,6 +20,22 @@ fi
 
 echo "- Cleaning logfiles of duplicate entries."
 tidy_log-dupes "$@"
+ret_tidy=$?
+case $ret_tidy in
+[1-9]|[1-9][0-9]|1[0-1][0-9])
+  echo "Warning: Failure while tiding $ret_tidy extant log file(s)!"
+  ;;
+120)
+  echo "Warning: Failure while tiding 120 or more extant log files!"
+  ;;
+121)
+  echo "Notice: Found no log file to tidy."
+  ;;
+*)
+  # For 0 (all fine), 123 (cannot access logdir), 124 (error parsing parameters) and 126 (called help):
+  # Do nothing.
+  ;;
+esac
 echo
 
 if which store-client > /dev/null 2>&1
