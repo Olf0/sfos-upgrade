@@ -1,28 +1,47 @@
 #!/bin/sh
 set -uC
 
+# Exit codes
+# 0       : Everything went fine
+# 1 - 119 : Failed to tidy N extant logfiles
+# 120     : Failed to tidy 120 or more extant logfiles
+# 121     : Not a single logfile to tidy found
+# 123     : Log directory is not accessible
+# 124     : Error parsing parameters
+# 125     : Help called
+
 export LANG="C"  # Engineering English only
 export LC_CTYPE="POSIX"
 export LC_COLLATE="POSIX"
 
 called="$(basename "$0")"
+retc=0
 if [ -z "$*" ]
 then logdir="/var/log"
 else
   logdir="$1"
   shift
-  if [ ! -d "$logdir" ] || [ -n "$*" ]
+  if [ "$logdir" = "-h" ] || [ "$logdir" = "--help" ]
+  then retc=125
+  elif [ ! -d "$logdir" ]
   then
-    if [ -n "$*" ]
-    then echo "No extra parameters expected, but set: $*" >&2
-    fi
-    echo "Usage: $called [<logdirectory>]"
+    echo "$logdir is not a directory!" >&2
+    retc=123
+  fi
+  if [ -n "$*" ]
+  then
+    echo "No extra parameters expected, but set: $*" >&2
+    retc=124
+  fi
+  if [ $retc != 0 ]
+  then
+    echo "Usage: $called [<logdirectory>|--help|-h]"
     echo "Without a parameter it will use /var/log as log directory."
-    exit 1
+    exit $retc
   fi
 fi
 
-cd "$logdir" || exit $?
+cd "$logdir" || exit 123
 
 # Removing stale metadata downloads left over by version --dup
 # rm -rf UpdateTestcase-*
@@ -31,7 +50,6 @@ if ! set -o pipefail
 then echo "Notice: This shell does not support \"-o pipefail\"." >&2
 fi
 
-retc=0
 targets="systemupdate_*.log-dupes.txt"
 for logfile in $targets
 do
@@ -40,10 +58,12 @@ do
     tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
     if cat "$logfile" | sed 's/\cM//g' | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log"
     then rm -f "$logfile"
-    else retc=1
+    elif [ "$retc" -lt "120" ]
+    then retc="$(expr "$retc" '+' "1")"
     fi
+  else retc=121
   fi
 done
 
-exit $retc
+exit "$retc"
 
