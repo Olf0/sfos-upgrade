@@ -3,8 +3,8 @@ set -uC
 
 # Exit codes
 # 0       : Everything went fine
-# 1 - 119 : Failed to tidy N extant logfiles
-# 120     : Failed to tidy 120 or more extant logfiles
+# 1 - 119 : Failed to tidy or delete N extant logfiles
+# 120     : Failed to tidy or delete 120 or more extant logfiles
 # 121     : Not a single logfile to tidy found
 # 123     : Log directory is not accessible
 # 124     : Error parsing parameters
@@ -80,10 +80,14 @@ do
   else retc=121
   fi
 done
-
-      if [ "$retc" -lt "120" ]
-      then retc="$(expr "$retc" '+' "1")"
-      fi
+logs_remain="$(expr "$logs_nodelete" '+' "$logs_failed")"
+if [ "$logs_remain" -ne "0" ]
+then
+  if [ "$logs_remain" -lt "120" ]
+  then retc="$logs_remain"
+  else retc=120
+  fi
+fi
       
 case "$retc" in
 [1-9]|[1-9][0-9]|1[0-1][0-9])
