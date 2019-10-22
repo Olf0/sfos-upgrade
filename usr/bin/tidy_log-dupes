@@ -56,13 +56,22 @@ for logfile in $targets
 do
   if [ "$logfile" != "$targets" ]
   then
+    echo -n "$logfile"
+    logs_count="$(expr "$logs_count" '+' "1")"
     tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
     if sed 's/\cM//g' "$logfile" | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log"
-    then rm -f "$logfile"
-    elif [ "$retc" -lt "120" ]
-    then retc="$(expr "$retc" '+' "1")"
+    then 
+      if rm "$logfile"
+      then echo " tidied successfully."
+      else echo " tidied, but failed to remove it."
+      fi
+    else
+      if [ "$retc" -lt "120" ]
+      then retc="$(expr "$retc" '+' "1")"
+      fi
+      rm -f "$tidied_log"
+      echo " tidying failed!"
     fi
-    logs_count="$(expr "$logs_count" '+' "1")"
   else retc=121
   fi
 done
