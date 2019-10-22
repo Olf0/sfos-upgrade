@@ -51,6 +51,9 @@ then echo "Notice: This shell does not support \"-o pipefail\"." >&2
 fi
 
 logs_count=0
+logs_success=0
+logs_nodelete=0
+logs_failed=0
 targets="systemupdate_*.log-dupes.txt"
 for logfile in $targets
 do
@@ -61,20 +64,27 @@ do
     tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
     if sed 's/\cM//g' "$logfile" | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log"
     then 
-      if rm "$logfile"
-      then echo " tidied successfully."
-      else echo " tidied, but failed to remove it."
+      if rm "$logfile" 2> /dev/null
+      then
+        logs_success="$(expr "$logs_success" '+' "1")"
+        echo " tidied successfully."
+      else
+        logs_nodelete="$(expr "$logs_nodelete" '+' "1")"
+        echo " tidied, but failed to remove it."
       fi
     else
-      if [ "$retc" -lt "120" ]
-      then retc="$(expr "$retc" '+' "1")"
-      fi
       rm -f "$tidied_log"
+      logs_failed="$(expr "$logs_failed" '+' "1")"
       echo " tidying failed!"
     fi
   else retc=121
   fi
 done
+
+      if [ "$retc" -lt "120" ]
+      then retc="$(expr "$retc" '+' "1")"
+      fi
+      
 case "$retc" in
 [1-9]|[1-9][0-9]|1[0-1][0-9])
   echo "Warning: Failed to tidy $retc of $logs_count log file(s) in $logdir : The(se) untidied file(s) remain(s)!" >&2
