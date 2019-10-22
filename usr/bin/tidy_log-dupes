@@ -74,7 +74,7 @@ case "$retc" in
   echo "Warning: Failed to tidy 120 or more of $logs_count log files in $logdir : These untidied files remain!" >&2
   ;;
 121)
-  echo "Notice: Found no log file to tidy." >&2
+  echo "Notice: Found no log file to tidy in $logdir ." >&2
   ;;
 # *)  # Omitting general case.
   # For 0 (all fine) and other (unlikely) cases, which got this far: Do nothing.
