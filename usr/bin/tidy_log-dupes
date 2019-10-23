@@ -86,8 +86,8 @@ case "$retc" in
   if [ "$logs_remain" -eq "0" ]
   then 
     if [ "$logs_count" -eq "$logs_success" ]
-    then echo "Summary: Processed all $logs_count log files successfully."
-    else echo "Notice: Sucessfully processed $logs_success of $logs_count log files (without a single failure), but the numbers differ!"
+    then echo "Summary: Processed all $logs_count log files successfully." >&2
+    else echo "Warning: Sucessfully processed $logs_success of $logs_count log files (without a single failure!), but the numbers differ (likely due to an internal logic error)?!?" >&2
     fi
   else
     if [ "$logs_remain" -lt "120" ]
@@ -95,12 +95,10 @@ case "$retc" in
     else retc=120
     fi
     if [ "$logs_count" -eq "$(expr "$logs_succcess" '+' "$logs_remain")" ]
-    then echo "Warning: Processed $logs_count log files, $logs_success sucessfully, $logs_nodelete and $logs_failed !"
-    else
+    then echo "Warning: Processed $logs_count log files, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!" >&2
+    else echo "Warning: Processed $logs_count log files, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!" >&2
     fi
   fi
-  echo "Warning: Failed to tidy $retc of $logs_count log file(s) in $logdir : The(se) untidied file(s) remain(s)!" >&2
-  echo "Warning: Failed to tidy 120 or more of $logs_count log files in $logdir : These untidied files remain!" >&2
   ;;
 121)
   case "$logs_count$logs_success$logs_nodelete$logs_failed" in
