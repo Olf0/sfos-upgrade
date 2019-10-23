@@ -80,28 +80,29 @@ do
   else retc=121
   fi
 done
-logs_remain="$(expr "$logs_nodelete" '+' "$logs_failed")"
-if [ "$logs_remain" -ne "0" ]
-then
-  if [ "$logs_remain" -lt "120" ]
-  then retc="$logs_remain"
-  else retc=120
-  fi
-fi
-      
 case "$retc" in
-[1-9]|[1-9][0-9]|1[0-1][0-9])
+0)
+  logs_remain="$(expr "$logs_nodelete" '+' "$logs_failed")"
+  if [ "$logs_remain" -ne "0" ]
+  then
+    if [ "$logs_remain" -lt "120" ]
+    then retc="$logs_remain"
+    else retc=120
+    fi
+  fi
   echo "Warning: Failed to tidy $retc of $logs_count log file(s) in $logdir : The(se) untidied file(s) remain(s)!" >&2
-  ;;
-120)
   echo "Warning: Failed to tidy 120 or more of $logs_count log files in $logdir : These untidied files remain!" >&2
   ;;
 121)
-  echo "Notice: Found no log file to tidy in $logdir ." >&2
+  case "$logs_count$logs_success$logs_nodelete$logs_failed" in
+  0000)
+    echo "Notice: Found no log file to tidy in $logdir ." >&2
+    ;;
+  *)
+    echo "Warning: Internal logic error.  Found no log file to tidy in $logdir , but processed $logs_count log files: $logs_success successfully, $logs_nodelete tidied but failing to delete them and for $logs_failed tidying failed!" >&2
+    ;;
+*)  
   ;;
-# *)  # Omitting general case.
-  # For 0 (all fine) and other (unlikely) cases, which got this far: Do nothing.
-# ;;
 esac
 
 exit "$retc"
