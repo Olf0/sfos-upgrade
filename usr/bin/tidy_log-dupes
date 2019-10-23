@@ -83,8 +83,13 @@ done
 case "$retc" in
 0)
   logs_remain="$(expr "$logs_nodelete" '+' "$logs_failed")"
-  if [ "$logs_remain" -ne "0" ]
-  then
+  if [ "$logs_remain" -eq "0" ]
+  then 
+    if [ "$logs_count" -eq "$logs_success" ]
+    then echo "Summary: Processed all $logs_count log files successfully."
+    else echo "Notice: Sucessfully processed $logs_success of $logs_count log files (without a single failure), but the numbers differ!"
+    fi
+  else
     if [ "$logs_remain" -lt "120" ]
     then retc="$logs_remain"
     else retc=120
