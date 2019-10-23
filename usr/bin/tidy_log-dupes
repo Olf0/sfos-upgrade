@@ -94,6 +94,10 @@ case "$retc" in
     then retc="$logs_remain"
     else retc=120
     fi
+    if [ "$logs_count" -eq "$(expr "$logs_succcess" '+' "$logs_remain")" ]
+    then echo "Warning: Processed $logs_count log files, $logs_success sucessfully, $logs_nodelete and $logs_failed !"
+    else
+    fi
   fi
   echo "Warning: Failed to tidy $retc of $logs_count log file(s) in $logdir : The(se) untidied file(s) remain(s)!" >&2
   echo "Warning: Failed to tidy 120 or more of $logs_count log files in $logdir : These untidied files remain!" >&2
