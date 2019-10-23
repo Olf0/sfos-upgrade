@@ -95,7 +95,7 @@ case "$retc" in
     else retc=120
     fi
     if [ "$logs_count" -eq "$(expr "$logs_succcess" '+' "$logs_remain")" ]
-    then echo "Warning: Processed $logs_count untidy log files in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!" >&2
+    then echo "Error: Processed $logs_count untidy log files in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!" >&2
     else echo "Error: Processed $logs_count untidy log files in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!  Additionally these numbers do not add up, indicating an internal logic flaw!" >&2
     fi
   fi
@@ -106,10 +106,10 @@ case "$retc" in
     echo "Notice: Found no untidy log files in $logdir ." >&2
     ;;
   *)
-    echo "Warning: Internal logic error.  Found no untidy log file in ${logdir}, but processed $logs_count log files, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files!" >&2
+    echo "Warning: Internal logic error, as no untidy log file was found in ${logdir}, but processed $logs_count log files, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files!" >&2
     ;;
 *)
-  echo "Warning: Internal logic error, $called should never get here (return code is ${retc})!" >&2
+  echo "Warning: Internal logic flaw, $called should never get here (return code is ${retc})!" >&2
   ;;
 esac
 
