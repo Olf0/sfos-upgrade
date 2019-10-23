@@ -86,8 +86,8 @@ case "$retc" in
   if [ "$logs_remain" -eq "0" ]
   then 
     if [ "$logs_count" -eq "$logs_success" ]
-    then echo "Summary: Processed all $logs_count log files successfully." >&2
-    else echo "Warning: Sucessfully processed $logs_success of $logs_count log files (without a single failure!), but the numbers differ (likely due to an internal logic error)?!?" >&2
+    then echo "Summary: Processed all $logs_count untidy log files in $logdir successfully." >&2
+    else echo "Warning: Sucessfully processed $logs_success of $logs_count untidy log  in $logdir (without a single failure), but the numbers differ (indicating an internal logic flaw)!" >&2
     fi
   else
     if [ "$logs_remain" -lt "120" ]
@@ -95,20 +95,21 @@ case "$retc" in
     else retc=120
     fi
     if [ "$logs_count" -eq "$(expr "$logs_succcess" '+' "$logs_remain")" ]
-    then echo "Warning: Processed $logs_count log files, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!" >&2
-    else echo "Warning: Processed $logs_count log files, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!" >&2
+    then echo "Warning: Processed $logs_count untidy log files in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!" >&2
+    else echo "Error: Processed $logs_count untidy log files in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files (hence $logs_remain remain)!  Additionally these numbers do not add up, indicating an internal logic flaw!" >&2
     fi
   fi
   ;;
 121)
   case "$logs_count$logs_success$logs_nodelete$logs_failed" in
   0000)
-    echo "Notice: Found no log file to tidy in $logdir ." >&2
+    echo "Notice: Found no untidy log files in $logdir ." >&2
     ;;
   *)
-    echo "Warning: Internal logic error.  Found no log file to tidy in $logdir , but processed $logs_count log files: $logs_success successfully, $logs_nodelete tidied but failing to delete them and for $logs_failed tidying failed!" >&2
+    echo "Warning: Internal logic error.  Found no untidy log file in $logdir , but processed $logs_count log files, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed log files!" >&2
     ;;
-*)  
+*)
+  echo "Warning: Internal logic error, $called should never get here!" >&2
   ;;
 esac
 
