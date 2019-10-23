@@ -80,7 +80,7 @@ do
   else retc=121
   fi
 done
-case "$retc" in
+case $retc in
 0)
   logs_remain="$(expr "$logs_nodelete" '+' "$logs_failed")"
   if [ "$logs_remain" -eq "0" ]
