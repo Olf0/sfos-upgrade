@@ -94,7 +94,7 @@ case $retc in
     then retc="$logs_remain"
     else retc=120
     fi
-    if [ "$logs_count" -eq "$(expr "$logs_succcess" '+' "$logs_remain")" ]
+    if [ "$logs_count" -eq "$(expr "$logs_success" '+' "$logs_remain")" ]
     then echo "Error: Processed $logs_count untidy log file(s) in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed (hence $logs_remain untidy log files remain)!" >&2
     else echo "Error: Processed $logs_count untidy log file(s) in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and failed to tidy $logs_failed (hence $logs_remain untidy log files remain)!  Additionally these numbers do not add up, indicating an internal logic flaw in ${called}!" >&2
     fi
