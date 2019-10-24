@@ -87,7 +87,7 @@ case $retc in
   then 
     if [ "$logs_count" -eq "$logs_success" ]
     then echo "Summary: Processed $logs_count untidy log file(s) in $logdir successfully." >&2
-    else echo "Warning: Sucessfully processed $logs_success of $logs_count untidy log file(s) in $logdir (without a single failure), but the numbers differ (indicating an internal logic flaw)!" >&2
+    else echo "Warning: Sucessfully processed $logs_success of $logs_count untidy log file(s) in $logdir (without a single failure), but the numbers differ (indicating an internal logic flaw in ${called})!" >&2
     fi
   else
     if [ "$logs_remain" -lt "120" ]
