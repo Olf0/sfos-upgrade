@@ -62,9 +62,9 @@ do
     echo -n "$logfile"
     logs_count="$(expr "$logs_count" '+' "1")"
     tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
-    if sed 's/\cM//g' "$logfile" | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log" 2> /dev/null
+    if sed 's/\cM//g' "$logfile" | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq 2> /dev/null > "$tidied_log"
     then
-      if rm "$logfile" > /dev/null 2>&1
+      if rm "$logfile" 2> /dev/null
       then
         logs_success="$(expr "$logs_success" '+' "1")"
         echo " tidied successfully."
