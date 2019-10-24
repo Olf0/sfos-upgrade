@@ -102,7 +102,7 @@ case $retc in
   ;;
 121)
   if [ "$logs_count$logs_success$logs_nodelete$logs_failed" = "0000" ]
-  then echo "Notice: Found no untidy log file in $logdir ." >&2
+  then echo "Notice: Found no untidy log file in $logdir" >&2
   else echo "Warning: Internal logic error, as no untidy log file was found in ${logdir}, although $called processed $logs_count untidy log file(s), of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy!" >&2
   fi
   ;;
