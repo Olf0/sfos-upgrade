@@ -105,6 +105,7 @@ case $retc in
   then echo "Notice: Found no untidy log file in $logdir ." >&2
   else echo "Warning: Internal logic error, as no untidy log file was found in ${logdir}, although $called processed $logs_count untidy log file(s), of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy!" >&2
   fi
+  ;;
 *)
   echo "Warning: Internal logic flaw, $called should never get here (return code is ${retc})!" >&2
   ;;
