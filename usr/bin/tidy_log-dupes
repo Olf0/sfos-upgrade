@@ -63,7 +63,7 @@ do
     logs_count="$(expr "$logs_count" '+' "1")"
     tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
     if sed 's/\cM//g' "$logfile" | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq > "$tidied_log"
-    then 
+    then
       if rm "$logfile" 2> /dev/null
       then
         logs_success="$(expr "$logs_success" '+' "1")"
@@ -84,7 +84,7 @@ case $retc in
 0)
   logs_remain="$(expr "$logs_nodelete" '+' "$logs_failed")"
   if [ "$logs_remain" -eq "0" ]
-  then 
+  then
     if [ "$logs_count" -eq "$logs_success" ]
     then echo "Summary: Processed $logs_count untidy log file(s) in $logdir successfully." >&2
     else echo "Warning: Sucessfully processed $logs_success of $logs_count untidy log file(s) in $logdir (without a single failure), but the numbers differ (indicating an internal logic flaw in ${called})!" >&2
