@@ -73,7 +73,7 @@ do
         echo " tidied, but failed to remove it!"
       fi
     else
-      rm -f "$tidied_log"
+      rm -f "$tidied_log" 2> /dev/null
       logs_failed="$(expr "$logs_failed" '+' "1")"
       echo " tidying failed!"
     fi
