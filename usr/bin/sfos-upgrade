@@ -412,7 +412,7 @@ battery_info=""
 battery_path="/sys/class/power_supply/*battery*"
 for battery_uevents in $battery_path
 do
-  if [ "$battery_uevents" != "$battery_path" ] && { source "${battery_uevents}/uevent"; } > /dev/null 2>&1 && true
+  if [ "$battery_uevents" != "$battery_path" ] && { source "${battery_uevents}/uevent" ; } > /dev/null 2>&1 && true
   then
     battery_info="sourced"
     break
