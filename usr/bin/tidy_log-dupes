@@ -67,15 +67,15 @@ do
       if rm "$logfile" 2> /dev/null
       then
         logs_success="$(expr "$logs_success" '+' "1")"
-        echo " tidied successfully."
+        echo ": O.K."
       else
         logs_nodelete="$(expr "$logs_nodelete" '+' "1")"
-        echo " tidied, but failed to remove it!"
+        echo ": Tidied, but failed to remove it!"
       fi
     else
       rm -f "$tidied_log" 2> /dev/null
       logs_failed="$(expr "$logs_failed" '+' "1")"
-      echo " tidying failed!"
+      echo ": Tidying failed!"
     fi
   else retc=121
   fi
