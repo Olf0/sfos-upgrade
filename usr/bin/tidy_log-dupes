@@ -1,5 +1,5 @@
 #!/bin/sh
-set -uC
+set -u
 
 # Exit codes
 # 0       : Everything went fine
