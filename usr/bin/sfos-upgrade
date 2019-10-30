@@ -1,5 +1,5 @@
-#!/bin/bash -o posix
-set -eufC
+#!/bin/bash
+set -eufC -o posix
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
 # (in line 613) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
