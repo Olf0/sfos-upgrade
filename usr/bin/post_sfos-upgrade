@@ -47,6 +47,9 @@ then
   echo
 fi
 
+# This may have become superfluous with SFOS 3.2.0, see
+# https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
+# Would need to investigate, but refreshing twice will do no harm, anyway.
 echo "- Refreshing pkcon's caches:"
 pkcon refresh || exit $?
 
