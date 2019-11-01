@@ -222,7 +222,7 @@ else
           echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" >&2
           if [ -n "$set_ssu" ]
           then echo "Thus upgrading to $stop_release instead." >&2
-            else
+          else
             echo -n "Set SSU to $stop_release before upgrading (a negative reply aborts)?" >&2
             askyes >&2
             set_ssu="yes"
