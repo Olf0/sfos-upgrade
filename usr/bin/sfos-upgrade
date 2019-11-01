@@ -698,7 +698,10 @@ case "$compar_o" in
 l???|??l?)
   if openrepos_repos="$(ssu lr | fgrep 'openrepo')"
   then
-    # Reference: https://jolla.zendesk.com/hc/en-us/articles/201836347#5
+    # References:
+    # https://jolla.zendesk.com/hc/en-us/articles/201836347#5
+    # https://together.jolla.com/question/38508/release-notes-software-version-10516-paarlampi/
+    # https://together.jolla.com/question/33507/release-notes-software-version-10420-ohijarvi/
     echo "- Disabling OpenRepos' repositories (*grading from or to below 1.0.4.20):" | tee -a "$logfile" >&2
     for open_repo in $(echo "$openrepos_repos" | cut -s -f 3 -d ' ')
     do
