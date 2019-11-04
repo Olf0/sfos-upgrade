@@ -128,7 +128,7 @@ else
     exit 2
     ;;
   *)
-    echo "Aborting: Inorrect version format \"${upgrade_release}\" provided." >&2
+    echo "Aborting: Incorrect version format \"${upgrade_release}\" provided." >&2
     exit 3
     ;;
   esac
