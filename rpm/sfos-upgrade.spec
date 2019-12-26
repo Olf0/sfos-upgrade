@@ -3,7 +3,7 @@ Summary:       Scripts for safe and automated upgrading of SailfishOS with loggi
 Version:       3.6.0
 # Stop evaluating the "Release:" field (per %{release}) and cease including it in git tags since v3.6.0, 
 # in order to satisfy OBS and consequently switching to a three field semantic versioning scheme for
-# releases and their tags. 
+# releases and their tags, which must adhere to the format %{name}-%{version} !
 # Hence changes to the spec file now always trigger an increase of the bug fix release number (third field).
 # But the "Release:" field is now (ab)used to indicate the estimated release quality by setting it to 
 # {alpha, beta, delta, epsilon}; note that "gamma" must not be used (as it breaks the alphabetic order).
