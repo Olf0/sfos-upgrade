@@ -1,6 +1,6 @@
 Name:          sfos-upgrade
 Summary:       Scripts for safe and automated upgrading of SailfishOS with logging
-Version:       3.6.2
+Version:       3.6.1
 # Stop evaluating the "Release:" field (per %{release}) and cease including it in git tags since v3.6.0, 
 # in order to satisfy OBS and consequently switching to a three field semantic versioning scheme for
 # releases and their tags, which must adhere to the format %{name}-%{version} !
