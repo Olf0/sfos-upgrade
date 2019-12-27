@@ -6,7 +6,7 @@ Version:       3.6.2
 # releases and their tags.
 # Hence any changes to the spec file now always trigger an increase of the bug fix release number, i.e.
 # the third field of %{version}.
-# But %{release} is now (ab)used to indicate the estimated release quality by setting it
+# But %{release} is now (ab)used to merely *indicate* the estimated release quality by setting it
 # to {alpha, beta, stable}; note that no other identifiers shall be used, but a natural
 # number >= 1 may be directly appended (e.g. "beta3").
 Release:       stable2
