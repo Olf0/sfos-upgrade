@@ -413,7 +413,7 @@ for battery_uevents in $battery_path
 do
   # Workaround for Gemini's kernel broken battery information, which contains spaces: Use eval & sed instead of source / ".".
   # For details, see https://github.com/Olf0/sfos-upgrade/issues/39
-  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(sed 's/\(\w\)=\(.*\)/\1="\2"/' "${battery_uevents}/uevent")" > /dev/null 2>&1 && true
+  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(sed 's/\([]_[:alnum:]]\)=\(.*\)/\1="\2"/' "${battery_uevents}/uevent")" > /dev/null 2>&1 && true
   then
     battery_info="sourced"
     break
