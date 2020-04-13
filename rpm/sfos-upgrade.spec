@@ -1,6 +1,6 @@
 Name:          sfos-upgrade
 Summary:       Scripts for safe and automated upgrading of SailfishOS with logging
-Version:       3.6.4
+Version:       3.7.0
 # Stop evaluating the Release tag content (only set it) and cease including it in git tags since v3.6.0, 
 # in order to satisfy OBS' git_tar.  Consequently switch to a three field semantic versioning scheme for
 # releases and their git tags.
@@ -29,7 +29,7 @@ Requires:      curl
 
 %description
 %{summary}
-Usage: sfos-upgrade [<version>]
+Usage: sfos-upgrade [<version>|--verify|--help]
 With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case.
 Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.
 
