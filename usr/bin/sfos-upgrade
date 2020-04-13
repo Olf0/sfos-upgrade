@@ -110,14 +110,7 @@ then
 else
   set_ssu="yes"
   ssu_set="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
-  
-  if [ "$1" = "--verify" ]
-  then
-    upgrade_release=$installed_release
-  else
-    upgrade_release="$1"
-  fi
-
+  upgrade_release="$1"
   shift
   if [ -n "$*" ]
   then
@@ -128,15 +121,19 @@ else
   [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9])
     true
     ;;
+  --verify)
+    upgrade_release="$installed_release"
+    ;;
   -h|--help)
-    echo "Usage: $called [<version>|--verify]"
+    echo "Usage: $called [<version>|--verify|--help]"
     echo "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
     echo "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
-    echo "With the --verify argument it performs a \"samegrade\" operation, upgrades the current version to the current version. Essentially, it makes sure that the current version is properly installed."
+    echo "With --verify as argument it performs a \"samegrade\" operation, i.e. checks if the correct versions of all RPMs are installed and updates or installs them accordingly."
     exit 2
     ;;
   *)
-    echo "Aborting: Incorrect version format \"${upgrade_release}\" provided." >&2
+    echo "Aborting: Incorrect option or version format \"${upgrade_release}\" provided." >&2
+    echo "For a brief description, see: $called --help" >&2
     exit 3
     ;;
   esac
