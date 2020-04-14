@@ -30,7 +30,7 @@ Usage (as root user):
 
 * **sfos-upgrade [\<version\>]**<br />
   With a version number provided as parameter, it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
-  Without a version number, it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.
+  Without a version number, it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.  Hence the version to upgrade to and SSU's "release mode" have to be set (per e.g., `ssu re <version>`) *before* executing `sfos-upgrade` without parameters.
 
 * **sfos-upgrade --verify**<br />
   Performs a "samegrade" operation, i.e. checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly (for / from *all* active repositories!).
