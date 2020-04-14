@@ -2,7 +2,7 @@
 set -euC -o posix  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not perform a set +f (or +o noglob; plus setopt is not built-in) correctly, which would be needed later!
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 618) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 619) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -226,13 +226,14 @@ else
         l?)
           echo "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" >&2
           if [ -n "$set_ssu" ]
-          then echo "Thus upgrading to $stop_release instead." >&2
+          then
+            echo "Thus upgrading to $stop_release instead." >&2
+            upgrade_release="$stop_release"
           else
-            echo -n "Set SSU to $stop_release before upgrading (a negative reply aborts)?" >&2
+            echo "Warning: Doing so will likely break this SailfishOS installation, unfortunately often only subtly so the issues caused might be observed way later!" >&2
+            echo -n "Do you really want to continue?" >&2
             askyes >&2
-            set_ssu="yes"
           fi
-          upgrade_release="$stop_release"
           echo >&2
           break
           ;;
