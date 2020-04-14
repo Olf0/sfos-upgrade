@@ -30,10 +30,10 @@ Usage (as root user):
 
 * **sfos-upgrade [\<version\>]**<br />
   With a version number provided as parameter, it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
-  Without a version number, it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.  Hence the version to upgrade to and SSU's "release mode" have to be set (per e.g., `ssu re <version>`) *before* executing `sfos-upgrade` without parameters.
+  Without a version number, it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.  Hence the version to upgrade to and SSU's "release mode" have to be set (per e.g., `ssu re <version>`) *before* executing `sfos-upgrade` without a parameter.
 
 * **sfos-upgrade --verify**<br />
-  Performs a "samegrade" operation, i.e. checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly (for / from *all* enabled repositories!).<br />
+  Performs a "samegrade" operation, i.e. checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly.<br />
   This option was introduced with v3.7.0.
 
 * **sfos-upgrade -h|--help**<br />
@@ -48,6 +48,7 @@ Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidie
 Notes:
 
 * Built RPMs are available in the [release section](https://github.com/Olf0/sfos-upgrade/releases) and for easy installation on SailfishOS at [OpenRepos](https://openrepos.net/content/olf/sfos-upgrade).
+* All operations comprise the RPMs from *all* enabled repositories, because that is **version --dup**'s implicit behaviour (as with **pkcon upgrade-system** and **zypper dist-upgrade** / **zypper dup**, all being based on **libzypp**).
 * When upgrading from a long outdated SailfishOS version (e.g., after a "factory reset"), **sfos-upgrade** eases and speeds up the process of upgrading to a recent SailfishOS release via consecutively installing all "stop releases" on the way.<br />
 Simply run `sfos-upgrade <intended version>`, reboot, and repeat: it will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
 Omit running `post_sfos-upgrade` between consecutive SailfishOS upgrades (but do reboot each time!), only run it once after having upgraded to the intended version.
