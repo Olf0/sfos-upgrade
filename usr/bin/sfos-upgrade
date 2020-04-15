@@ -658,10 +658,10 @@ do
 done
 for process in store-client harbour-storema harbour-warehou harbour-osmscou pkcon zypper rpm
 do
-  if pgrep "$process" > /dev/null 2>&1
+  if pgrep -x "$process" > /dev/null 2>&1
   then
     echo "- Stopping $process" | tee -a "$logfile" >&2
-    if ! pkill "$process" 2>&1 | tee -a "$logfile" >&2
+    if ! pkill -x "$process" 2>&1 | tee -a "$logfile" >&2
     then
       echo -n "Notice: Failed to stop $process (process)!  Continue?" | tee -a "$logfile" >&2
       askyes | tee -a "$logfile" >&2
