@@ -71,7 +71,7 @@ compare_versions ()
       a_substring="$(echo "$version_a" | cut -s -f "$field_num" -d '.')"
       b_substring="$(echo "$version_b" | cut -s -f "$field_num" -d '.')"
       if [ "$a_substring" != "$b_substring" ]
-      then
+      then  # When different, ...
         if [ "$a_substring" -lt "$b_substring" ]
         then comparison="l"
         elif [ "$a_substring" -gt "$b_substring" ]
@@ -81,7 +81,7 @@ compare_versions ()
           retc=1
           comparison="x"
         fi
-        break
+        break  # ... jump out of the loop.
       fi
     done
     echo "$comparison$field_num"
