@@ -193,7 +193,7 @@ else
   # not mentioning 1.0.0.5 in Jolla's "official" guides as a stop release).
   if ! recent_stop_releases="$(curl -sS https://jolla.zendesk.com/hc/en-us/articles/201836347 | sed -n '/id="4"/,/id="5"/p' | sed -n '/<ul>/,/<\/ul>/p' | sed -n '/<li>/,/<\/li>/p' | sed 's/<[^>]*>/\n/g' | tr -c '.0-9' '\n' | egrep '^[1-9]\.[0-9]\.[0-9]\.[0-9]$|^[1-9]\.[0-9]\.[0-9]\.[1-9][0-9]$')"
   then
-    echo "Warning: Failed to extract the current \"stop releases\" from https://jolla.zendesk.com/hc/en-us/articles/201836347#4" >&2
+    echo "Warning: Failed to extract the current \"stop releases\" from https://jolla.zendesk.com/hc/en-us/articles/201836347#4.1" >&2
     echo "Hence using an internal, potentially outdated list of stop releases instead." >&2
     if [ -z "$set_ssu" ]
     then echo -n "Do you want to continue?" >&2
