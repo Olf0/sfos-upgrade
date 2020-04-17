@@ -17,7 +17,7 @@ Safety measures:
 * Check BTRFS allocation, if the root filesystem uses BTRFS.
 * Check battery state (since v1.0).
 * Check if upgrading to a correct and available SailfishOS version.
-* Check if omitting (i.e., "jumping over") a [stop release](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4) (since v0.3).
+* Check if omitting (i.e., "jumping over") a [stop release](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4.1) (since v0.3).
 * Automatically unapply all Patches, if Patchmanager is installed.
 * Stop systemd services for cron, btrfs-balance-checker etc. (since v2.2).
 * Terminate running processes, which may disturb upgrading SailfishOS (since v2.7).
