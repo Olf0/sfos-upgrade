@@ -40,7 +40,7 @@ askyes ()
     retcode=0
     ;;
   *)
-    echo "Aborting upon user request."
+    echo "Aborted upon user request."
     exit 4
     ;;
   esac
