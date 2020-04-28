@@ -390,15 +390,21 @@ then
   fi
 else
   free_space="$(df -k / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)"
-  if ! [ "$free_space" -ge "699050" ]
+  if ! [ "$free_space" -ge "349525" ]
   then
-    echo "Aborting: Less than ⅔ GiB ($free_space KiB) free space on the root filesystem!" >&2
+    echo "Aborting: Less than ⅓ GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please clean up or enlarge the root filesystem before retrying." >&2
     exit 1
+  elif ! [ "$free_space" -ge "699050" ]
+  then
+    echo "Warning: Less than ⅔ GiB ($free_space KiB) free space on the root filesystem!" >&2
+    echo "Please consider to abort and to clean up or enlarge the root filesystem before retrying." >&2
+    echo -n "Do you really want to continue?" >&2
+    askyes >&2
   elif ! [ "$free_space" -ge "1048576" ]
   then
-    echo "Warning: Less than 1 GiB ($free_space KiB) free space on the root filesystem!" >&2
-    echo "Please consider to abort and to clean up or enlarge the root filesystem before retrying." >&2
+    echo "Notice: Less than 1 GiB ($free_space KiB) free space on the root filesystem!" >&2
+    echo "Please consider to clean up or enlarge the root filesystem." >&2
     echo >&2
   fi
 fi
