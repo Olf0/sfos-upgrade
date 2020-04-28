@@ -2,7 +2,7 @@
 set -euC -o posix  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not perform a set +f (or +o noglob; plus setopt is not built-in) correctly, which would be needed later!
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 615) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 629) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -390,18 +390,26 @@ then
   fi
 else
   free_space="$(df -k / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)"
+  # Note that in contrast to upgrading at the GUI, the RPMs for upgrading are not all downloaded first (and installed after booting into the system-update mode),
+  # but downloaded and installed one by one, hence requiring much less space on persistent storage (i.e., the root filesystem) for upgrading.
+  # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release, 
+  # but one may upgrade from one stop release to another, comprising the RPMs of multiple releases.
+  # Furthermore these estimates from Jolla only cover their own default components (RPMs), individually installed RPMs (e.g., from the Jolla Store, OpenRepos or even Jolla's SailfishOS repositories) are not and cannot be accounted for.
   if ! [ "$free_space" -ge "349525" ]
+    # This hard ⅓ GiB limit is an rough estimate of an upper boundary for the sum of all RPM size increases by an upgrade plus space for the package management's indexes, caches etc.
   then
     echo "Aborting: Less than ⅓ GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please clean up or enlarge the root filesystem before retrying." >&2
     exit 1
   elif ! [ "$free_space" -ge "699050" ]
+    # As the largest SailfishOS upgrades (Jolla's estimates, in 2019 & 2020: the sum of all updated default RPMs sizes, when upgrading from the direct predecessor release) have been slightly under 500 MiB regularly, a ⅔ GiB limit to warn explicitly seems to be reasonable.
   then
     echo "Warning: Less than ⅔ GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please consider to abort and to clean up or enlarge the root filesystem before retrying." >&2
     echo -n "Do you really want to continue?" >&2
     askyes >&2
   elif ! [ "$free_space" -ge "1048576" ]
+    # This 1 GiB limit to cast a soft low space notice is intended to trigger people to do something about it early.
   then
     echo "Notice: Less than 1 GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please consider to clean up or enlarge the root filesystem." >&2
