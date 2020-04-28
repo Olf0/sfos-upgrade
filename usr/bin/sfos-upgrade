@@ -409,7 +409,7 @@ else
     echo -n "Do you want to continue?" >&2
     askyes >&2
   elif ! [ "$free_space" -ge "1048576" ]
-    # This 1 GiB limit to cast a soft low space notice is intended to trigger people to do something about it early.
+    # This 1 GiB limit to emit a soft low space notice is intended to trigger users early to do something about it.
   then
     echo "Notice: Less than 1 GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please consider to clean up or enlarge the root filesystem." >&2
