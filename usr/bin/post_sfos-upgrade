@@ -45,6 +45,8 @@ then
   echo "- Refreshing zypper's caches:"
   zypper refresh || exit $?
   echo
+  # Syncing, as I could not determine if zypper already does that:
+  sync
 fi
 
 # This may have become superfluous with SFOS 3.2.0, see
@@ -52,7 +54,6 @@ fi
 # Would need to investigate, but refreshing twice will do no harm, anyway.
 echo "- Refreshing pkcon's caches:"
 pkcon refresh || exit $?
-
-# Syncing, as I could not determine if pkcon and zypper already do that:
+# Syncing, as I could not determine if pkcon already does that:
 sync
 
