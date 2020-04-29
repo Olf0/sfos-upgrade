@@ -395,13 +395,13 @@ else
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release, 
   # but one may upgrade from one stop release to another, comprising the RPMs of multiple releases.
   # Furthermore these estimates from Jolla only cover their own default components (RPMs), individually installed RPMs (e.g., from the Jolla Store, OpenRepos or even Jolla's SailfishOS repositories) are not and cannot be accounted for.
-  if ! [ "$free_space" -ge "349525" ]
+  if ! [ "$free_space" -gt "349525" ]
     # This hard ⅓ GiB limit is an rough estimate of an upper boundary for the sum of all RPM size increases by an upgrade plus space for the package management's indexes, caches etc.
   then
     echo "Aborting: Less than ⅓ GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please clean up or enlarge the root filesystem before retrying." >&2
     exit 1
-  elif ! [ "$free_space" -ge "699050" ]
+  elif ! [ "$free_space" -gt "699050" ]
     # As the largest SailfishOS upgrades (Jolla's estimates, in 2019 & 2020: the sum of all updated default RPMs sizes, when upgrading from the direct predecessor release) have been slightly under 500 MiB regularly, a ⅔ GiB limit to warn explicitly seems to be reasonable.
   then
     echo "Warning: Less than ⅔ GiB ($free_space KiB) free space on the root filesystem!" >&2
