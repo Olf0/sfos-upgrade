@@ -716,6 +716,7 @@ l???|??l?)
   if openrepos_repos="$(ssu lr | fgrep 'openrepo')"
   then
     # References:
+    # https://together.jolla.com/question/222221/release-notes-330-rokua/#222221-notification-concerning-apps-from-open-repos
     # https://jolla.zendesk.com/hc/en-us/articles/201836347#5
     # https://together.jolla.com/question/38508/release-notes-software-version-10516-paarlampi/
     # https://together.jolla.com/question/33507/release-notes-software-version-10420-ohijarvi/
