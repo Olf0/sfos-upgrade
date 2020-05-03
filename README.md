@@ -6,7 +6,7 @@ Upgrading SailfishOS at the GUI (per *Settings -> SailfishOS updates*) provides 
 Furthermore the GUI offers no control which SailfishOS version to upgrade to.
 
 In contrast to that, Jolla's [guide how to upgrade SailfishOS at the command line](https://jolla.zendesk.com/hc/en-us/articles/360005795474) offers full control, while lacking any logs or safety checks.<br />
-And it is tedious and error prone to issue multiple, critical commands manually at the command line.
+Furthermore it is tedious and error prone to issue multiple, critical commands manually at the command line.
 
 **sfos-upgrade** performs the steps to upgrade SailfishOS at the command line in an automated manner, while providing extensive safety measures plus full log output at the screen and in a log file.<br />
 <br />
