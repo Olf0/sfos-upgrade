@@ -1,6 +1,6 @@
 Name:          sfos-upgrade
 Summary:       Scripts for safe and automated upgrading of SailfishOS with logging
-Version:       3.7.5
+Version:       3.7.6
 # Stop evaluating the Release tag content (only set it) and cease including it in git tags since v3.6.0, 
 # in order to satisfy OBS' git_tar.  Consequently switch to a three field semantic versioning scheme for
 # releases and their git tags.
@@ -9,7 +9,7 @@ Version:       3.7.5
 # But the Release tag is now (ab)used to merely indicate the estimated release quality by setting it
 # to {alpha, beta, stable} with a natural number >= 1 directly appended (e.g. "beta3").  Note that
 # no other identifiers shall be used.
-Release:       stable9
+Release:       stable10
 Group:         System/Base
 Distribution:  SailfishOS
 Vendor:        olf
@@ -21,7 +21,7 @@ Source:        https://github.com/Olf0/%{name}/archive/%{version}/%{name}-%{vers
 # It only accepts a GIF or XPM file (successfully tested GIF89a and XPMv3, but an XPM icon results
 # in a bad visual quality and large file size) in the SOURCE directory (but not in the tarball)!
 # Hence only to be used, when the file is put there:
-# Icon:         up.256x256.gif
+#Icon:          up.256x256.gif
 BuildArch:     noarch
 Requires:      ssu
 Requires:      sailfish-version
