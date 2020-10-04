@@ -1,6 +1,6 @@
 Name:          sfos-upgrade
 Summary:       Scripts for safe and automated upgrading of SailfishOS with logging
-Version:       3.7.7
+Version:       3.7.8
 # Stop evaluating the Release tag content (only set it) and cease including it in git tags since v3.6.0, 
 # in order to satisfy OBS' git_tar.  Consequently switch to a three field semantic versioning scheme for
 # releases and their git tags.
@@ -9,7 +9,7 @@ Version:       3.7.7
 # But the Release tag is now (ab)used to merely indicate the estimated release quality by setting it
 # to {alpha, beta, stable} with a natural number >= 1 directly appended (e.g. "beta3").  Note that
 # no other identifiers shall be used.
-Release:       stable11
+Release:       stable12
 Group:         System/Base
 Distribution:  SailfishOS
 Vendor:        olf
