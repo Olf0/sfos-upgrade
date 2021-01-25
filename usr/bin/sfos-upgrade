@@ -2,7 +2,7 @@
 set -euC -o posix  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not perform a set +f (or +o noglob; plus setopt is not built-in) correctly, which would be needed later!
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 630) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 633) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
