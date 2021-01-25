@@ -36,7 +36,7 @@ Usage (as root user):
   Performs a "samegrade" operation, i.e. checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly.<br />
   This option was introduced with v3.7.0.
 
-* **sfos-upgrade -h|--help**<br />
+* **sfos-upgrade -?|--help**<br />
   Emits a brief usage description.
 
 When an upgrade succeeded, reboot, and do not miss to run **post_sfos-upgrade** (as root) then!<br />
