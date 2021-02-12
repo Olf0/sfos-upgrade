@@ -154,7 +154,7 @@ else
     echo >&2
     ;;
   *)
-    echo "Comparing versions in check for the installed version differing from the one currently set for SSU failed." >&2
+    echo "Comparing versions failed when checking, if the installed version differs from the one currently set for SSU." >&2
     exit 7
     ;;
   esac
