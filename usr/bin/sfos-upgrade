@@ -180,7 +180,7 @@ fi
 if [ "$installed_release" = "$upgrade_release" ]
 then compar0="e4"
 else
-  known_stop_releases="3.4.0.24\n3.2.0.12\n3.0.0.8\n2.2.0.29\n2.0.5.6\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5\n1.0.0.5"
+  known_stop_releases="4.0.1.48\n3.4.0.24\n3.2.0.12\n3.0.0.8\n2.2.0.29\n2.0.5.6\n2.0.0.10\n1.1.9.30\n1.1.7.28\n1.1.2.16\n1.0.2.5\n1.0.0.5"
   # 0.99.5.11, 1.0.0.5 and 1.0.1.10 are not documented to be "stop releases",
   # taking the information of sections 4 and 5 (in combination!) at
   # https://jolla.zendesk.com/hc/en-us/articles/201836347#4 into account.
