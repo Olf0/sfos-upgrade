@@ -24,9 +24,9 @@ set -euC -o posix  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release
 #  23  "Should never be reached" *) case #2
 #  42  "Should never be reached" *) case #3
 
-export LANG="C"  # Engineering English only
-export LC_CTYPE="POSIX"
-export LC_COLLATE="POSIX"
+export LANG=C  # Engineering English only
+export LC_CTYPE=POSIX
+export LC_COLLATE=POSIX
 
 askyes ()
 {
@@ -128,7 +128,7 @@ else
     exit 2
     ;;
   *)
-    echo "Aborting: Incorrect option or version format \"${upgrade_release}\" provided." >&2
+    echo "Aborting: Incorrect option or version format \"${upgrade_release}\" provided!" >&2
     echo "For a brief usage description, see: $called --help" >&2
     exit 3
     ;;
