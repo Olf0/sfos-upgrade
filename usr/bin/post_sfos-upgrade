@@ -1,9 +1,9 @@
 #!/bin/sh
 set -ufC
 
-export LANG="C"  # Engineering English only
-export LC_CTYPE="POSIX"
-export LC_COLLATE="POSIX"
+export LANG=C  # Engineering English only
+export LC_CTYPE=POSIX
+export LC_COLLATE=POSIX
 
 called="$(basename "$0")"
 if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
