@@ -6,9 +6,9 @@ Version:       3.8.2
 # releases and their git tags.
 # Hence any changes to the spec file now always trigger an increase of the bug fix release number, i.e.
 # the third field of the Version.
-# But the Release tag is now (ab)used to merely indicate the estimated release quality by setting it
-# to {alpha, beta, stable} with a natural number >= 1 directly appended (e.g. "beta3").  Note that
-# no other identifiers shall be used.
+# The Release tag is now (ab)used to merely indicate the estimated release quality by setting it
+# to {alpha, beta, stable} with a natural number >= 1 directly appended (e.g. "beta3").  Note
+# that no other identifiers shall be used.
 Release:       stable15
 Group:         System/Base
 Distribution:  SailfishOS
