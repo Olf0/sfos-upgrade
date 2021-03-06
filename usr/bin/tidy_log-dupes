@@ -10,9 +10,9 @@ set -u
 # 124     : Error parsing parameters
 # 126     : Help called
 
-export LANG="C"  # Engineering English only
-export LC_CTYPE="POSIX"
-export LC_COLLATE="POSIX"
+export LANG=C  # Engineering English only
+export LC_CTYPE=POSIX
+export LC_COLLATE=POSIX
 
 called="$(basename "$0")"
 retc=0
