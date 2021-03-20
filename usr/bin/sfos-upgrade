@@ -624,7 +624,7 @@ esac
 askyes >&2
 echo >&2
 
-logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%F_%H-%M-%S').log-dupes.txt"
+logfile="/var/log/systemupdate_${upgrade_release}-from-${installed_release}_$(date +'%Ft%H-%M-%S').log-dupes.txt"
 if ! touch "$logfile"
 then
   echo "Aborting: Failed to create logfile!" >&2
