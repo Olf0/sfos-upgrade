@@ -1,8 +1,8 @@
 #!/bin/bash
-set -euC -o posix  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not perform a set +f (or +o noglob; plus setopt is not built-in) correctly, which would be needed later!
+set -euC  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not perform a set +f (or +o noglob; plus setopt is not built-in) correctly, which would be needed later!
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 636) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 639) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -12,7 +12,9 @@ set -euC -o posix  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release
 # from Fedora, via MeeGo and Mer (MeeGo reconstructed), too (i.e., in addition to the presence of bash by default).
 # Per SailfishOS 4.0, busybox's variant of ash has become the shell installed by default, which provides some
 # bash compatibility when called via its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
-# including "-o pipefail" (hurray!).
+# including "-o pipefail" (hurray!).  But not "-o posix" (which was used to guarantee shell behaviour as defined
+# by POSIX up to sfos-upgrade 3.8.1), which hopefully causes no difference in the behaviour of bash-3.2, bash-5 and
+# a 2020s busybox-ash (because any one of these may be installed).
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and stays free of bashisms.
 
 # Exit codes:
