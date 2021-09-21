@@ -179,7 +179,7 @@ known_sfos_releases="4.2.0.21,4.2.0.19,4.1.0.24,4.1.0.23,4.0.1.48,4.0.1.45,3.4.0
 #  askyes >&2
 #  echo >&2
 #fi
-  all_sfos_releases="$(echo -e "${recent_stop_releases}\n$(echo "$known_sfos_releases" | tr ',' '\n')" | grep -v '^$' | sort -ur)"
+  all_sfos_releases="$(echo -e "${recent_sfos_releases}\n$(echo "$known_sfos_releases" | tr ',' '\n')" | grep -v '^$' | sort -ur)"
 # Side note: all_sfos_releases is sorted from highest to lowest (by "sort -r"), in contrast to the all_stop_releases (below).
 if ! echo "$all_sfos_releases" | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
 then
