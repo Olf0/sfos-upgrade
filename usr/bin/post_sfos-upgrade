@@ -63,3 +63,4 @@ sync
 echo "- Checking for updates per pkcon:"
 # As of SailfishOS 4.1.0, `version --dup` does not seem to update all packages, any more:
 pkcon -y update
+
