@@ -704,14 +704,22 @@ then
 fi
 
 if which patchmanager > /dev/null 2>&1
-then
-  echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile" >&2
-  if ! patchmanager --unapply-all >> "$logfile" 2>&1
+then  # Unapply all patches if Patchmanager 2.x is installed
+  if [ -d /var/lib/patchmanager/ausmt/patches/ ]
   then
-    echo "Aborting: Failed to unapply Patchmanager-Patches!" | tee -a "$logfile" >&2
-    exit 6
+    echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile" >&2
+    if ! patchmanager --unapply-all >> "$logfile" 2>&1
+    then
+      echo "Aborting: Failed to unapply Patchmanager-Patches!" | tee -a "$logfile" >&2
+      exit 6
+    fi
+    echo | tee -a "$logfile" >&2
+    if [ -n "$(ls -A /var/lib/patchmanager/ausmt/patches/)" ]
+    then
+      echo "Unapply *all* patches before upgrading SailfishOS!" >&2
+      exit 6
+    fi
   fi
-  echo | tee -a "$logfile" >&2
 fi
 
 # Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
