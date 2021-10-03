@@ -704,7 +704,7 @@ then
 fi
 
 if which patchmanager > /dev/null 2>&1
-then  # Unapply all patches if Patchmanager 2.x is installed
+then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   if [ -d /var/lib/patchmanager/ausmt/patches/ ]
   then
     echo "- Unapplying all Patchmanager-Patches." | tee -a "$logfile" >&2
@@ -716,7 +716,7 @@ then  # Unapply all patches if Patchmanager 2.x is installed
     echo | tee -a "$logfile" >&2
     if [ -n "$(ls -A /var/lib/patchmanager/ausmt/patches/)" ]
     then
-      echo "Unapply *all* patches before upgrading SailfishOS!" >&2
+      echo "Unapply *all* Patchmanager-Patches before upgrading SailfishOS!" >&2
       exit 6
     fi
   fi
