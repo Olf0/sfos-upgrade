@@ -48,7 +48,7 @@ then
   # Syncing, as I could not determine if zypper already does that:
   sync
   echo "- Checking for updates per zypper:"
-  # As of SailfishOS 4.1.0, `version --dup` does not seem to update all packages, any more:
+  # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
   zypper update -y -l
   echo
 fi
@@ -61,6 +61,6 @@ pkcon refresh || exit $?
 # Syncing, as I could not determine if pkcon already does that:
 sync
 echo "- Checking for updates per pkcon:"
-# As of SailfishOS 4.1.0, `version --dup` does not seem to update all packages, any more:
+# As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
 pkcon -y update
 
