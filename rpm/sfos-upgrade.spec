@@ -9,7 +9,7 @@ Version:       3.9.1
 # The Release tag is now (ab)used to merely indicate the estimated release quality by setting it
 # to {alpha,beta,rc,stable} with a natural number >= 1 directly appended (e.g. "beta3").  Note
 # that no other identifiers shall be used.
-Release:       stable1
+Release:       rc2
 Group:         System/Base
 Distribution:  SailfishOS
 Vendor:        olf
