@@ -22,7 +22,7 @@ echo "- Cleaning logfiles of duplicate entries."
 tidy_log-dupes "$@"
 echo
 
-if which store-client > /dev/null 2>&1
+if command -v store-client > /dev/null 2>&1
 then
   echo "- Removing outdated Store version info."
   for i in '-TERM' '-QUIT' '-HUP' '' '-KILL' '-Failed_to_kill_store-client'
@@ -37,7 +37,7 @@ then
 fi
 rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
 
-if which zypper > /dev/null 2>&1
+if command -v zypper > /dev/null 2>&1
 then
 #  No need to be "brutal":
 #  echo "- Cleaning zypper's caches:"
