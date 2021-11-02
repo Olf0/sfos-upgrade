@@ -410,13 +410,13 @@ else
   then  # This hard ½ GiB limit is an rough estimate of an upper boundary for the sum of all RPM size increases by an upgrade plus space for the package management's indexes, caches etc.
     echo "Aborting: Less than ½ GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please clean up or enlarge the root filesystem before retrying, see e.g.:" >&2
-    echo "https://together.jolla.com/question/222126/guide-installing-sailfish-x-on-xperias/#222126-33-increasing-the-root-lvm-volume-size" >&2
+    echo "https://gitlab.com/Phoen7x/sailfishX/-/blob/master/README.md#33-increasing-the-root-lvm-volume-size" >&2
     exit 1
   elif ! [ "$free_space" -gt "786432" ]
   then  # As the largest SailfishOS upgrades (Jolla's estimates: the sum of the sizes of all updated RPMs (which are installed by default), when directly upgrading from the predecessor release) have been over 600 MiB (e.g., SFOS 3.3.0 -> 3.4.0), a ¾ GiB limit to warn explicitly seems to be reasonable.
     echo "Warning: Less than ¾ GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please consider to abort and to clean up or enlarge the root filesystem before retrying, see e.g.:" >&2
-    echo "https://together.jolla.com/question/222126/guide-installing-sailfish-x-on-xperias/#222126-33-increasing-the-root-lvm-volume-size" >&2
+    echo "https://gitlab.com/Phoen7x/sailfishX/-/blob/master/README.md#33-increasing-the-root-lvm-volume-size" >&2
     echo -n "Do you really want to continue?" >&2
     askyes >&2
     echo >&2
@@ -424,7 +424,7 @@ else
   then  # This 1 GiB limit to emit a soft low space notice is intended to trigger users early to do something about it.
     echo "Notice: Less than 1 GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please consider to clean up or enlarge the root filesystem, see e.g.:" >&2
-    echo "https://together.jolla.com/question/222126/guide-installing-sailfish-x-on-xperias/#222126-33-increasing-the-root-lvm-volume-size" >&2
+    echo "https://gitlab.com/Phoen7x/sailfishX/-/blob/master/README.md#33-increasing-the-root-lvm-volume-size" >&2
     echo >&2
   fi
 fi
