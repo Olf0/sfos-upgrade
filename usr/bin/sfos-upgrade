@@ -341,7 +341,7 @@ fi
 if mount -t btrfs | cut -s -f 3 -d ' ' | grep -q '^/$'
 then
   btrfs_check="KO"
-  if which btrfs-balancer > /dev/null 2>&1
+  if command -v btrfs-balancer > /dev/null 2>&1
   then
     btrfs_allocation="$(btrfs-balancer allocation / | tr -s ' ')"
     btrfs_alloc_percent="$(echo "$btrfs_allocation" | grep '^Allocated: ' | cut -f 2 -d ' ')"
@@ -373,7 +373,7 @@ then
         echo >&2
       fi
     fi
-  elif which btrfs > /dev/null 2>&1
+  elif command -v btrfs > /dev/null 2>&1
   then
     btrfs_allocation="$(btrfs filesystem df / | grep -m 1 '^Data' | cut -s -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
     btrfs_total="$(echo "$btrfs_allocation" | grep '^total=' | cut -f 2 -d '=')"
@@ -706,7 +706,7 @@ then
   echo | tee -a "$logfile" >&2
 fi
 
-if which patchmanager > /dev/null 2>&1
+if command -v patchmanager > /dev/null 2>&1
 then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   if [ -d /var/lib/patchmanager/ausmt/patches/ ]
   then
