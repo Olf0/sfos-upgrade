@@ -18,7 +18,7 @@ Safety measures:
 * Check battery state (since v1.0).
 * Check if upgrading to a correct and available SailfishOS version.
 * Check if omitting (i.e., "jumping over") a [stop release](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4.1) (since v0.3).
-* Automatically unapply all Patches, if Patchmanager is installed.
+* Automatically unapply all Patches, if Patchmanager 2 is installed.
 * Stop systemd services for cron, btrfs-balance-checker etc. (since v2.2).
 * Terminate running processes, which may disturb upgrading SailfishOS (since v2.7).
 * Disable all OpenRepos' repositories, when upgrading from a SailfishOS version below 1.0.4 (since v0.4).
