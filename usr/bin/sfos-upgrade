@@ -38,7 +38,7 @@ askyes ()
 {
   # All its regular output goes to STDOUT (only warnings go to STDERR)
   # and it exits (instead of returning) when the user asks to abort.
-  echo -n " (Y/N) "
+  echo -n " (y/N) "
   read yn
   retcode=1
   case "$yn" in
