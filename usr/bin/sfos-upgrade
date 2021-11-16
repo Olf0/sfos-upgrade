@@ -126,7 +126,7 @@ else
   --verify)
     upgrade_release="$installed_release"
     ;;
-  -\?|--help)
+  -\?|-h|--help)
     echo "Usage: $called [<version>|--verify|--help]"
     echo "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
     echo "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
