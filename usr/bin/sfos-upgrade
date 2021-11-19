@@ -8,7 +8,7 @@ set -euC  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash anyway; though I have not checked
-# that for ancient releases (which might be re-deployed after a "factory reset"), likely SailfishOS inherited that 
+# that for ancient releases (which might be re-deployed after a "factory reset"), likely SailfishOS inherited that
 # from Fedora, via MeeGo and Mer (MeeGo reconstructed), too (i.e., in addition to the presence of bash by default).
 # Per SailfishOS 4.0, busybox's variant of ash has become the shell installed by default, which provides some
 # bash compatibility when called via its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
