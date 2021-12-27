@@ -430,6 +430,24 @@ else
   fi
 fi
 
+if lsblk -nlio MOUNTPOINT | grep -q '^/opt$'
+then
+  free_space="$(df -k /opt | sed -n '2p' | rev | grep '^tpo/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)"
+  if ! [ "$free_space" -gt "393216" ]
+  then
+    echo "Aborting: Less than 384 MiB ($free_space KiB) free space on the /opt filesystem!" >&2
+    echo "Please clean up in /opt and its subdirectories before retrying." >&2
+    exit 1
+  elif ! [ "$free_space" -gt "460800" ]
+  then
+    echo "Warning: Less than 450 MiB ($free_space KiB) free space on the /opt filesystem!" >&2
+    echo "Please consider to abort and to clean up in /opt and its subdirectories before retrying." >&2
+    echo -n "Do you really want to continue?" >&2
+    askyes >&2
+    echo >&2
+  fi
+fi
+
 POWER_SUPPLY_STATUS=""
 POWER_SUPPLY_CAPACITY=""
 POWER_SUPPLY_CHARGE_NOW=""
