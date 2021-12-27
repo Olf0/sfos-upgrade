@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euC  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not perform a set +f (or +o noglob; plus setopt is not built-in) correctly, which would be needed later!
+export POSIXLY_CORRECT=1
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
 # (in line 641) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
@@ -14,7 +15,8 @@ set -euC  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not
 # bash compatibility when called via its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
 # including "-o pipefail" (hurray!).  But not "-o posix" (which was used to guarantee shell behaviour as defined
 # by POSIX up to sfos-upgrade 3.8.1), which hopefully causes no difference in the behaviour of bash-3.2, bash-5 and
-# a 2020s busybox-ash (because any one of these may be installed).
+# a 2020s busybox-ash (because any one of these may be installed).  BTW, setting POSIXLY_CORRECT achives the same 
+# without compatibility issues and (when exported) also for a number of other GNU utilities.
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and stays free of bashisms.
 
 # Exit codes:
