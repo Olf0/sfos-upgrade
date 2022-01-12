@@ -29,7 +29,7 @@ Safety measures:
 Usage (as root user):
 
 * **sfos-upgrade [\<version\>]**<br />
-  With a version number provided as parameter, it sets SSU to this version and in release mode before upgrading.  This is the regular use case.<br />
+  With a version number provided as parameter, it sets SSU to this version and in release mode before upgrading to this SailfishOS version.  This is the regular use case.<br />
   Without a version number, it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.  Hence the version to upgrade to and SSU's "release mode" have to be set (per e.g., `ssu re <version>`) *before* executing `sfos-upgrade` without a parameter.
 
 * **sfos-upgrade --verify**<br />
