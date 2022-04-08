@@ -1,5 +1,6 @@
 # sfos-upgrade
-### Scripts for safe and automated upgrading of SailfishOS with logging
+### Scripts for fail-safe and semi-automated upgrading of SailfishOS at the command line with logging
+
 <br />
 
 Upgrading SailfishOS at the GUI (per *Settings -> SailfishOS updates*) provides very little information about its progress / process / success, beyond reading `/var/log/systemupdate.log` after an upgrade.  This can make troubleshooting issues hard.<br />
