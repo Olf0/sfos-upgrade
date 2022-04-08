@@ -1,5 +1,5 @@
 Name:          sfos-upgrade
-Summary:       Scripts for safe and automated upgrading of SailfishOS with logging
+Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line with logging
 Version:       3.9.4
 # Stop evaluating the Release tag content (only set it) and cease including it
 # in git tags since v3.6.0, in order to satisfy SailfishOS-OBS' tar_git, see:
@@ -37,7 +37,9 @@ Requires:      sailfish-version
 Requires:      curl
 
 %description
-%{summary}
+Scripts for fail-safe and semi-automated upgrading of SailfishOS at the command
+line with logging.
+
 Usage: sfos-upgrade [<version>|--verify|--help]
 
 With a version number provided as parameter it sets SSU to this version and in
