@@ -17,8 +17,9 @@ Vendor:        olf
 Packager:      olf
 License:       LGPL-2.1-only
 URL:           https://github.com/Olf0/%{name}
-# The next lines require that the value of %{name} is also the project name at GitHub and
-# the value of %{version} is the name of a correspondingly set git-tag.
+# The next lines require that the value of %{name} is also the project name at
+# GitHub and the value of %{version} is also the name of a correspondingly set
+# git-tag.
 # Alternative link, which also downloads ${projectname}-${tagname}.tar.gz:
 # Source:        https://github.com/Olf0/%{name}/archive/%{version}.tar.gz
 Source:        https://github.com/Olf0/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
