@@ -2,7 +2,8 @@ Name:          sfos-upgrade
 Summary:       Scripts for safe and automated upgrading of SailfishOS with logging
 Version:       3.9.4
 # Stop evaluating the Release tag content (only set it) and cease including it
-# in git tags since v3.6.0, in order to satisfy OBS' git_tar.
+# in git tags since v3.6.0, in order to satisfy SailfishOS-OBS' tar_git, see:
+# https://github.com/MeeGoIntegration/obs-service-tar-git/blob/master/tar_git
 # Consequently switch to a three field semantic versioning scheme for releases
 # and their git tags.  Hence any changes to the spec file now always trigger an
 # increase of the bug fix release number, i.e., the third field of the Version.
@@ -17,11 +18,11 @@ Vendor:        olf
 Packager:      olf
 License:       LGPL-2.1-only
 URL:           https://github.com/Olf0/%{name}
-# The next lines require that the value of %{name} is also the project name at
-# GitHub and the value of %{version} is also the name of a correspondingly set
-# git-tag.
+# The "Source:" line requires that the value of %{name} is also the project
+# name at GitHub and the value of %{version} is also the name of a
+# correspondingly set git-tag.
 # Alternative link, which also downloads ${projectname}-${tagname}.tar.gz:
-# Source:        https://github.com/Olf0/%{name}/archive/%{version}.tar.gz
+# Source:      https://github.com/Olf0/%{name}/archive/%{version}.tar.gz
 Source:        https://github.com/Olf0/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 # rpmbuild (as of v4.14.1) handles the Icon tag awkwardly and in contrast to
 # the Source tag(s):
