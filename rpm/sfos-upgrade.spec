@@ -45,7 +45,7 @@ Without a version number it retrieves the one set for SSU to perform slightly
 relaxed checks, but does not alter SSU's settings for upgrading.
 
 %prep
-%setup
+%setup -q
 
 %build
 
