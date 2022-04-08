@@ -33,7 +33,7 @@ Usage (as root user):
   Without a version number, it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.  Hence the version to upgrade to and SSU's "release mode" have to be set (per e.g., `ssu re <version>`) *before* executing `sfos-upgrade` without a parameter.
 
 * **sfos-upgrade --verify**<br />
-  Performs a "samegrade" operation, i.e. checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly.<br />
+  Performs a "samegrade" operation, i.e. checks if the recent versions of all available RPMs are installed and updates or installs them accordingly.<br />
   This option was introduced with v3.7.0.
 
 * **sfos-upgrade -?|--help**<br />
