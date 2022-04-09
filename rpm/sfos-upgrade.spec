@@ -12,10 +12,8 @@ Version:       3.9.4
 # directly appended (e.g. "beta3").  Note that no other identifiers shall be
 # used.
 Release:       release1
-Group:         System/Base
+Group:         Applications/System
 Distribution:  SailfishOS
-Vendor:        olf
-Packager:      olf
 License:       LGPL-2.1-only
 URL:           https://github.com/Olf0/%{name}
 # The "Source:" line requires that the value of %{name} is also the project
@@ -36,9 +34,13 @@ Requires:      ssu
 Requires:      sailfish-version
 Requires:      curl
 
+%define or_url https://openrepos.net/content/olf/sfos-upgrade
+
+# This description section includes metadata for SailfishOS:Chum, see
+# https://github.com/sailfishos-chum/main/blob/main/Metadata.md
 %description
 Scripts for fail-safe and semi-automated upgrading of SailfishOS at the command
-line with logging.
+line with logging
 
 Usage: sfos-upgrade [<version>|--verify|--help]
 
@@ -47,6 +49,25 @@ release mode before upgrading.  This is the regular use case.
 
 Without a version number it retrieves the one set for SSU to perform slightly
 relaxed checks, but does not alter SSU's settings for upgrading.
+
+%if "%{?vendor}" == "chum"
+PackageName: sfos-upgrade
+Type: console-application
+DeveloperName: olf (Olf0)
+Categories:
+ - System
+ - Utility
+ - Settings
+ - PackageManager
+ - ConsoleOnly
+Custom:
+  Repo: %{url}
+Icon: %{url}/raw/master/icon/up.256x256.png
+Url:
+  Homepage: %{or_url}
+  Help: %{or_url}#comments
+  Bugtracker: %{url}/issues
+%endif
 
 %prep
 %setup -q
