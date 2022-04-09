@@ -34,7 +34,7 @@ Requires:      ssu
 Requires:      sailfish-version
 Requires:      curl
 
-%define or_url https://openrepos.net/content/olf/sfos-upgrade
+%define orn_url https://openrepos.net/content/olf/sfos-upgrade
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -64,8 +64,8 @@ Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/icon/up.256x256.png
 Url:
-  Homepage: %{or_url}
-  Help: %{or_url}#comments
+  Homepage: %{orn_url}
+  Help: %{orn_url}#comments
   Bugtracker: %{url}/issues
 %endif
 
