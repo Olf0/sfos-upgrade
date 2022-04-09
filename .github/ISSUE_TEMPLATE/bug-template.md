@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a bug for this project
+about: Report a bug for sfos-upgrade
 title: "[Bug] "
 labels: 'bug'
 assignees: ''
