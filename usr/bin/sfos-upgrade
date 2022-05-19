@@ -3,9 +3,8 @@ set -euC  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not
 export POSIXLY_CORRECT=1
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
 
-
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 641) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 633) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -13,9 +12,9 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash anyway; though I have not checked
 # that for ancient releases (which might be re-deployed after a "factory reset"), likely SailfishOS inherited that
 # from Fedora, via MeeGo and Mer (MeeGo reconstructed), too (i.e., in addition to the presence of bash by default).
-# Per SailfishOS 4.0, busybox's variant of ash has become the shell installed by default, which provides some
+# Since SailfishOS 4.0, the busybox variant of ash has become the shell installed by default, which provides some
 # bash compatibility when called via its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
-# including "-o pipefail" (hurray!).  But not "-o posix" (which was used to guarantee shell behaviour as defined
+# including "-o pipefail" (hurray!).  But not "-o posix" (which was used to ensure shell behaviour as defined
 # by POSIX up to sfos-upgrade 3.8.1), which hopefully causes no difference in the behaviour of bash-3.2, bash-5 and
 # a 2020s busybox-ash (because any one of these may be installed).  BTW, setting POSIXLY_CORRECT achives the same 
 # without compatibility issues and (when exported) also for a number of other GNU utilities.
