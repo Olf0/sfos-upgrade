@@ -18,7 +18,7 @@ Safety measures:
 * Check BTRFS allocation, if the root filesystem uses BTRFS.
 * Check battery state (since v1.0).
 * Check if upgrading to a correct and available SailfishOS version.
-* Check if omitting (i.e., "jumping over") a [stop release](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4.1) (since v0.3).
+* Check if omitting (i.e., "jumping over") a [stop release](https://docs.sailfishos.org/Releases/) (since v0.3).
 * Automatically unapply all Patches, if Patchmanager 2 is installed.
 * Stop systemd services for cron, btrfs-balance-checker etc. (since v2.2).
 * Terminate running processes, which may disturb upgrading SailfishOS (since v2.7).
@@ -51,7 +51,7 @@ Notes:
 * Built RPMs are available in the [release section](https://github.com/Olf0/sfos-upgrade/releases) and for easy installation on SailfishOS at [OpenRepos](https://openrepos.net/content/olf/sfos-upgrade).
 * All operations comprise the RPMs from *all* enabled repositories, because that is **version --dup**'s implicit behaviour (as with **pkcon upgrade-system** and **zypper dist-upgrade** / **zypper dup** too, all utilising **libzypp**).
 * When upgrading from a long outdated SailfishOS version (e.g., after a "factory reset"), **sfos-upgrade** eases and speeds up the process of upgrading to a recent SailfishOS release via consecutively installing all "stop releases" on the way.<br />
-Simply run `sfos-upgrade <intended version>`, reboot, and repeat: it will guide you through all [stop releases](https://jolla.zendesk.com/hc/en-us/articles/201836347?#4).<br />
+Simply run `sfos-upgrade <intended version>`, reboot, and repeat: it will guide you through all [stop releases](https://docs.sailfishos.org/Releases/).<br />
 When upgrading to SailfishOS releases < 4.1.0, you may omit running `post_sfos-upgrade` between consecutive SailfishOS upgrades (but do reboot each time!).  But you shall run it after having upgraded to any SailfishOS release ≥ 4.1.0 or the ultimately intended version.
 * To ensure that a SailfishOS installation is complete and up to date, use `sfos-upgrade --verify`; this will "samegrade" to the installed version, which is as close as one can get to the `version --verify` lost [since SailfishOS 2.2.1](https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-sailfish-version) (which only checked for missing or not up-to-date RPMs, while "samegrading" will also install them) without **zypper**.  With it (per `pkcon install zypper`), a `zypper refresh && zypper verify --dry-run` comes closer to what `version --verify` did (only checking).  While **zypper** can also be used for up-/down-/same-grading, that is [rather a "last resort"-measure than the primary recommendation](https://together.jolla.com/question/117335/verify-integrity-of-installed-packages-after-upgrade-or-later/?answer=214905#post-id-214905), hence use **sfos-upgrade** for that.
 * **sfos-upgrade** supports [all public SailfishOS releases](https://coderus.openrepos.net/whitesoft/sailversion) and should work fine for upgrading from / to any release (it accepts only version numbers of at least 1.0.0.0 at the command line, but omits this check when called without a parameter after utilising **ssu** to pre-set a version to upgrade to).
