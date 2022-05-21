@@ -2,8 +2,9 @@ Name:          sfos-upgrade
 Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line with logging
 Version:       3.9.4
 # Stop evaluating the Release tag content (only set it) and cease including it
-# in git tags since v3.6.0, in order to satisfy SailfishOS-OBS' tar_git, see:
-# https://github.com/MeeGoIntegration/obs-service-tar-git/blob/master/tar_git
+# in git tags since v3.6.0, in order to satisfy SailfishOS-OBS' tar_git, see
+# https://github.com/storeman-developers/harbour-storeman/wiki/Git-tag-format#analysis-of-tar_git
+# or analyse https://github.com/MeeGoIntegration/obs-service-tar-git/blob/master/tar_git
 # Consequently switch to a three field semantic versioning scheme for releases
 # and their git tags.  Hence any changes to the spec file now always trigger an
 # increase of the bug fix release number, i.e., the third field of the Version.
