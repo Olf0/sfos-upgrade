@@ -1,27 +1,23 @@
 Name:          sfos-upgrade
 Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line with logging
+# The Git release tag format is <version>-<release> since sfos-upgrade 3.9.4.
+# The <version> field adheres to semantic versioning and the <release> field 
+# is comprised of {alpha,beta,rc,release} postfixed with a natural number
+# greater or equal to 1 (e.g. "beta3").  For details and reasons, see
+# https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
 Version:       3.9.4
-# Stop evaluating the Release tag content (only set it) and cease including it
-# in git tags since v3.6.0, in order to satisfy SailfishOS-OBS' tar_git, see:
-# https://github.com/MeeGoIntegration/obs-service-tar-git/blob/master/tar_git
-# Consequently switch to a three field semantic versioning scheme for releases
-# and their git tags.  Hence any changes to the spec file now always trigger an
-# increase of the bug fix release number, i.e., the third field of the Version.
-# The Release tag is now (ab)used to merely indicate the estimated release
-# quality by setting it to {alpha,beta,rc,release} with a natural number >= 1
-# directly appended (e.g. "beta3").  Note that no other identifiers shall be
-# used.
 Release:       release1
 Group:         Applications/System
 Distribution:  SailfishOS
 License:       LGPL-2.1-only
 URL:           https://github.com/Olf0/%{name}
-# The "Source:" line requires that the value of %{name} is also the project
-# name at GitHub and the value of %{version} is also the name of a
-# correspondingly set git-tag.
-# Alternative link, which also downloads ${projectname}-${tagname}.tar.gz:
-# Source:      https://github.com/Olf0/%{name}/archive/%{version}.tar.gz
-Source:        https://github.com/Olf0/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
+# These "Source:" lines below require that the value of %{name} is also the
+# project name at GitHub and the value of %{version}-%{release} is also the
+# name of a correspondingly set git-tag.
+# Alternative links, which also download ${projectname}-${tagname}.tar.gz:
+# Source:      https://github.com/Olf0/%{name}/archive/%{version}-%{release}.tar.gz
+# Source:      https://github.com/Olf0/%{name}/archive/refs/tags/%{version}-%{release}.tar.gz
+Source:        https://github.com/Olf0/%{name}/archive/%{version}/%{name}-%{version}-%{release}.tar.gz
 # rpmbuild (as of v4.14.1) handles the Icon tag awkwardly and in contrast to
 # the Source tag(s):
 # It only accepts a GIF or XPM file (a path is stripped to its basename) in the
