@@ -6,7 +6,7 @@ Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
 Version:       3.9.4
-Release:       release1
+Release:       release2
 Group:         Applications/System
 Distribution:  SailfishOS
 License:       LGPL-2.1-only
@@ -17,7 +17,7 @@ URL:           https://github.com/Olf0/%{name}
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
 # Source:      https://github.com/Olf0/%{name}/archive/%{version}-%{release}.tar.gz
 # Source:      https://github.com/Olf0/%{name}/archive/refs/tags/%{version}-%{release}.tar.gz
-Source:        https://github.com/Olf0/%{name}/archive/%{version}/%{name}-%{version}-%{release}.tar.gz
+Source:        https://github.com/Olf0/%{name}/archive/%{version}-%{release}/%{name}-%{version}-%{release}.tar.gz
 # rpmbuild (as of v4.14.1) handles the Icon tag awkwardly and in contrast to
 # the Source tag(s):
 # It only accepts a GIF or XPM file (a path is stripped to its basename) in the
