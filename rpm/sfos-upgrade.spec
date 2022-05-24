@@ -5,9 +5,11 @@ Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:       3.9.4
+Version:       3.9.5
 Release:       release3
-Group:         Applications/System
+# Group:         Applications/System  # That is what it should be, but changing
+# the Group is a bad idea, because it breaks the update-path! Thus reverted to:
+Group:         System/Base
 Distribution:  SailfishOS
 License:       LGPL-2.1-only
 URL:           https://github.com/Olf0/%{name}
