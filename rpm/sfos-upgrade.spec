@@ -6,7 +6,7 @@ Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
 Version:       3.9.5
-Release:       release3
+Release:       release4
 # Group:         Applications/System  # That is what it should be, but changing
 # the Group is a bad idea, because it breaks the update-path! Thus reverted to:
 Group:         System/Base
