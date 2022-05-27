@@ -5,14 +5,15 @@ Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:       3.9.5
+Version:       3.9.6
 Release:       release5
-# Group:         Applications/System  # That is what it should be, but changing
-# the Group is a bad idea, because it breaks the update-path! Thus reverted to:
-Group:         System/Base
+Group:         Applications/System
 Distribution:  SailfishOS
 License:       LGPL-2.1-only
 URL:           https://github.com/Olf0/%{name}
+# Altering the `Vendor:` field breaks the update path on SailfishOS, see
+# https://en.opensuse.org/SDB:Vendor_change_update#Disabling_Vendor_stickiness
+Vendor:        olf
 # These "Source:" lines below require that the value of ${name} is also the
 # project name at GitHub and the value of ${version} is also the name of a
 # correspondingly set git-tag.
