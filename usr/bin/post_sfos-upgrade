@@ -35,8 +35,9 @@ then
   done
   echo
 fi
-rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
-rm -f /home/defaultuser/.cache/sailfish-osupdateservice/os-info /home/defaultuser/.cache/store-client/os-info
+# See https://github.com/sailfishos/udisks2/commit/bcc6437ff35a3cc1e8c4777ee80d85a9c112e63e#diff-be2415d9a1095d0aa0d9dc7977c388a7ab5bb3ff7b3e4c38713062bd03165cee
+primuser="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
+rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primuser}/.cache/store-client/os-info"
 
 if command -v zypper > /dev/null 2>&1
 then
