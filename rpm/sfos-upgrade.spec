@@ -6,7 +6,7 @@ Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
 Version:       3.9.7
-Release:       release6
+Release:       release1
 Group:         Applications/System
 Distribution:  SailfishOS
 License:       LGPL-2.1-only
