@@ -36,6 +36,7 @@ then
   echo
 fi
 rm -f /home/nemo/.cache/sailfish-osupdateservice/os-info /home/nemo/.cache/store-client/os-info
+rm -f /home/defaultuser/.cache/sailfish-osupdateservice/os-info /home/defaultuser/.cache/store-client/os-info
 
 if command -v zypper > /dev/null 2>&1
 then
