@@ -429,6 +429,9 @@ POWER_SUPPLY_CHARGE_NOW=""
 POWER_SUPPLY_CHARGE_FULL=""
 POWER_SUPPLY_CHARGE_FULL_DESIGN=""
 # References: https://www.kernel.org/doc/Documentation/power/power_supply_class.txt and https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-class-power
+# An alternative method would be https://github.com/sailfishos/btrfs-balancer/commit/a9841fee4194383364324aebc501b96d94ed3e27#
+# but that is clumsy and MCE's D-Bus calls are not really well documented (do they provide POWER_SUPPLY_CHARGE_FULL and POWER_SUPPLY_CHARGE_FULL_DESIGN?).
+# Hence rather rely on sysfs.
 battery_info=""
 battery_path="/sys/class/power_supply/*battery*"
 for battery_uevents in $battery_path
