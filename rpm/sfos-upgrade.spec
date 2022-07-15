@@ -5,7 +5,7 @@ Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:       3.9.10
+Version:       3.9.11
 Release:       release4
 Group:         Applications/System
 Distribution:  SailfishOS
