@@ -173,7 +173,7 @@ sailfishdocs_sfos_list="$(curl -sSkL https://github.com/sailfishos/docs.sailfish
 sailfishdocs_sfos_releases="$(echo "$sailfishdocs_sfos_list" | cut -s -d '|' -f 1 | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
 if [ -z "$sailversion_sfos_releases" ] && [ -z "$sailfishdocs_sfos_releases" ]
 then
-  echo "Notice: Failed to retrieve list of recent SailfishOS releases, hence might be unable to check the validity of version number \"${upgrade_release}\"." >&2
+  echo "Notice: Failed to retrieve a list of recent SailfishOS releases, hence might be unable to check the validity of version number \"${upgrade_release}\"." >&2
   echo >&2
 fi
 all_sfos_releases="$(echo -e "${sailversion_sfos_releases}\n${sailfishdocs_sfos_releases}\n$(echo "$mylist_sfos_releases" | tr ',' '\n')" | grep -v '^$' | sort -ur)"
