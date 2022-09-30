@@ -4,7 +4,7 @@ export POSIXLY_CORRECT=1
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 635) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 644) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -198,13 +198,13 @@ else
   # Because Jolla regularly fails to document their stop releases in a timely manner (see e.g., https://forum.sailfishos.org/t/scripted-download-of-https-jolla-zendesk-com-hc-en-us-articles-201836347-fails/7935/2 ),
   # I had to change the policy how to deal with this lacking information: All final releases, which are not documented not to be a stop release, are handled as one starting with sfos-upgrade 3.9.1.
   mylist_stop_releases="4.4.0.72,4.3.0.15,4.2.0.21,4.1.0.24,4.0.1.48,3.4.0.24,3.2.0.12,3.0.0.8,2.2.0.29,2.0.5.6,2.0.0.10,1.1.9.30,1.1.7.28,1.1.2.16,1.0.2.5,1.0.0.5"
-  # 0.99.5.11 and 1.0.1.10 are not documented to be "stop releases" at https://docs.sailfishos.org/Releases/
+  # 0.99.5.11 and 1.0.1.10 are not documented to be "stop releases" at https://docs.sailfishos.org/Support/Releases/
   # But 2.0.5.6 seems to be a "stop release", at least on some devices, see comments thread to
   # https://together.jolla.com/question/207172/downgrade-sailfish-os/?answer=207190#post-id-207190
   sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
   if [ -z "$sailfishdocs_stop_releases" ]
   then
-    echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Releases#readme" >&2
+    echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
     echo "Hence using an internal, potentially outdated list of stop releases instead." >&2
     if [ -z "$set_ssu" ]
     then echo -n "Do you want to continue?" >&2
