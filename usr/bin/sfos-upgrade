@@ -538,14 +538,14 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
   ;;
 ?*-*-*)
   echo "Warning: Failed to determine battery charge!" >&2
-  echo "Check your device before " >&2
+  echo -n "Check your device before " >&2
   if [ -z "$set_ssu" ]
   then battery_check="ask"
   fi
   ;;
 *-*-*)
   echo "Warning: Failed to determine battery charging state!" >&2
-  echo "Check your device before " >&2
+  echo -n "Check your device before " >&2
   if [ -z "$set_ssu" ]
   then battery_check="ask"
   fi
