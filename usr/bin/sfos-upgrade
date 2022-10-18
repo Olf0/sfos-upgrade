@@ -202,10 +202,10 @@ else
   # But 2.0.5.6 seems to be a "stop release", at least on some devices, see comments thread to
   # https://together.jolla.com/question/207172/downgrade-sailfish-os/?answer=207190#post-id-207190
   sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
-  if [ -z "$sailfishdocs_stop_releases" ]
+  if [ -z "$sailfishdocs_stop_releases" ] && echo "$mylist_sfos_releases" | grep -qvF "$upgrade_version" && true
   then
     echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
-    echo "Hence using an internal, potentially outdated list of stop releases instead." >&2
+    echo "Hence using an internal, likely outdated list of stop releases instead." >&2
     if [ -z "$set_ssu" ]
     then echo -n "Do you want to continue?" >&2
     else echo -n "Do you really want to continue?" >&2
