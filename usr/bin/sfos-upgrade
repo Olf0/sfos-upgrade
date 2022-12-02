@@ -16,8 +16,8 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # bash compatibility when called via its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
 # including "-o pipefail" (hurray!).  But not "-o posix" (which was used to ensure shell behaviour as defined
 # by POSIX up to sfos-upgrade 3.8.1), which hopefully causes no difference in the behaviour of bash-3.2, bash-5 and
-# a 2020s busybox-ash (because any one of these may be installed).  BTW, setting POSIXLY_CORRECT achives the same 
-# without compatibility issues and (when exported) also for a number of other GNU utilities.
+# a 2020s busybox-ash (because any one of these may be installed).  BTW, setting POSIXLY_CORRECT seems to achive the
+# same without compatibility issues, plus (when exported) also for a number of other GNU utilities.
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and shall stay free of bashisms.
 
 # Exit codes:
