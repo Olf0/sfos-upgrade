@@ -12,13 +12,22 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash anyway; though I have not checked
 # that for ancient releases (which might be re-deployed after a "factory reset"), likely SailfishOS inherited that
 # from Fedora, via MeeGo and Mer (MeeGo reconstructed), too (i.e., in addition to the presence of bash by default).
-# Since SailfishOS 4.0, the busybox variant of ash has become the shell installed by default, which provides some
-# bash compatibility when called via its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
+# Since SailfishOS 4.0, the busybox variant of ash has become the shell installed by default, which provides some bash
+# compatibility (implicitly, when called via its bash-symlink, which is deployed by the busybox-symlinks-bash RPM),
 # including "-o pipefail" (hurray!).  But not "-o posix" (which was used to ensure shell behaviour as defined
 # by POSIX up to sfos-upgrade 3.8.1), which hopefully causes no difference in the behaviour of bash-3.2, bash-5 and
 # a 2020s busybox-ash (because any one of these may be installed).  BTW, setting POSIXLY_CORRECT seems to achive the
 # same without compatibility issues, plus (when exported) also for a number of other GNU utilities.
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and shall stay free of bashisms.
+
+
+# In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash
+# anyway.  Since SailfishOS 4.0, the busybox variant of ash has become the shell
+# installed by default, which provides some bash compatibility (implicitly, when
+# called via its bash-symlink, which is deployed by the busybox-symlinks-bash
+# RPM), including "-o pipefail", but not "-o posix"; although setting
+# POSIXLY_CORRECT instead seems to achive the same without compatibility issues,
+# plus (when exported) also for a number of other GNU utilities.
 
 # Exit codes:
 #   0  Everything worked fine: all applicable checks, all applicable, preparatory steps, and the upgrade proper
