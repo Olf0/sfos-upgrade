@@ -7,7 +7,7 @@ export BLOCK_SIZE=512     # For `df` et al, see man-page for GNU `df`
 export DF_BLOCK_SIZE=512  # For `df` et al, see mmn-page for GNU `df`
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 655) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 648) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -23,15 +23,6 @@ export DF_BLOCK_SIZE=512  # For `df` et al, see mmn-page for GNU `df`
 # same without compatibility issues, plus (when exported) also for a number of other GNU utilities.
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and shall stay free of bashisms.
 
-
-# In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash
-# anyway.  Since SailfishOS 4.0, the busybox variant of ash has become the shell
-# installed by default, which provides some bash compatibility (implicitly, when
-# called via its bash-symlink, which is deployed by the busybox-symlinks-bash
-# RPM), including "-o pipefail", but not "-o posix"; although setting
-# POSIXLY_CORRECT instead seems to achive the same without compatibility issues,
-# plus (when exported) also for a number of other GNU utilities.
-
 # Exit codes:
 #   0  Everything worked fine: all applicable checks, all applicable, preparatory steps, and the upgrade proper
 #   1  A check failed
@@ -45,6 +36,8 @@ export DF_BLOCK_SIZE=512  # For `df` et al, see mmn-page for GNU `df`
 #  23  "Should never be reached" *) case #2
 #  42  "Should never be reached" *) case #3
 
+
+# Functions: askyes & compare_versions
 
 askyes ()
 {
@@ -106,6 +99,7 @@ compare_versions ()
   fi
   return "$retc"
 }
+
 
 # Main script
 
