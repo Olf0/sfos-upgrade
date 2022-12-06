@@ -1,10 +1,13 @@
 #!/bin/bash
 set -euC  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not perform a set +f (or +o noglob; plus setopt is not built-in) correctly, which would be needed later!
-export POSIXLY_CORRECT=1
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
+export POSIXLY_CORRECT=1  # Also necessary for a sane `df` output, see https://github.com/Olf0/sfos-upgrade/issues/73 
+export BLOCKSIZE=512      # For `df` et al, see POSIX's `df` man-page and man-page for GNU `df`
+export BLOCK_SIZE=512     # For `df` et al, see man-page for GNU `df`
+export DF_BLOCK_SIZE=512  # For `df` et al, see mmn-page for GNU `df`
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 644) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 648) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -12,12 +15,12 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash anyway; though I have not checked
 # that for ancient releases (which might be re-deployed after a "factory reset"), likely SailfishOS inherited that
 # from Fedora, via MeeGo and Mer (MeeGo reconstructed), too (i.e., in addition to the presence of bash by default).
-# Since SailfishOS 4.0, the busybox variant of ash has become the shell installed by default, which provides some
-# bash compatibility when called via its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
+# Since SailfishOS 4.0, the busybox variant of ash has become the shell installed by default, which provides some bash
+# compatibility (implicitly, when called via its bash-symlink, which is deployed by the busybox-symlinks-bash RPM),
 # including "-o pipefail" (hurray!).  But not "-o posix" (which was used to ensure shell behaviour as defined
 # by POSIX up to sfos-upgrade 3.8.1), which hopefully causes no difference in the behaviour of bash-3.2, bash-5 and
-# a 2020s busybox-ash (because any one of these may be installed).  BTW, setting POSIXLY_CORRECT achives the same 
-# without compatibility issues and (when exported) also for a number of other GNU utilities.
+# a 2020s busybox-ash (because any one of these may be installed).  BTW, setting POSIXLY_CORRECT seems to achive the
+# same without compatibility issues, plus (when exported) also for a number of other GNU utilities.
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and shall stay free of bashisms.
 
 # Exit codes:
@@ -33,6 +36,8 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 #  23  "Should never be reached" *) case #2
 #  42  "Should never be reached" *) case #3
 
+
+# Functions: askyes & compare_versions
 
 askyes ()
 {
@@ -94,6 +99,7 @@ compare_versions ()
   fi
   return "$retc"
 }
+
 
 # Main script
 
@@ -177,7 +183,7 @@ fi
 if sailversion_sfos_releases="$(curl -sSk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
 then sailversion_fail="n"
 fi
-if [ "$sailfishdocs_fail" = "y" ] && [ "$sailversion_fail" = "y" ] && true
+if [ "$sailfishdocs_fail" = "y" ] && [ "$sailversion_fail" = "y" ]
 then
   echo "Notice: Failed to retrieve a list of recent SailfishOS releases, hence might be unable to check the validity of version number \"${upgrade_release}\"." >&2
   echo >&2
@@ -202,10 +208,10 @@ else
   # But 2.0.5.6 seems to be a "stop release", at least on some devices, see comments thread to
   # https://together.jolla.com/question/207172/downgrade-sailfish-os/?answer=207190#post-id-207190
   sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
-  if [ -z "$sailfishdocs_stop_releases" ]
+  if [ -z "$sailfishdocs_stop_releases" ] && echo "$mylist_sfos_releases" | grep -qvF "$upgrade_version"
   then
     echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
-    echo "Hence using an internal, potentially outdated list of stop releases instead." >&2
+    echo "Hence using an internal, likely outdated list of stop releases instead." >&2
     if [ -z "$set_ssu" ]
     then echo -n "Do you want to continue?" >&2
     else echo -n "Do you really want to continue?" >&2
@@ -400,7 +406,9 @@ then
     exit 5
   fi
 else
-  free_space="$(df -k / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)"
+  # Formula "(<df in 0.5 K blocks> + 1) / 2" is slightly off for negative values (which `df` may really emit): It would then have to be
+  # "(<df in 0.5 K blocks> - 1) / 2" instead, but the deviation is negligible: 1 KByte too much free space indicated for negative values.
+  free_space="$(expr \( "$(df -P / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)" '+' 1 \) '/' 2)"
   # Note that in contrast to upgrading at the GUI, the RPMs for upgrading are not all downloaded first (and installed after booting into the system-update mode),
   # but downloaded and installed one by one, hence requiring much less space on persistent storage (i.e., the root filesystem) for upgrading.
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release,
@@ -444,7 +452,7 @@ for battery_uevents in $battery_path
 do
   # Workaround for Gemini's kernel broken battery information, which contains spaces: Use eval & sed instead of source / ".".
   # For details, see https://github.com/Olf0/sfos-upgrade/issues/39
-  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" < "${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" > /dev/null 2>&1 && true
+  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" < "${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" > /dev/null 2>&1
   then
     battery_info="sourced"
     break
@@ -538,14 +546,14 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
   ;;
 ?*-*-*)
   echo "Warning: Failed to determine battery charge!" >&2
-  echo "Check your device before " >&2
+  echo -n "Check your device before " >&2
   if [ -z "$set_ssu" ]
   then battery_check="ask"
   fi
   ;;
 *-*-*)
   echo "Warning: Failed to determine battery charging state!" >&2
-  echo "Check your device before " >&2
+  echo -n "Check your device before " >&2
   if [ -z "$set_ssu" ]
   then battery_check="ask"
   fi
@@ -592,19 +600,19 @@ g?)
   g4)
     echo "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     echo "Nevertheless this may make this SailfishOS installation not working properly." >&2
-    echo "Note that the "official" (i.e. approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
+    echo "Note that the \"official\" (i.e. approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     echo "Though you can try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     echo -n "Do you want to do that?" >&2
     ;;
   g4?*)
     echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     echo "Nevertheless this may make this SailfishOS installation not working properly." >&2
-    echo "Note that the "official" (i.e. approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
+    echo "Note that the \"official\" (i.e. approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     echo "Though you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     echo -n "Do you really want to do that?" >&2
     ;;
   g?)
-    echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)." >&2
+    echo "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"micro\" version (i.e., their third field)." >&2
     echo "This might make this SailfishOS installation not working properly!" >&2
     echo "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version." >&2
     echo "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
