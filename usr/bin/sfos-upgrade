@@ -244,7 +244,7 @@ else
     true
     ;;
   *)
-    echo "Comparing versions failed when checking, if downloading lists of SailfishOS releases is necessary." >&2
+    echo "Comparing versions failed when checking, if extracting stop releases from Jolla's list of SailfishOS releases is necessary." >&2
     exit 7
     ;;
   esac
