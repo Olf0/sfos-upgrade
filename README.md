@@ -41,8 +41,8 @@ Usage (as root user):
   Emits a brief usage description.
 
 When an upgrade succeeded, reboot, and do not miss to run **post_sfos-upgrade** (as root) then!<br />
-When **sfos-upgrade** failed, run **post_sfos-upgrade** immediately (as root), reboot and try running **sfos-upgrade** again.<br />
-Not running **post_sfos-upgrade** will result in an huge upgrade log file (containing many duplicate entries), plus may result (as any SailfishOS upgrade at the command line without tidying efforts afterwards) in RPMs failing to install (with "unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) and annoying notifications from the store-client that an upgrade to the installed version is available.
+When **sfos-upgrade** failed, run **post_sfos-upgrade** (as root) *before* rebooting and then run **sfos-upgrade** again.<br />
+Not running **post_sfos-upgrade** (in either case) will result in an huge upgrade log file (containing many duplicate entries), plus may result (as any SailfishOS upgrade at the command line without tidying efforts afterwards) in RPMs failing to install (with "unmet dependency" / "Fatal error: nothing provides X needed by Y" errors) and annoying notifications from the store-client that an upgrade to the installed version is available.
 
 Logs are originally written to `/var/log/systemupdate_*.log-dupes.txt` and tidied by **tidy_log-dupes** (which is called by **post_sfos-upgrade**) to `/var/log/systemupdate_*.log.txt`.<br />
 <br />
