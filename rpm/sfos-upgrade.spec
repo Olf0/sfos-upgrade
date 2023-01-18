@@ -33,8 +33,6 @@ Requires:      ssu
 Requires:      sailfish-version
 Requires:      curl
 
-%define orn_url https://openrepos.net/content/olf/%{name}
-
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
 %description
@@ -63,8 +61,8 @@ Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/icon/up.256x256.png
 Url:
-  Homepage: %{orn_url}
-  Help: %{orn_url}#comments
+  Homepage: %{url}
+  Help: %{url}/issues
   Bugtracker: %{url}/issues
 %endif
 
