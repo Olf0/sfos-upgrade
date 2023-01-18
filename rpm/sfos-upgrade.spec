@@ -14,13 +14,13 @@ URL:           https://github.com/Olf0/%{name}
 # Altering the `Vendor:` field breaks the update path on SailfishOS, see
 # https://en.opensuse.org/SDB:Vendor_change_update#Disabling_Vendor_stickiness
 Vendor:        olf
-# These "Source:" lines below require that the value of ${name} is also the
-# project name at GitHub and the value of ${version} is also the name of a
+# These "Source:" lines below require that the value of %%{name} is also the
+# project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
-# Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:      https://github.com/Olf0/${name}/archive/${version}.tar.gz
-# Source:      https://github.com/Olf0/${name}/archive/refs/tags/${version}.tar.gz
-Source:        https://github.com/Olf0/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
+# Alternative links, which also download %%{projectname}-%%{tagname}.tar.gz:
+# Source:      %%{url}/archive/%%{version}.tar.gz
+# Source:      %%{url}/archive/refs/tags/%%{version}.tar.gz
+Source:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 # rpmbuild (as of v4.14.1) handles the Icon tag awkwardly and in contrast to
 # the Source tag(s):
 # It only accepts a GIF or XPM file (a path is stripped to its basename) in the
@@ -33,7 +33,7 @@ Requires:      ssu
 Requires:      sailfish-version
 Requires:      curl
 
-%define orn_url https://openrepos.net/content/olf/sfos-upgrade
+%define orn_url https://openrepos.net/content/olf/%{name}
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
