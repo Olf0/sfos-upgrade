@@ -177,7 +177,7 @@ my_recent_sfos_release="$(echo "$mylist_sfos_releases" | cut -f 1 -d ',')"
 sailfishdocs_sfos_list=""
 sailversion_sfos_releases=""
 case "$(compare_versions "$upgrade_version" "$my_recent_sfos_release")$(compare_versions "$installed_version" "$my_recent_sfos_release")" in
-g???|??g?)  # Only download lists of SailfishOS releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list.
+g???|??g?)  # Only download lists of SailfishOS releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
   sailfishdocs_fail="y"
   sailversion_fail="y"
   # Calling curl with the -k (= --insecure) option, which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
@@ -227,7 +227,7 @@ else
   #my_recent_stop_release="$(echo "$mylist_stop_releases" | cut -f 1 -d ',')"
   #case "$(compare_versions "$upgrade_version" "$my_recent_stop_release")$(compare_versions "$installed_version" "$my_recent_stop_release")" in
   case "$(compare_versions "$upgrade_version" "$my_recent_sfos_release")$(compare_versions "$installed_version" "$my_recent_sfos_release")" in
-  g???|??g?)  # Only download lists of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list.
+  g???|??g?)  # Only download lists of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases (deliberately not the list of stop releases!).
     if ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
     then
       echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
