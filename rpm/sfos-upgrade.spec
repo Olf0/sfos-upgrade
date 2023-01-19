@@ -81,3 +81,6 @@ cp usr/bin/* %{buildroot}%{_bindir}/
 %{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
 
+%changelog
+* Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 9.9.9
+- %{url}/releases
