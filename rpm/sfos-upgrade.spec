@@ -5,8 +5,8 @@ Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:       3.9.12
-Release:       release5
+Version:       3.9.13
+Release:       release6
 Group:         Applications/System
 Distribution:  SailfishOS
 License:       LGPL-2.1-only
@@ -14,13 +14,13 @@ URL:           https://github.com/Olf0/%{name}
 # Altering the `Vendor:` field breaks the update path on SailfishOS, see
 # https://en.opensuse.org/SDB:Vendor_change_update#Disabling_Vendor_stickiness
 Vendor:        olf
-# These "Source:" lines below require that the value of ${name} is also the
-# project name at GitHub and the value of ${version} is also the name of a
+# These "Source:" lines below require that the value of %%{name} is also the
+# project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
-# Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:      https://github.com/Olf0/${name}/archive/${version}.tar.gz
-# Source:      https://github.com/Olf0/${name}/archive/refs/tags/${version}.tar.gz
-Source:        https://github.com/Olf0/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
+# Alternative links, which also download %%{projectname}-%%{tagname}.tar.gz:
+# Source:      %%{url}/archive/%%{version}.tar.gz
+# Source:      %%{url}/archive/refs/tags/%%{version}.tar.gz
+Source:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 # rpmbuild (as of v4.14.1) handles the Icon tag awkwardly and in contrast to
 # the Source tag(s):
 # It only accepts a GIF or XPM file (a path is stripped to its basename) in the
@@ -32,8 +32,6 @@ BuildArch:     noarch
 Requires:      ssu
 Requires:      sailfish-version
 Requires:      curl
-
-%define orn_url https://openrepos.net/content/olf/sfos-upgrade
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -63,8 +61,8 @@ Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/icon/up.256x256.png
 Url:
-  Homepage: %{orn_url}
-  Help: %{orn_url}#comments
+  Homepage: %{url}
+  Help: %{url}/issues
   Bugtracker: %{url}/issues
 %endif
 
@@ -83,3 +81,6 @@ cp usr/bin/* %{buildroot}%{_bindir}/
 %{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
 
+%changelog
+* Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 9.9.9
+- %{url}/releases
