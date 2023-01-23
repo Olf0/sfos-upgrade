@@ -1,4 +1,4 @@
-name: CI build - master branch on SFOS 3.0.1.11 (armv7hl)
+name: CI on tags & pushes to master
 
 on:
   push:
@@ -10,22 +10,23 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v3
 
     - name: Prepare
       run: mkdir RPMS
 
-    - name: Build armv7hl
+    - name: Build for 3.0.1.11@armv7hl
       uses: coderus/github-sfos-build@old-stable
       with:
         release: 3.0.1.11
         arch: armv7hl
 
     - name: Upload build result
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
-        name: rpm-build-result
-        path: RPMS
+        name: RPM-build-results
+        path: RPMS/
