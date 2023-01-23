@@ -3,7 +3,7 @@ Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line
 # The Git release tag format must adhere to just <version> since version 3.6.0.
 # The <version> field adheres to semantic versioning and the <release> field 
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
-# greater or equal to 1 (e.g. "beta3").  For details and reasons, see
+# greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
 Version:       3.9.15
 Release:       release7
