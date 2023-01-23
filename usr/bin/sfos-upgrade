@@ -176,7 +176,7 @@ mylist_sfos_releases="4.4.0.72,4.4.0.68,4.4.0.64,4.4.0.58,4.3.0.15,4.3.0.12,4.2.
 my_recent_sfos_release="$(echo "$mylist_sfos_releases" | cut -f 1 -d ',')"
 sailfishdocs_sfos_list=""
 sailversion_sfos_releases=""
-case "$(compare_versions "$upgrade_version" "$my_recent_sfos_release")$(compare_versions "$installed_version" "$my_recent_sfos_release")" in
+case "$(compare_versions "$upgrade_release" "$my_recent_sfos_release")$(compare_versions "$installed_release" "$my_recent_sfos_release")" in
 g???|??g?)  # Only download lists of SailfishOS releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
   sailfishdocs_fail="y"
   sailversion_fail="y"
@@ -225,8 +225,8 @@ else
   # Trivial, insufficient check for missing entries (both lists MUST be diligently updated concurrently!):
   #for i in $(echo "$mylist_stop_releases" | tr ',' ' '); do if echo "$mylist_sfos_releases" | fgrep -q "$i"; then echo "${i}!"; fi; done
   #my_recent_stop_release="$(echo "$mylist_stop_releases" | cut -f 1 -d ',')"
-  #case "$(compare_versions "$upgrade_version" "$my_recent_stop_release")$(compare_versions "$installed_version" "$my_recent_stop_release")" in
-  case "$(compare_versions "$upgrade_version" "$my_recent_sfos_release")$(compare_versions "$installed_version" "$my_recent_sfos_release")" in
+  #case "$(compare_versions "$upgrade_release" "$my_recent_stop_release")$(compare_versions "$installed_release" "$my_recent_stop_release")" in
+  case "$(compare_versions "$upgrade_release" "$my_recent_sfos_release")$(compare_versions "$installed_release" "$my_recent_sfos_release")" in
   g???|??g?)  # Only download lists of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases (deliberately not the list of stop releases!).
     if ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
     then
