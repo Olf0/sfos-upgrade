@@ -19,7 +19,7 @@ jobs:
     - name: Prepare
       run: mkdir RPMS
 
-    - name: Build for 3.0.1.11@armv7hl
+    - name: Build armv7hl on 3.0.1.11
       uses: coderus/github-sfos-build@old-stable
       with:
         release: 3.0.1.11
