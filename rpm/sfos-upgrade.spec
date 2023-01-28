@@ -1,37 +1,37 @@
-Name:          sfos-upgrade
-Summary:       Scripts for fail-safe upgrading of SailfishOS at the command line with logging
+Name:           sfos-upgrade
+Summary:        Scripts for fail-safe upgrading of SailfishOS at the command line with logging
 # The Git release tag format must adhere to just <version> since version 3.6.0.
 # The <version> field adheres to semantic versioning and the <release> field 
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
-# greater or equal to 1 (e.g. "beta3").  For details and reasons, see
+# greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:       3.9.14
-Release:       release6
-Group:         Applications/System
-Distribution:  SailfishOS
-License:       LGPL-2.1-only
-URL:           https://github.com/Olf0/%{name}
+Version:        3.9.15
+Release:        release7
+Group:          Applications/System
+Distribution:   SailfishOS
+License:        LGPL-2.1-only
+URL:            https://github.com/Olf0/%{name}
 # Altering the `Vendor:` field breaks the update path on SailfishOS, see
 # https://en.opensuse.org/SDB:Vendor_change_update#Disabling_Vendor_stickiness
-Vendor:        olf
-# These "Source:" lines below require that the value of %%{name} is also the
+Vendor:         olf
+# The "Source0:" line below requires that the value of %%{name} is also the
 # project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
-# Alternative links, which also download %%{projectname}-%%{tagname}.tar.gz:
-# Source:      %%{url}/archive/%%{version}.tar.gz
-# Source:      %%{url}/archive/refs/tags/%%{version}.tar.gz
-Source:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+# Note that the rpmlintrc file shall be named exactly so according to
+# https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
+Source99:       %{name}.rpmlintrc
 # rpmbuild (as of v4.14.1) handles the Icon tag awkwardly and in contrast to
 # the Source tag(s):
 # It only accepts a GIF or XPM file (a path is stripped to its basename) in the
 # SOURCES directory (but not inside a tarball there)!  Successfully tested GIF89a
 # and XPMv3, but an XPM icon results in bad visual quality and large file size.
 # Hence only to be used, when the file (or a symlink to it) is put there:
-#Icon:          up.256x256.gif
-BuildArch:     noarch
-Requires:      ssu
-Requires:      sailfish-version
-Requires:      curl
+#Icon:           up.256x256.gif
+BuildArch:      noarch
+Requires:       ssu
+Requires:       sailfish-version
+Requires:       curl
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -61,9 +61,10 @@ Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/icon/up.256x256.png
 Url:
-  Homepage: %{url}
+  Homepage: https://openrepos.net/content/olf/%{name}
   Help: %{url}/issues
   Bugtracker: %{url}/issues
+  Donation: https://openrepos.net/donate
 %endif
 
 %prep
@@ -82,5 +83,6 @@ cp usr/bin/* %{buildroot}%{_bindir}/
 %{_bindir}/tidy_log-dupes
 
 %changelog
-* Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 9.9.9
-- %{url}/releases
+* Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 99.99.99
+- See %{url}/releases
+
