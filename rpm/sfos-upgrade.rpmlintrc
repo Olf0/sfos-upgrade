@@ -1,7 +1,12 @@
-# On behalf of Jolla's tar_git / SailfishOS-OBS:
+# On behalf of Jolla's tar_git / SailfishOS-OBS
 # - It re-writes the DistURL, rendering it inconsistent
 addFilter('invalid-url DistURL')
 # - It has a limited list of FLOSS-licenses, most SDPX-IDs are missing
 addFilter('invalid-license')
 # - It extracts strange changelog entries out of Git, if a %%changelog section is used
 addFilter('incoherent-version-in-changelog')
+# On behalf of SailfishOS:Chum specification, …
+# … which re-uses the spec file tag "Url:"
+addFilter('tag-in-description Url:')
+# … which also re-uses the spec file tag "Icon:"
+addFilter('tag-in-description Icon:')
