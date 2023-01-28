@@ -18,7 +18,7 @@ Vendor:         olf
 # project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
-# Note that the rpmlintrc file shall be named exactly so according to
+# Note that the rpmlintrc file shall be named so according to
 # https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
 Source99:       %{name}.rpmlintrc
 # rpmbuild (as of v4.14.1) handles the Icon tag awkwardly and in contrast to
