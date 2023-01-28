@@ -5,7 +5,7 @@ addFilter('invalid-url DistURL')
 addFilter('invalid-license')
 # - It extracts strange changelog entries out of Git, if a %%changelog section is used
 addFilter('incoherent-version-in-changelog')
-# On behalf of SailfishOS:Chum specification, …
+# On behalf of the SailfishOS:Chum specification, …
 # … which re-uses the spec file tag "Url:"
 addFilter('tag-in-description Url:')
 # … which also re-uses the spec file tag "Icon:"
