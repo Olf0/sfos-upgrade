@@ -20,7 +20,7 @@ Vendor:         olf
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 # Note that the rpmlintrc file shall be named exactly so according to
 # https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
-Source99:       %{name}-rpmlintrc
+Source99:       %{name}.rpmlintrc
 # rpmbuild (as of v4.14.1) handles the Icon tag awkwardly and in contrast to
 # the Source tag(s):
 # It only accepts a GIF or XPM file (a path is stripped to its basename) in the
