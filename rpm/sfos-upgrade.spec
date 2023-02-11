@@ -5,8 +5,8 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:        3.9.15
-Release:        release7
+Version:        3.9.16
+Release:        release8
 Group:          Applications/System
 Distribution:   SailfishOS
 License:        LGPL-2.1-only
@@ -82,3 +82,6 @@ cp usr/bin/* %{buildroot}%{_bindir}/
 %{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
 
+%changelog
+* Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 99.99.99
+- See https://github.com/Olf0/sfos-upgrade/releases
