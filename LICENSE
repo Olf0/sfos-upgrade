@@ -457,37 +457,27 @@ DAMAGES.
 
                      END OF TERMS AND CONDITIONS
 
-           How to Apply These Terms to Your New Libraries
+    Name of this software: sfos-upgrade
+    WWW-Link to this software: https://github.com/Olf0/sfos-upgrade/
 
-  If you develop a new library, and you want it to be of the greatest
-possible use to the public, we recommend making it free software that
-everyone can redistribute and change.  You can do so by permitting
-redistribution under these terms (or, alternatively, under the terms of the
-ordinary General Public License).
+    Copyright (C) 2019-2023 olf <Olf0@users.noreply.github.com>
 
-  To apply these terms, attach the following notices to the library.  It is
-safest to attach them to the start of each source file to most effectively
-convey the exclusion of warranty; and each file should have at least the
-"copyright" line and a pointer to where the full notice is found.
-
-    sfos-upgrade
-    Copyright (C) 2019 to 2021+  olf
-
-    This library is free software; you can redistribute it and/or
+    This software is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
     License version 2.1 as published by the Free Software Foundation.
 
     This library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+    Lesser General Public License version 2.1 (LGPLv2.1) for more details.
 
     You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
+    License along with this software; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
     USA
     
-    https://github.com/Olf0/sfos-upgrade/
+    WWW-link to this license: https://spdx.org/licenses/LGPL-2.1-only.html
+    Original source of this license in the WWW:
+    https://www.gnu.org/licenses/old-licenses/lgpl-2.1-standalone.html
 
 That's all there is to it!
-
