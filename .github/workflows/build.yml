@@ -1,4 +1,4 @@
-name: 'CI on tags & pushes to master, devel and v*-legacy'
+name: 'CI on tags, plus PRs to master, devel and v*-legacy'
 
 on:
   push:
