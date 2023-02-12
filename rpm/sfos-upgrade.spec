@@ -47,7 +47,7 @@ release mode before upgrading.  This is the regular use case.
 Without a version number it retrieves the one set for SSU to perform slightly
 relaxed checks, but does not alter SSU's settings for upgrading.
 
-%if "%{_project}" == "sailfishos:chum" || "%{_project}" == "sailfishos:chum:testing"
+%if 0%{?_chum}
 PackageName: sfos-upgrade
 Type: console-application
 DeveloperName: olf (Olf0)
