@@ -5,8 +5,8 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:        3.9.16
-Release:        release8
+Version:        3.9.17
+Release:        release9
 Group:          Applications/System
 Distribution:   SailfishOS
 License:        LGPL-2.1-only
@@ -47,7 +47,7 @@ release mode before upgrading.  This is the regular use case.
 Without a version number it retrieves the one set for SSU to perform slightly
 relaxed checks, but does not alter SSU's settings for upgrading.
 
-%if "%{_project}" == "sailfishos:chum" || "%{_project}" == "sailfishos:chum:testing"
+%if 0%{?_chum}
 PackageName: sfos-upgrade
 Type: console-application
 DeveloperName: olf (Olf0)
