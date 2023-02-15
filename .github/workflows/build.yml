@@ -21,11 +21,11 @@ jobs:
     - name: Prepare
       run: mkdir RPMS
 
-    - name: Build armv7hl on 3.0.1.11
+    - name: Build i486 on 3.0.1.11
       uses: coderus/github-sfos-build@old-stable
       with:
         release: 3.0.1.11
-        arch: armv7hl
+        arch: i486
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
