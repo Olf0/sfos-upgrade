@@ -5,8 +5,8 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:        3.9.17
-Release:        release9
+Version:        3.9.18
+Release:        release10
 Group:          Applications/System
 Distribution:   SailfishOS
 License:        LGPL-2.1-only
@@ -66,6 +66,9 @@ Url:
   Bugtracker: %{url}/issues
   Donation: https://openrepos.net/donate
 %endif
+
+%define _binary_payload w6.gzdio
+%define _source_payload w2.gzdio
 
 %prep
 %setup -q
