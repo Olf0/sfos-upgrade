@@ -110,7 +110,7 @@ then
   exit 3
 fi
 
-installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | sed -n '1p')"
+installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | head -1)"
 if [ -z "$*" ]
 then
   set_ssu=""
@@ -174,6 +174,15 @@ fi
 
 mylist_sfos_releases="4.5.0.18,4.5.0.16,4.4.0.72,4.4.0.68,4.4.0.64,4.4.0.58,4.3.0.15,4.3.0.12,4.2.0.21,4.2.0.19,4.1.0.24,4.1.0.23,4.0.1.48,4.0.1.45,3.4.0.24,3.4.0.22,3.3.0.16,3.3.0.14,3.2.1.20,3.2.1.19,3.2.0.14,3.2.0.12,3.1.0.12,3.1.0.11,3.0.3.10,3.0.3.9,3.0.3.8,3.0.2.8,3.0.1.14,3.0.1.13,3.0.1.11,3.0.0.11,3.0.0.8,3.0.0.5,2.2.1.23,2.2.1.20,2.2.1.19,2.2.1.18,2.2.0.29,2.1.4.15,2.1.4.14,2.1.4.13,2.1.4.12,2.1.3.7,2.1.3.5,2.1.3.3,2.1.2.3,2.1.1.26,2.1.1.25,2.1.1.24,2.1.1.23,2.1.1.12,2.1.0.11,2.1.0.10,2.1.0.9,2.0.5.6,2.0.4.14,2.0.4.13,2.0.3.14,2.0.3.11,2.0.2.51,2.0.2.48,2.0.2.47,2.0.2.45,2.0.2.43,2.0.1.11,2.0.1.9,2.0.1.7,2.0.0.10,1.1.9.30,1.1.9.28,1.1.9.27,1.1.9.24,1.1.9.23,1.1.7.28,1.1.7.27,1.1.7.25,1.1.7.24,1.1.7.23,1.1.6.27,1.1.6.26,1.1.6.24,1.1.4.29,1.1.4.28,1.1.4.24,1.1.4.22,1.1.2.16,1.1.2.15,1.1.2.13,1.1.2.10,1.1.1.27,1.1.1.26,1.1.1.24,1.1.0.39,1.1.0.38,1.1.0.37,1.1.0.29,1.1.0.26,1.1.0.23,1.1.0.22,1.1.0.19,1.0.8.21,1.0.8.20,1.0.8.19,1.0.8.18,1.0.7.18,1.0.7.16,1.0.7.14,1.0.7.12,1.0.5.19,1.0.5.16,1.0.5.13,1.0.5.12,1.0.5.11,1.0.4.20,1.0.4.16,1.0.4.12,1.0.4.10,1.0.3.8,1.0.3.7,1.0.3.5,1.0.2.5,1.0.1.12,1.0.1.10,1.0.1.6,1.0.0.5,1.0.0.3,1.0.0.1,0.99.6.8,0.99.6.3,0.99.5.11,0.99.5.8,0.99.5.6"
 my_recent_sfos_release="$(echo "$mylist_sfos_releases" | cut -f 1 -d ',')"
+mylist_stop_versions="4.5.0,4.4.0,4.3.0,4.2.0,4.1.0,4.0.1,3.4.0,3.2.0,3.0.0,2.2.0,2.0.5,2.0.0,1.1.9,1.1.7,1.1.2,1.0.2,1.0.0"
+# mylist_stop_releases="4.5.0.18,4.4.0.72,4.3.0.15,4.2.0.21,4.1.0.24,4.0.1.48,3.4.0.24,3.2.0.12,3.0.0.8,2.2.0.29,2.0.5.6,2.0.0.10,1.1.9.30,1.1.7.28,1.1.2.16,1.0.2.5,1.0.0.5"
+# 0.99.5.11 and 1.0.1.10 are not documented to be "stop releases" at https://docs.sailfishos.org/Support/Releases/
+# But 2.0.5.6 seems to be a "stop release", at least on some devices, see comments thread to
+# https://together.jolla.com/question/207172/downgrade-sailfish-os/?answer=207190#post-id-207190
+# Trivial, absolutely insufficient check for missing entries (both lists MUST be diligently updated concurrently!):
+#for i in $(echo "$mylist_stop_releases" | tr ',' ' '); do if echo "$mylist_sfos_releases" | fgrep -q "$i"; then echo "${i}!"; fi; done
+#for i in $(echo "$mylist_stop_verions" | tr ',' ' '); do if echo "$mylist_sfos_releases" | fgrep -q "$i"; then echo "${i}!"; fi; done
+my_recent_stop_version="$(echo "$mylist_stop_versions" | cut -f 1 -d ',')"
 sailfishdocs_sfos_list=""
 sailversion_sfos_releases=""
 case "$(compare_versions "$upgrade_release" "$my_recent_sfos_release")$(compare_versions "$installed_release" "$my_recent_sfos_release")" in
@@ -218,7 +227,8 @@ else
   sailfishdocs_stop_releases=""
   # Because Jolla regularly fails to document their stop releases in a timely manner (see e.g., https://forum.sailfishos.org/t/scripted-download-of-https-jolla-zendesk-com-hc-en-us-articles-201836347-fails/7935/2 ),
   # I had to change the policy how to deal with this lacking information: All final releases, which are not documented not to be a stop release, are handled as one starting with sfos-upgrade 3.9.1.
-  mylist_stop_releases="4.5.0.18,4.4.0.72,4.3.0.15,4.2.0.21,4.1.0.24,4.0.1.48,3.4.0.24,3.2.0.12,3.0.0.8,2.2.0.29,2.0.5.6,2.0.0.10,1.1.9.30,1.1.7.28,1.1.2.16,1.0.2.5,1.0.0.5"
+  mylist_stop_versions="4.5.0,4.4.0,4.3.0,4.2.0,4.1.0,4.0.1,3.4.0,3.2.0,3.0.0,2.2.0,2.0.5,2.0.0,1.1.9,1.1.7,1.1.2,1.0.2,1.0.0"
+  # mylist_stop_releases="4.5.0.18,4.4.0.72,4.3.0.15,4.2.0.21,4.1.0.24,4.0.1.48,3.4.0.24,3.2.0.12,3.0.0.8,2.2.0.29,2.0.5.6,2.0.0.10,1.1.9.30,1.1.7.28,1.1.2.16,1.0.2.5,1.0.0.5"
   # 0.99.5.11 and 1.0.1.10 are not documented to be "stop releases" at https://docs.sailfishos.org/Support/Releases/
   # But 2.0.5.6 seems to be a "stop release", at least on some devices, see comments thread to
   # https://together.jolla.com/question/207172/downgrade-sailfish-os/?answer=207190#post-id-207190
@@ -438,7 +448,7 @@ then
 else
   # Formula "(<df in 0.5 K blocks> + 1) / 2" is slightly off for negative values (which `df` may really emit): It would then have to be
   # "(<df in 0.5 K blocks> - 1) / 2" instead, but the deviation is negligible: 1 KByte too much free space indicated for negative values.
-  free_space="$(expr \( "$(df -P / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)" '+' 1 \) '/' 2)"
+  free_space="$(expr \( "$(df -P / | head -2 | tail -1 | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)" '+' 1 \) '/' 2)"
   # Note that in contrast to upgrading at the GUI, the RPMs for upgrading are not all downloaded first (and installed after booting into the system-update mode),
   # but downloaded and installed one by one, hence requiring much less space on persistent storage (i.e., the root filesystem) for upgrading.
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release,
