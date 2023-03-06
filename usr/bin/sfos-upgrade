@@ -439,7 +439,7 @@ then
 else
   # Formula "(<df in 0.5 K blocks> + 1) / 2" is slightly off for negative values (which `df` may really emit): It would then have to be
   # "(<df in 0.5 K blocks> - 1) / 2" instead, but the deviation is negligible: 1 KByte too much free space indicated for negative values.
-  free_space="$(expr \( "$(df -P / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)" '+' 1 \) '/' 2)"
+  free_space="$(expr \( "$(df -P / | head -2 | tail -1 | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)" '+' 1 \) '/' 2)"
   # Note that in contrast to upgrading at the GUI, the RPMs for upgrading are not all downloaded first (and installed after booting into the system-update mode),
   # but downloaded and installed one by one, hence requiring much less space on persistent storage (i.e., the root filesystem) for upgrading.
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release,
