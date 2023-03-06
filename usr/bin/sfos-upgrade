@@ -182,7 +182,7 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   sailversion_fail="y"
   # Calling curl with the -k (= --insecure) option, which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
   sailfishdocs_sfos_list="$(curl -sSkL https://github.com/sailfishos/docs.sailfishos.org/raw/master/Support/Releases/README.md | cut -s -d '|' -f 2,5 | tr -d ' ')"
-  if sailfishdocs_sfos_releases="$(echo "$sailfishdocs_sfos_list" | cut -s -d '|' -f 1 | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
+  if sailfishdocs_sfos_releases="$(echo "$sailfishdocs_sfos_list" | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
   then sailfishdocs_fail="n"
   fi
   if sailversion_sfos_releases="$(curl -sSk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
@@ -229,7 +229,7 @@ else
   case "$(compare_versions "$upgrade_release" "$my_recent_sfos_release")$(compare_versions "$installed_release" "$my_recent_sfos_release")" in
   g???|??g?)  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
               # Deliberately not performing this comparison with the internal list of stop releases, because it must be exactly the same condition as in line 179.
-    if ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
+    if ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
     then
       echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
       echo "Hence unable to check if \"${upgrade_release}\" is a \"stop release\"." >&2
