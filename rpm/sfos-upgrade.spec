@@ -68,7 +68,7 @@ Url:
 %endif
 
 %define _binary_payload w6.gzdio
-%define _source_payload w2.gzdio
+%define _source_payload w6.gzdio
 
 %prep
 %setup -q
