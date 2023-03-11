@@ -1,13 +1,13 @@
 Name:           sfos-upgrade
 Summary:        Scripts for fail-safe upgrading of SailfishOS at the command line with logging
-# The Git release tag format must adhere to <version>-<release> again, since
-# version 3.9.21.  The <version> field adheres to semantic versioning and the
-# <release> field is comprised of a natural number greater or equal to 1, which
-# might be prefixed with {alpha,beta,rc,release} (e.g., "beta3") and may
-# additonally be postfixed with a plus character ("+"), the name of the
-# packager and a release number chosen by her (e.g., "rc2+jane4").  For details
-# and reasons, see https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:        3.9.21
+# The Git release tag format must adhere to just <version> since version 3.6.0.
+# The <version> field adheres to semantic versioning and the <release> field 
+# is comprised of {alpha,beta,rc,release} postfixed with a natural number
+# greater or equal to 1 (e.g., "beta3") and may additonally be postfixed with a
+# plus character ("+"), the name of the packager and a release number chosen by
+# her (e.g., "rc2+jane4").  For details and reasons, see
+# https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
+Version:        3.9.20
 Release:        release12
 Group:          Applications/System
 Distribution:   SailfishOS
@@ -19,7 +19,7 @@ Vendor:         olf
 # The "Source0:" line below requires that the value of %%{name} is also the
 # project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
-Source0:        %{url}/archive/%{version}-%{release}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 # Note that the rpmlintrc file shall be named so according to
 # https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
 Source99:       %{name}.rpmlintrc
