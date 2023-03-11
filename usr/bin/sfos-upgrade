@@ -110,7 +110,7 @@ then
   exit 3
 fi
 
-installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | sed -n '1p')"
+installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | head -1)"
 if [ -z "$*" ]
 then
   set_ssu=""
@@ -182,7 +182,7 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   sailversion_fail="y"
   sailfishdocs_fail="y"
   # Calling curl with the -k (= --insecure) option, which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
-  if sailversion_sfos_releases="$(curl -sSk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep '^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$')"
+  if sailversion_sfos_releases="$(curl -sSk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -x '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
   then sailversion_fail="n"
   fi
   sailfishdocs_sfos_list="$(curl -sSkL https://github.com/sailfishos/docs.sailfishos.org/raw/master/Support/Releases/README.md | cut -s -d '|' -f 2,5 | tr -d ' ')"
@@ -203,9 +203,9 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   exit 7
   ;;
 esac
-all_sfos_releases="$(echo -e "${sailversion_sfos_releases}\n${sailfishdocs_sfos_releases}\n$(echo "$mylist_sfos_releases" | tr ',' '\n')" | grep -v '^$' | sort -ur)"
+all_sfos_releases="$(echo -e "${sailversion_sfos_releases}\n${sailfishdocs_sfos_releases}\n$(echo "$mylist_sfos_releases" | tr ',' '\n')" | grep -vx '' | sort -ur)"
 # Side note: all_sfos_releases is sorted from highest to lowest (by "sort -r"), in contrast to the all_stop_releases (below).
-if ! echo "$all_sfos_releases" | grep -q "^$(echo "$upgrade_release" | sed 's/\./\\\./g')\$"
+if ! echo "$all_sfos_releases" | grep -qx "$(echo "$upgrade_release" | sed 's/\./\\\./g')"
 then
   echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!" >&2
   echo -n "Do you really want to continue?" >&2
@@ -250,7 +250,7 @@ else
     exit 7
     ;;
   esac
-  all_stop_releases="$(echo -e "${sailfishdocs_stop_releases}\n$(echo "$mylist_stop_releases" | tr ',' '\n')" | grep -v '^$' | sort -u)"
+  all_stop_releases="$(echo -e "${sailfishdocs_stop_releases}\n$(echo "$mylist_stop_releases" | tr ',' '\n')" | grep -vx '' | sort -u)"
   compar0="$(compare_versions "$installed_release" "$upgrade_release")"
   case "$compar0" in
   e?)  # Equality
@@ -375,7 +375,7 @@ else
   esac
 fi
 
-if mount -t btrfs | cut -s -f 3 -d ' ' | grep -q '^/$'
+if mount -t btrfs | cut -s -f 3 -d ' ' | grep -qx '/'
 then
   btrfs_check="KO"
   if command -v btrfs-balancer > /dev/null 2>&1
@@ -439,7 +439,7 @@ then
 else
   # Formula "(<df in 0.5 K blocks> + 1) / 2" is slightly off for negative values (which `df` may really emit): It would then have to be
   # "(<df in 0.5 K blocks> - 1) / 2" instead, but the deviation is negligible: 1 KByte too much free space indicated for negative values.
-  free_space="$(expr \( "$(df -P / | sed -n '2p' | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)" '+' 1 \) '/' 2)"
+  free_space="$(expr \( "$(df -P / | head -2 | tail -1 | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)" '+' 1 \) '/' 2)"
   # Note that in contrast to upgrading at the GUI, the RPMs for upgrading are not all downloaded first (and installed after booting into the system-update mode),
   # but downloaded and installed one by one, hence requiring much less space on persistent storage (i.e., the root filesystem) for upgrading.
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release,
