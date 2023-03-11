@@ -5,7 +5,12 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3") and may additonally be postfixed with a
 # plus character ("+"), the name of the packager and a release number chosen by
-# her (e.g., "rc2+jane4").  For details and reasons, see
+# her (e.g., "rc2+jane4").  `{alpha|beta|rc|release}` indicates the expected
+# status of the software.  No other identifiers shall be used for any published
+# version, but for the purpose of testing infrastructure other nonsensical
+# identifiers as `adud` may be used, which do *not* trigger a build at GitHub
+# and OBS, when configured accordingly; mind the sorting (`adud` < `alpha`).
+# For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
 Version:        3.9.20
 Release:        release12
