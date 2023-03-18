@@ -7,7 +7,7 @@ export BLOCK_SIZE=512     # For `df` et al, see man-page for GNU `df`
 export DF_BLOCK_SIZE=512  # For `df` et al, see man-page for GNU `df`
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 681) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 685) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -205,6 +205,8 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
 esac
 all_sfos_releases="$(echo -e "${sailversion_sfos_releases}\n${sailfishdocs_sfos_releases}\n$(echo "$mylist_sfos_releases" | tr ',' '\n')" | grep -vx '' | sort -ur)"
 # Side note: all_sfos_releases is sorted from highest to lowest (by "sort -r"), in contrast to the all_stop_releases (below).
+# Attention: Because busybox's `sort` does not support the option `-V`, all_sfos_releases might be incorrectly sorted locally, because, e.g., "10" is treated as less than "9"!
+# Luckily this only affects point releases and hence not all_stop_releases, because solely the latest point release of a version X.Y.Z is its current stop release.
 if ! echo "$all_sfos_releases" | grep -qx "$(echo "$upgrade_release" | sed 's/\./\\\./g')"
 then
   echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!" >&2
