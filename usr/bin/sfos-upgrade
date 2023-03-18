@@ -7,7 +7,7 @@ export BLOCK_SIZE=512     # For `df` et al, see man-page for GNU `df`
 export DF_BLOCK_SIZE=512  # For `df` et al, see man-page for GNU `df`
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 686) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 691) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -177,8 +177,10 @@ my_recent_sfos_release="$(echo "$mylist_sfos_releases" | cut -f 1 -d ',')"
 sailversion_sfos_releases=""
 sailfishdocs_sfos_list=""
 sailfishdocs_sfos_releases=""
+fresh_release=""
 case "$(compare_versions "$upgrade_release" "$my_recent_sfos_release")$(compare_versions "$installed_release" "$my_recent_sfos_release")" in
 g???|??g?)  # Only download lists of SailfishOS releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
+  fresh_release="1"  # Version is newer than internal list.
   sailversion_fail="y"
   sailfishdocs_fail="y"
   # Calling curl with the -k (= --insecure) option, which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
@@ -205,6 +207,8 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
 esac
 all_sfos_releases="$(echo -e "${sailversion_sfos_releases}\n${sailfishdocs_sfos_releases}\n$(echo "$mylist_sfos_releases" | tr ',' '\n')" | grep -vx '' | sort -ur)"
 # Side note: all_sfos_releases is sorted from highest to lowest (by "sort -r"), in contrast to the all_stop_releases (below).
+# Attention: Because busybox's `sort` does not support the option `-V`, all_sfos_releases might be incorrectly sorted locally, because, e.g., "10" is treated as less than "9"!
+# Luckily this only affects point releases and hence not all_stop_releases, because solely the latest point release of a version X.Y.Z is its current stop release.
 if ! echo "$all_sfos_releases" | grep -qx "$(echo "$upgrade_release" | sed 's/\./\\\./g')"
 then
   echo "Warning: \"${upgrade_release}\" does not seem to be a publicly released SailfishOS version!" >&2
@@ -228,10 +232,10 @@ else
   #for i in $(echo "$mylist_stop_releases" | tr ',' ' '); do if echo "$mylist_sfos_releases" | fgrep -q "$i"; then echo "${i}!"; fi; done
   #my_recent_stop_release="$(echo "$mylist_stop_releases" | cut -f 1 -d ',')"
   # Do not: case "$(compare_versions "$upgrade_release" "$my_recent_stop_release")$(compare_versions "$installed_release" "$my_recent_stop_release")" in
-  case "$(compare_versions "$upgrade_release" "$my_recent_sfos_release")$(compare_versions "$installed_release" "$my_recent_sfos_release")" in
-  g???|??g?)  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
-              # Deliberately not performing this comparison with the internal list of stop releases, because it must be exactly the same condition as in line 179.
-    if [ -z "$sailfishdocs_sfos_list" ] || [ "$sailfishdocs_fail" != "n" ] || ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
+  # , because this MUST be the same comparison as in line 181, respectively use its result.
+  if [ -n "$fresh_release" ]
+  then  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
+    if [ "$sailfishdocs_fail" != "n" ] || ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
     then
       echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
       echo "Hence unable to check if the path from \"${installed_release}\" to \"${upgrade_release}\" contains a \"stop release\"." >&2
