@@ -232,8 +232,8 @@ else
   #my_recent_stop_release="$(echo "$mylist_stop_releases" | cut -f 1 -d ',')"
   # Do not: case "$(compare_versions "$upgrade_release" "$my_recent_stop_release")$(compare_versions "$installed_release" "$my_recent_stop_release")" in
   # , because this MUST be the same comparison as in line 181, respectively use its result.
-  if [ -n "$fresh_release" ]
-  then  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
+  if [ -n "$fresh_release" ]  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
+  then  # sailfishdocs_fail is set (to something), if fresh_release is not empty.
     if [ "$sailfishdocs_fail" != "n" ] || ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
     then
       echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
@@ -245,15 +245,7 @@ else
       askyes >&2
       echo >&2
     fi
-    ;;
-  [egl]?[egl]?)  # No need to extract Jolla's list of SailfishOS stop releases.
-    true
-    ;;
-  *)
-    echo "Comparing versions failed when checking, if extracting stop releases from Jolla's list of SailfishOS releases is necessary." >&2
-    exit 7
-    ;;
-  esac
+  fi
   all_stop_releases="$(echo -e "${sailfishdocs_stop_releases}\n$(echo "$mylist_stop_releases" | tr ',' '\n')" | grep -vx '' | sort -u)"
   compar0="$(compare_versions "$installed_release" "$upgrade_release")"
   case "$compar0" in
