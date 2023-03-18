@@ -771,7 +771,7 @@ then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   fi
 fi
 
-# Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
+# Simplified since v2.3, because `ssu dr` seems to *always* return "O.K.":
 compar_o="$(compare_versions "$installed_release" "1.0.4.20")$(compare_versions "$upgrade_release" "1.0.4.20")"
 case "$compar_o" in
 [eg]?[eg]?)
