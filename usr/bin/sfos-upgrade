@@ -219,7 +219,7 @@ else
   sailfishdocs_stop_releases=""
   # Because Jolla regularly fails to document their stop releases in a timely manner (see e.g., https://forum.sailfishos.org/t/scripted-download-of-https-jolla-zendesk-com-hc-en-us-articles-201836347-fails/7935/2 ),
   # I had to change the policy how to deal with this lacking information: All final releases, which are not documented not to be a stop release, are handled as one starting with sfos-upgrade 3.9.1.
-  #  mylist_stop_releases="4.5.0.18,4.4.0.72,4.3.0.15,4.2.0.21,4.1.0.24,4.0.1.48,3.4.0.24,3.2.0.12,3.0.0.8,2.2.0.29,2.0.5.6,2.0.0.10,1.1.9.30,1.1.7.28,1.1.2.16,1.0.2.5,1.0.0.5"
+  # mylist_stop_releases="4.5.0.18,4.4.0.72,4.3.0.15,4.2.0.21,4.1.0.24,4.0.1.48,3.4.0.24,3.2.0.12,3.0.0.8,2.2.0.29,2.0.5.6,2.0.0.10,1.1.9.30,1.1.7.28,1.1.2.16,1.0.2.5,1.0.0.5"
   mylist_stop_versions="4.5.0,4.4.0,4.3.0,4.2.0,4.1.0,4.0.1,3.4.0,3.2.0,3.0.0,2.2.0,2.0.5,2.0.0,1.1.9,1.1.7,1.1.2,1.0.2,1.0.0"
   # 0.99.5.11 and 1.0.1.10 are not documented to be "stop releases" at https://docs.sailfishos.org/Support/Releases/
   # But 2.0.5.6 seems to be a "stop release", at least on some devices, see comments thread to
@@ -252,7 +252,7 @@ else
     ;;
   esac
   # As of 2023-03-18 (i.e., 4.5.0.18 is the newest release) this works fine despite *and* because of busybox's `sort` lacking `-V`: 3.0.0.11, which was a release only for the Inoi R7, is treated as smaller than 3.0.0.8, which is the correct stop release version of 3.0.0.x.
-  # But as soon as a stop release version X.Y.Z is publicly released (cBetas are *not* public) with both, point releases smaller and larger than 10, this ceases to work as intended.  Likely it will still work out O.K. on practice.
+  # But as soon as a stop release version X.Y.Z is publicly released (cBetas are *not* public) with both, point releases smaller and larger than 10, this ceases to work as intended.  Likely it will still work out O.K. in practice.
   all_stop_versions="$(echo -e "$(echo "$sailfishdocs_stop_releases" | cut -s -d '.' -f 1-3)\n$(echo "$mylist_stop_versions" | tr ',' '\n')" | grep -vx '' | sort -u)"
   all_stop_releases="$(for i in $all_stop_versions; do echo "$all_sfos_releases" | grep -xm 1 "${i}\.[0-9][0-9]*"; done)"
   compar0="$(compare_versions "$installed_release" "$upgrade_release")"
