@@ -230,7 +230,7 @@ else
   case "$(compare_versions "$upgrade_release" "$my_recent_sfos_release")$(compare_versions "$installed_release" "$my_recent_sfos_release")" in
   g???|??g?)  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
               # Deliberately not performing this comparison with the internal list of stop releases, because it must be exactly the same condition as in line 179.
-    if [ "$sailfishdocs_fail" != "n" ] || ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
+    if [ -z "$sailfishdocs_sfos_list" ] || [ "$sailfishdocs_fail" != "n" ] || ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
     then
       echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
       echo "Hence unable to check if the path from \"${installed_release}\" to \"${upgrade_release}\" contains a \"stop release\"." >&2
