@@ -7,7 +7,7 @@ export BLOCK_SIZE=512     # For `df` et al, see man-page for GNU `df`
 export DF_BLOCK_SIZE=512  # For `df` et al, see man-page for GNU `df`
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
-# (in line 691) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
+# (in line 683) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked v1.0.0.5 per
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep 'bash' , as no earlier
@@ -233,8 +233,8 @@ else
   #my_recent_stop_release="$(echo "$mylist_stop_releases" | cut -f 1 -d ',')"
   # Do not: case "$(compare_versions "$upgrade_release" "$my_recent_stop_release")$(compare_versions "$installed_release" "$my_recent_stop_release")" in
   # , because this MUST be the same comparison as in line 181, respectively use its result.
-  if [ -n "$fresh_release" ]
-  then  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
+  if [ -n "$fresh_release" ]  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
+  then  # sailfishdocs_fail is set (to something), if fresh_release is not empty.
     if [ "$sailfishdocs_fail" != "n" ] || ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
     then
       echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
@@ -246,15 +246,7 @@ else
       askyes >&2
       echo >&2
     fi
-    ;;
-  [egl]?[egl]?)  # No need to extract Jolla's list of SailfishOS stop releases.
-    true
-    ;;
-  *)
-    echo "Comparing versions failed when checking, if extracting stop releases from Jolla's list of SailfishOS releases is necessary." >&2
-    exit 7
-    ;;
-  esac
+  fi
   # As of 2023-03-18 (i.e., 4.5.0.18 is the newest release) this works fine despite *and* because of busybox's `sort` lacking `-V`: 3.0.0.11, which was a release only for the Inoi R7, is treated as smaller than 3.0.0.8, which is the correct stop release version of 3.0.0.x.
   # But as soon as a stop release version X.Y.Z is publicly released (cBetas are *not* public) with both, point releases smaller and larger than 10, this ceases to work as intended.  Likely it will still work out O.K. in practice.
   all_stop_versions="$(echo -e "$(echo "$sailfishdocs_stop_releases" | cut -s -d '.' -f 1-3)\n$(echo "$mylist_stop_versions" | tr ',' '\n')" | grep -vx '' | sort -u)"
@@ -775,7 +767,7 @@ then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   fi
 fi
 
-# Simplified since v2.3, because ssu dr seems to *always* return "O.K.":
+# Simplified since v2.3, because `ssu dr` seems to *always* return "O.K.":
 compar_o="$(compare_versions "$installed_release" "1.0.4.20")$(compare_versions "$upgrade_release" "1.0.4.20")"
 case "$compar_o" in
 [eg]?[eg]?)
