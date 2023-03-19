@@ -12,8 +12,8 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # and OBS, when configured accordingly; mind the sorting (`adud` < `alpha`).
 # For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:        3.9.22
-Release:        release14
+Version:        3.10.0
+Release:        release1
 Group:          Applications/System
 Distribution:   SailfishOS
 License:        LGPL-2.1-only
