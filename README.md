@@ -3,7 +3,7 @@
 
 <br />
 
-Upgrading SailfishOS at the GUI (per *Settings -> SailfishOS updates*) provides very little information about its progress / process / success, beyond reading `/var/log/systemupdate.log` after an upgrade.  This can make troubleshooting issues hard.<br />
+Upgrading SailfishOS at the GUI (per *Settings→SailfishOS updates*) provides very little information about its progress / process / success, beyond reading `/var/log/systemupdate.log` after an upgrade.  This can make troubleshooting issues hard.<br />
 Furthermore the GUI offers no control which SailfishOS version to upgrade to.
 
 In contrast to that, Jolla's [guide how to upgrade SailfishOS at the command line](https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line) offers full control, while lacking any logs or safety checks.<br />
