@@ -6,34 +6,33 @@ export LC_CTYPE=POSIX
 export LC_COLLATE=POSIX
 
 called="$(basename "$0")"
-if ! echo " $(id -un) $(id -Gn) " | fgrep -q ' root '
+if ! printf '%s' " $(id -un) $(id -Gn) " | fgrep -q ' root '
 then
-  echo "Aborting: $called must be started with root privileges."
+  printf '%s\n' "Aborting: $called must be started with root privileges."
   exit 1
 fi
 
 if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt 4 ] 2> /dev/null
 then
-  echo "Notice: Mind that $called is best run on a freshly rebooted device."
-  echo
+  printf '%s\n\n' "Notice: Mind that $called is best run on a freshly rebooted device."
 fi
 
-echo "- Cleaning logfiles of duplicate entries."
+printf '%s\n' "- Cleaning logfiles of duplicate entries."
 tidy_log-dupes "$@"
-echo
+printf '\n'
 
 if command -v store-client > /dev/null 2>&1
 then
-  echo "- Removing outdated Store version info."
+  printf '%s\n' "- Removing outdated Store version info."
   for i in '-TERM' '-INT' '-TERM' '-HUP' '-KILL' '-Failed_to_kill_store-client'
   do
     if pgrep store-client > /dev/null
-    then pkill $(echo $i) store-client
+    then pkill $(printf '%s' $i) store-client
     else break
     fi
     sleep 1
   done
-  echo
+  printf '\n'
 fi
 # See troubleshooting section "a) Cleaning up" at https://jolla.zendesk.com/hc/en-us/articles/360005795474
 rm -f /home/.pk-zypp-dist-upgrade-cache/*
@@ -45,27 +44,27 @@ rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primu
 if command -v zypper > /dev/null 2>&1
 then
 #  No need to be "brutal":
-#  echo "- Cleaning zypper's caches:"
+#  printf '%s\n' "- Cleaning zypper's caches:"
 #  zypper clean -m || exit $?
-  echo "- Refreshing zypper's caches:"
+  printf '%s\n' "- Refreshing zypper's caches:"
   zypper refresh || exit $?
-  echo
+  printf '\n'
   # Syncing, as I could not determine if zypper already does that:
   sync
-  echo "- Checking for updates per zypper:"
+  printf '%s\n' "- Checking for updates per zypper:"
   # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
   zypper update -y -l
-  echo
+  printf '\n'
 fi
 
 # This may have become superfluous with SFOS 3.2.0, see
 # https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
 # Would need to investigate, but refreshing twice will do no harm, anyway.
-echo "- Refreshing pkcon's caches:"
+printf '%s\n' "- Refreshing pkcon's caches:"
 pkcon refresh || exit $?
 # Syncing, as I could not determine if pkcon already does that:
 sync
-echo "- Checking for updates per pkcon:"
+printf '%s\n' "- Checking for updates per pkcon:"
 # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
 pkcon -y update
 
