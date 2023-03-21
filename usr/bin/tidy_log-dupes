@@ -60,21 +60,21 @@ do
   if [ "$logfile" != "$targets" ]
   then
     echo -n "- $logfile"
-    logs_count="$(expr "$logs_count" '+' "1")"
+    logs_count="$(($logs_count+1))"
     tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
     if sed 's/\cM//g' "$logfile" | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq 2> /dev/null > "$tidied_log"
     then
       if rm "$logfile" 2> /dev/null
       then
-        logs_success="$(expr "$logs_success" '+' "1")"
+        logs_success="$(($logs_success+1))"
         echo ": O.K."
       else
-        logs_nodelete="$(expr "$logs_nodelete" '+' "1")"
+        logs_nodelete="$(($logs_nodelete+1))"
         echo ": Tidied, but failed to remove it!"
       fi
     else
       rm -f "$tidied_log" 2> /dev/null
-      logs_failed="$(expr "$logs_failed" '+' "1")"
+      logs_failed="$(($logs_failed+1))"
       echo ": Tidying failed!"
     fi
   else retc=121
@@ -82,19 +82,19 @@ do
 done
 case $retc in
 0)
-  logs_remain="$(expr "$logs_nodelete" '+' "$logs_failed")"
-  if [ "$logs_remain" -eq "0" ]
+  logs_remain="$(($logs_nodelete+$logs_failed))"
+  if [ "$logs_remain" -eq 0 ]
   then
     if [ "$logs_count" -eq "$logs_success" ]
     then echo "Summary: Processed $logs_count untidy log file(s) in $logdir successfully." >&2
     else echo "Warning: Sucessfully processed $logs_success of $logs_count untidy log file(s) in $logdir (without a single failure), but the numbers differ (indicating an internal logic flaw in ${called})!" >&2
     fi
   else
-    if [ "$logs_remain" -lt "120" ]
+    if [ "$logs_remain" -lt 120 ]
     then retc="$logs_remain"
     else retc=120
     fi
-    if [ "$logs_count" -eq "$(expr "$logs_success" '+' "$logs_remain")" ]
+    if [ "$logs_count" -eq "$(($logs_success+$logs_remain))" ]
     then echo "Error: Processed $logs_count untidy log file(s) in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy (hence $logs_remain untidy log files remain)!" >&2
     else echo "Error: Processed $logs_count untidy log file(s) in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy (hence $logs_remain untidy log files remain)!  Additionally these numbers do not add up, indicating an internal logic flaw in ${called}!" >&2
     fi
