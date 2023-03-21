@@ -68,7 +68,7 @@ compare_versions ()
   # Emits "e" (equal) if A = B, "l" (lesser) if A < B, "g" (greater) if A > B to STDOUT or "x" if A and B are not comparable, immediately
   # followed by the number of the first field {1..4} from the left, in which the mismatch occurred (hence always "e4" for a match).
   # Returns 1 if version strings are not comparable and 3 if not called with two arguments.
-  if [ "$#" != "2" ]
+  if [ "$#" != 2 ]
   then
     echo "Warning due to internal error: The function compare_versions expects 2 parameters, but was called with ${#}!" >&2
     retc=3
@@ -76,7 +76,7 @@ compare_versions ()
     version_a="$1"
     version_b="$2"
     retc=0
-    comparison="e"
+    comparison=e
     for field_num in 1 2 3 4
     do
       a_substring="$(echo "$version_a" | cut -s -f "$field_num" -d '.')"
@@ -84,13 +84,13 @@ compare_versions ()
       if [ "$a_substring" != "$b_substring" ]
       then  # When different, ...
         if [ "$a_substring" -lt "$b_substring" ]
-        then comparison="l"
+        then comparison=l
         elif [ "$a_substring" -gt "$b_substring" ]
-        then comparison="g"
+        then comparison=g
         else
           echo "Warning from function compare_versions: Version strings \"${version_a}\" and \"${version_b}\" are not comparable!" >&2
           retc=1
-          comparison="x"
+          comparison=x
         fi
         break  # ... jump out of the loop.
       fi
@@ -116,7 +116,7 @@ then
   set_ssu=""
   upgrade_release="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
 else
-  set_ssu="yes"
+  set_ssu=yes
   ssu_set="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
   upgrade_release="$1"
   shift
@@ -180,18 +180,18 @@ sailfishdocs_sfos_releases=""
 fresh_release=""
 case "$(compare_versions "$upgrade_release" "$my_recent_sfos_release")$(compare_versions "$installed_release" "$my_recent_sfos_release")" in
 g???|??g?)  # Only download lists of SailfishOS releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
-  fresh_release="1"  # Version is newer than internal list.
-  sailversion_fail="y"
-  sailfishdocs_fail="y"
+  fresh_release=1  # Version is newer than internal list.
+  sailversion_fail=y
+  sailfishdocs_fail=y
   # Calling curl with the -k (= --insecure) option, which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
   if sailversion_sfos_releases="$(curl -sSk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -x '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
-  then sailversion_fail="n"
+  then sailversion_fail=n
   fi
   sailfishdocs_sfos_list="$(curl -sSkL https://github.com/sailfishos/docs.sailfishos.org/raw/master/Support/Releases/README.md | cut -s -d '|' -f 2,5 | tr -d ' ')"
   if sailfishdocs_sfos_releases="$(echo "$sailfishdocs_sfos_list" | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
-  then sailfishdocs_fail="n"
+  then sailfishdocs_fail=n
   fi
-  if [ "$sailfishdocs_fail$sailversion_fail" = "yy" ]
+  if [ "$sailfishdocs_fail$sailversion_fail" = yy ]
   then
     echo "Notice: Failed to retrieve a list of recent SailfishOS releases, hence unable to check the validity of version number \"${upgrade_release}\"." >&2
     echo >&2
@@ -218,7 +218,7 @@ then
 fi
 
 if [ "$installed_release" = "$upgrade_release" ]
-then compar0="e4"
+then compar0=e4
 else
   sailfishdocs_stop_releases=""
   # Because Jolla regularly fails to document their stop releases in a timely manner (see e.g., https://forum.sailfishos.org/t/scripted-download-of-https-jolla-zendesk-com-hc-en-us-articles-201836347-fails/7935/2 ),
@@ -235,7 +235,7 @@ else
   # , because this MUST be the same comparison as in line 181, respectively use its result.
   if [ -n "$fresh_release" ]  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
   then  # sailfishdocs_fail is set (to something), if fresh_release is not empty.
-    if [ "$sailfishdocs_fail" != "n" ] || ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
+    if [ "$sailfishdocs_fail" != n ] || ! sailfishdocs_stop_releases="$(echo "$sailfishdocs_sfos_list" | fgrep -i 'stoprelease' | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
     then
       echo "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
       echo "Hence unable to check if the path from \"${installed_release}\" to \"${upgrade_release}\" contains a \"stop release\"." >&2
@@ -377,17 +377,17 @@ fi
 
 if mount -t btrfs | cut -s -f 3 -d ' ' | grep -qx '/'
 then
-  btrfs_check="KO"
+  btrfs_check=KO
   if command -v btrfs-balancer > /dev/null 2>&1
   then
     btrfs_allocation="$(btrfs-balancer allocation / | tr -s ' ')"
     btrfs_alloc_percent="$(echo "$btrfs_allocation" | grep '^Allocated: ' | cut -f 2 -d ' ')"
-    if ! [ "$btrfs_alloc_percent" -lt "90" ]
+    if ! [ "$btrfs_alloc_percent" -lt 90 ]
     then
       echo "Aborting: Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 90% or more!" >&2
       echo "Please perform a btrfs-balancer run before retrying." >&2
       exit 1
-    elif ! [ "$btrfs_alloc_percent" -lt "85" ]
+    elif ! [ "$btrfs_alloc_percent" -lt 85 ]
     then
       echo "Warning: Allocation (${btrfs_alloc_percent}%) of the root filesystem (BTRFS) is 85% or more!" >&2
       echo "Please consider to abort and to perform a btrfs-balancer run before retrying." >&2
@@ -395,15 +395,15 @@ then
     fi
     btrfs_total="$(echo "$btrfs_allocation" | grep '^Total: ' | cut -f 2 -d ' ')"
     btrfs_used="$(echo "$btrfs_allocation" | grep '^Used: ' | cut -f 2 -d ' ')"
-    if btrfs_unallocated="$(expr "$btrfs_total" '-' "$btrfs_used")"
+    if btrfs_unallocated="$(($btrfs_total-$btrfs_used))"
     then
-      btrfs_check="ok"
-      if ! [ "$btrfs_unallocated" -ge "1610612736" ]
+      btrfs_check=ok
+      if ! [ "$btrfs_unallocated" -ge 1610612736 ]
       then
         echo "Aborting: Less than 1.5 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!" >&2
         echo "Please perform a btrfs-balancer run before retrying." >&2
         exit 1
-      elif ! [ "$btrfs_unallocated" -ge "2147483648" ]
+      elif ! [ "$btrfs_unallocated" -ge 2147483648 ]
       then
         echo "Warning: Less than 2 GiB unallocated space ($btrfs_unallocated Bytes) on the root filesystem (BTRFS)!" >&2
         echo "Please consider to abort and to perform a btrfs-balancer run before retrying." >&2
@@ -415,15 +415,15 @@ then
     btrfs_allocation="$(btrfs filesystem df / | grep -m 1 '^Data' | cut -s -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
     btrfs_total="$(echo "$btrfs_allocation" | grep '^total=' | cut -f 2 -d '=')"
     btrfs_used="$(echo "$btrfs_allocation" | grep '^used=' | cut -f 2 -d '=')"
-    if btrfs_unallocated="$(expr "$btrfs_total" '-' "$btrfs_used")"
+    if btrfs_unallocated="$(($btrfs_total-$btrfs_used))"
     then
-      btrfs_check="ok"
-      if ! [ "$btrfs_unallocated" -ge "200" ]
+      btrfs_check=ok
+      if ! [ "$btrfs_unallocated" -ge 200 ]
       then
         echo "Aborting: Less than 2 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!" >&2
         echo "Please balance the btrfs root filesystem before retrying." >&2
         exit 1
-      elif ! [ "$btrfs_unallocated" -ge "250" ]
+      elif ! [ "$btrfs_unallocated" -ge 250 ]
       then
         echo "Warning: Less than 2.5 GiB unallocated data space ($(echo "$btrfs_unallocated" | rev | cut -c 3- | rev).$(echo "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!" >&2
         echo "Please consider to abort and to balance the btrfs root filesystem before retrying." >&2
@@ -431,7 +431,7 @@ then
       fi
     fi
   fi
-  if [ "$btrfs_check" != "ok" ]
+  if [ "$btrfs_check" != ok ]
   then
     echo "Aborting: Cannot properly determine allocation of the root filesystem (BTRFS)." >&2
     exit 5
@@ -439,19 +439,19 @@ then
 else
   # Formula "(<df in 0.5 K blocks> + 1) / 2" is slightly off for negative values (which `df` may really emit): It would then have to be
   # "(<df in 0.5 K blocks> - 1) / 2" instead, but the deviation is negligible: 1 KByte too much free space indicated for negative values.
-  free_space="$(expr \( "$(df -P / | head -2 | tail -1 | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)" '+' 1 \) '/' 2)"
+  free_space="$((($(df -P / | head -2 | tail -1 | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)+1)/2))"
   # Note that in contrast to upgrading at the GUI, the RPMs for upgrading are not all downloaded first (and installed after booting into the system-update mode),
   # but downloaded and installed one by one, hence requiring much less space on persistent storage (i.e., the root filesystem) for upgrading.
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release,
   # but one may upgrade from one stop release to another, comprising the RPMs of multiple releases.
   # Furthermore these estimates from Jolla only cover their own default components (RPMs), individually installed RPMs (e.g., from the Jolla Store, OpenRepos or even Jolla's SailfishOS repositories) are not and cannot be accounted for.
-  if ! [ "$free_space" -gt "524288" ]
+  if ! [ "$free_space" -gt 524288 ]
   then  # This hard ½ GiB limit is an rough estimate of an upper boundary for the sum of all RPM size increases by an upgrade plus space for the package management's indexes, caches etc.
     echo "Aborting: Less than ½ GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Before retrying, please clean up or enlarge the root filesystem, see:" >&2
     echo "https://gitlab.com/Olf0/sailfishX#33-increasing-the-root-lvm-volume-size" >&2
     exit 1
-  elif ! [ "$free_space" -gt "786432" ]
+  elif ! [ "$free_space" -gt 786432 ]
   then  # As the largest SailfishOS upgrades (Jolla's estimates: the sum of the sizes of all updated RPMs (which are installed by default), when directly upgrading from the predecessor release) have been over 600 MiB (e.g., SFOS 3.3.0 -> 3.4.0), a ¾ GiB limit to warn explicitly seems to be reasonable.
     echo "Warning: Less than ¾ GiB ($free_space KiB) free space on the root filesystem!" >&2
     echo "Please consider to abort and then to clean up or to enlarge the root filesystem before retrying, see:" >&2
@@ -459,7 +459,7 @@ else
     echo -n "Do you really want to continue?" >&2
     askyes >&2
     echo >&2
-  elif ! [ "$free_space" -ge "1048576" ]
+  elif ! [ "$free_space" -ge 1048576 ]
   then  # This 1 GiB limit to emit a soft low space notice is intended to trigger users early to do something about it.
     echo "Notice: Less than 1 GiB ($free_space KiB) free space on the root filesystem." >&2
     echo "Please consider to clean up or to enlarge the root filesystem, see:" >&2
@@ -485,7 +485,7 @@ do
   # For details, see https://github.com/Olf0/sfos-upgrade/issues/39
   if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" < "${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" > /dev/null 2>&1
   then
-    battery_info="sourced"
+    battery_info=sourced
     break
   fi
 done
@@ -493,11 +493,11 @@ if [ -n "$battery_info" ]
 then
   case "${POWER_SUPPLY_CHARGE_FULL_DESIGN}-${POWER_SUPPLY_CHARGE_NOW}-${POWER_SUPPLY_CHARGE_FULL}-$POWER_SUPPLY_CAPACITY" in
   [1-9][0-9][0-9]*-[0-9]*-*-*)
-    power_supply_capacity_design="$(expr "${POWER_SUPPLY_CHARGE_NOW}00" '/' "$POWER_SUPPLY_CHARGE_FULL_DESIGN" 2> /dev/null)"
+    power_supply_capacity_design="$((${POWER_SUPPLY_CHARGE_NOW}00/$POWER_SUPPLY_CHARGE_FULL_DESIGN))"
     ;;
   [1-9][0-9][0-9]*-*-[1-9][0-9]*-[0-9]*)
-    power_supply_charge_now="$(expr "$POWER_SUPPLY_CHARGE_FULL" '*' "$POWER_SUPPLY_CAPACITY" 2> /dev/null)"
-    power_supply_capacity_design="$(expr "$power_supply_charge_now" '/' "$POWER_SUPPLY_CHARGE_FULL_DESIGN" 2> /dev/null)"
+    power_supply_charge_now="$(($POWER_SUPPLY_CHARGE_FULL*$POWER_SUPPLY_CAPACITY))"
+    power_supply_capacity_design="$(($power_supply_charge_now/$POWER_SUPPLY_CHARGE_FULL_DESIGN))"
     ;;
   *)
     power_supply_capacity_design=""
@@ -507,19 +507,19 @@ else
   echo "Aborting: Failed to read battery information." >&2
   exit 5
 fi
-battery_check="KO"
+battery_check=KO
 case "${POWER_SUPPLY_STATUS}-${power_supply_capacity_design}-$POWER_SUPPLY_CAPACITY" in
 Charging-[0-9]*-*|Full-[0-9]*-*)
-  if ! [ "$power_supply_capacity_design" -gt "18" ]
+  if ! [ "$power_supply_capacity_design" -gt 18 ]
   then
     echo "Warning: Battery is charged less than 18.5% (${power_supply_capacity_design}%) of its original design capacity!" >&2
     echo -n "Continue charging before " >&2
     if [ -z "$set_ssu" ]
-    then battery_check="ask"
+    then battery_check=ask
     fi
   else
-    battery_check="ok"
-    if ! [ "$power_supply_capacity_design" -gt "25" ]
+    battery_check=ok
+    if ! [ "$power_supply_capacity_design" -gt 25 ]
     then
       echo "Notice: Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity." >&2
       echo "Please continue charging throughout the upgrade process!" >&2
@@ -528,13 +528,13 @@ Charging-[0-9]*-*|Full-[0-9]*-*)
   fi
   ;;
 *-[0-9]*-*)
-  if ! [ "$power_supply_capacity_design" -gt "25" ]
+  if ! [ "$power_supply_capacity_design" -gt 25 ]
   then
     echo "Warning: Battery is charged 25% or less (${power_supply_capacity_design}%) of its original design capacity!" >&2
     echo -n "Plug in a charger before " >&2
   else
-    battery_check="ok"
-    if ! [ "$power_supply_capacity_design" -gt "37" ]
+    battery_check=ok
+    if ! [ "$power_supply_capacity_design" -gt 37 ]
     then
       echo "Notice: Battery is charged less than 37.5% (${power_supply_capacity_design}%) of its original design capacity." >&2
       echo "Please plug in a charger before continuing." >&2
@@ -543,16 +543,16 @@ Charging-[0-9]*-*|Full-[0-9]*-*)
   fi
   ;;
 Charging-*-[0-9]*|Full-*-[0-9]*)
-  if ! [ "$POWER_SUPPLY_CAPACITY" -gt "25" ]
+  if ! [ "$POWER_SUPPLY_CAPACITY" -gt 25 ]
   then
     echo "Warning: Battery is charged 25% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity!" >&2
     echo -n "Continue charging before " >&2
     if [ -z "$set_ssu" ]
-    then battery_check="ask"
+    then battery_check=ask
     fi
   else
-    battery_check="ok"
-    if ! [ "$POWER_SUPPLY_CAPACITY" -gt "33" ]
+    battery_check=ok
+    if ! [ "$POWER_SUPPLY_CAPACITY" -gt 33 ]
     then
       echo "Notice: Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity." >&2
       echo "Please continue charging throughout the upgrade process!" >&2
@@ -561,13 +561,13 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
   fi
   ;;
 *-*-[0-9]*)
-  if ! [ "$POWER_SUPPLY_CAPACITY" -gt "33" ]
+  if ! [ "$POWER_SUPPLY_CAPACITY" -gt 33 ]
   then
     echo "Warning: Battery is charged less than 33.3% (${POWER_SUPPLY_CAPACITY}%) of its capacity!" >&2
     echo -n "Plug in a charger before " >&2
   else
-    battery_check="ok"
-    if ! [ "$POWER_SUPPLY_CAPACITY" -ge "50" ]
+    battery_check=ok
+    if ! [ "$POWER_SUPPLY_CAPACITY" -ge 50 ]
     then
       echo "Notice: Battery is charged less than 50% (${POWER_SUPPLY_CAPACITY}%) of its capacity." >&2
       echo "Please plug in a charger before continuing." >&2
@@ -579,14 +579,14 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
   echo "Warning: Failed to determine battery charge!" >&2
   echo -n "Check your device before " >&2
   if [ -z "$set_ssu" ]
-  then battery_check="ask"
+  then battery_check=ask
   fi
   ;;
 *-*-*)
   echo "Warning: Failed to determine battery charging state!" >&2
   echo -n "Check your device before " >&2
   if [ -z "$set_ssu" ]
-  then battery_check="ask"
+  then battery_check=ask
   fi
   ;;
 *)
@@ -613,7 +613,7 @@ ok)
   ;;
 esac
 
-if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt "5" ] 2> /dev/null
+if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt 5 ] 2> /dev/null
 then
   echo "Notice: Mind that $called is best run on a freshly rebooted device." >&2
   echo >&2
@@ -701,7 +701,7 @@ do
       echo -n "Notice: Failed to stop $user_unit (user)!  Continue?" | tee -a "$logfile" >&2
       askyes | tee -a "$logfile" >&2
     fi
-    emit_newline="y"
+    emit_newline=y
   fi
 done
 for system_unit in \
@@ -717,7 +717,7 @@ do
       echo -n "Notice: Failed to stop $system_unit (system)!  Continue?" | tee -a "$logfile" >&2
       askyes | tee -a "$logfile" >&2
     fi
-    emit_newline="y"
+    emit_newline=y
   fi
 done
 for process in store-client harbour-storema harbour-warehou harbour-osmscou pkcon zypper rpm
@@ -730,7 +730,7 @@ do
       echo -n "Notice: Failed to stop $process (process)!  Continue?" | tee -a "$logfile" >&2
       askyes | tee -a "$logfile" >&2
     fi
-    emit_newline="y"
+    emit_newline=y
   fi
 done
 if [ -n "$emit_newline" ]
