@@ -12,7 +12,7 @@ then
   exit 1
 fi
 
-if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt "4" ] 2> /dev/null
+if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt 4 ] 2> /dev/null
 then
   echo "Notice: Mind that $called is best run on a freshly rebooted device."
   echo
