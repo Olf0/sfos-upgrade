@@ -17,13 +17,13 @@ then
   printf '%s\n\n' "Notice: Mind that $called is best run on a freshly rebooted device."
 fi
 
-printf '%s\n' "- Cleaning logfiles of duplicate entries."
+printf '%s\n' '- Cleaning logfiles of duplicate entries.'
 tidy_log-dupes "$@"
 printf '\n'
 
 if command -v store-client > /dev/null 2>&1
 then
-  printf '%s\n' "- Removing outdated Store version info."
+  printf '%s\n' '- Removing outdated Store version info.'
   for i in '-TERM' '-INT' '-TERM' '-HUP' '-KILL' '-Failed_to_kill_store-client'
   do
     if pgrep store-client > /dev/null
@@ -34,11 +34,11 @@ then
   done
   printf '\n'
 fi
-# See troubleshooting section "a) Cleaning up" at https://jolla.zendesk.com/hc/en-us/articles/360005795474
+# See troubleshooting section "Cleaning up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line
 rm -f /home/.pk-zypp-dist-upgrade-cache/*
 # See https://github.com/sailfishos/udisks2/commit/bcc6437ff35a3cc1e8c4777ee80d85a9c112e63e#diff-be2415d9a1095d0aa0d9dc7977c388a7ab5bb3ff7b3e4c38713062bd03165cee
 primuser="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
-# Paths for SailfishOS ≥ 2.2.1 rsp. SailfishOS < 2.2.1, see chapter "4. Final clean up" at https://jolla.zendesk.com/hc/en-us/articles/360005795474
+# Paths for SailfishOS ≥ 2.2.1 rsp. SailfishOS < 2.2.1, see chapter "Final clean up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#final-clean-up
 rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primuser}/.cache/store-client/os-info"
 
 if command -v zypper > /dev/null 2>&1
@@ -51,7 +51,7 @@ then
   printf '\n'
   # Syncing, as I could not determine if zypper already does that:
   sync
-  printf '%s\n' "- Checking for updates per zypper:"
+  printf '%s\n' '- Checking for updates per zypper:'
   # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
   zypper update -y -l
   printf '\n'
@@ -64,7 +64,7 @@ printf '%s\n' "- Refreshing pkcon's caches:"
 pkcon refresh || exit $?
 # Syncing, as I could not determine if pkcon already does that:
 sync
-printf '%s\n' "- Checking for updates per pkcon:"
+printf '%s\n' '- Checking for updates per pkcon:'
 # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
 pkcon -y update
 
