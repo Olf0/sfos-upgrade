@@ -62,7 +62,7 @@ do
     printf '%s' "- $logfile"
     logs_count="$(($logs_count+1))"
     tidied_log="$(printf '%s' "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
-    if sed 's/\cM//g' "$logfile" | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq 2> /dev/null > "$tidied_log"
+    if sed -e 's/\cM//g' -e 's/Installing: [0-9][0-9]*%\x1b\[K//g' -e 's/\x1b\[K/\n/g' -e 's/^\[[0-9][0-9]* %] //g' -e 's/: \[[0-9][0-9]* %]$//g' -e 's/: [0-9][0-9]*%$//g' "$logfile" | uniq 2> /dev/null > "$tidied_log"
     then
       if rm "$logfile" 2> /dev/null
       then
