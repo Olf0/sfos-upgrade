@@ -17,26 +17,26 @@ export LC_COLLATE=POSIX
 called="$(basename "$0")"
 retc=0
 if [ -z "$*" ]
-then logdir="/var/log"
+then logdir=/var/log
 else
   logdir="$1"
   shift
-  if [ "$logdir" = "-h" ] || [ "$logdir" = "--help" ]
+  if [ "$logdir" = -h ] || [ "$logdir" = --help ]
   then retc=126
   elif [ ! -d "$logdir" ]
   then
-    echo "$logdir is not a directory!" >&2
+    printf '%s\n' "$logdir is not a directory!" >&2
     retc=123
   fi
   if [ -n "$*" ]
   then
-    echo "No extra parameters expected, but set: $*" >&2
+    printf '%s\n' "No extra parameters expected, but set: $*" >&2
     retc=124
   fi
   if [ $retc != 0 ]
   then
-    echo "Usage: $called [<logdirectory>|--help|-h]"
-    echo "Without a parameter it will use /var/log as log directory."
+    printf '%s\n' 'Usage: $called [<logdirectory>|--help|-h]'
+    printf '%s\n' 'Without a parameter it will use /var/log as log directory.'
     exit $retc
   fi
 fi
@@ -47,67 +47,67 @@ cd "$logdir" || exit 123
 # rm -rf UpdateTestcase-*
 
 if ! set -o pipefail
-then echo "Notice: This shell does not support \"-o pipefail\"." >&2
+then printf '%s\n' 'Notice: This shell does not support "-o pipefail".' >&2
 fi
 
 logs_count=0
 logs_success=0
 logs_nodelete=0
 logs_failed=0
-targets="systemupdate_*.log-dupes.txt"
+targets='systemupdate_*.log-dupes.txt'
 for logfile in $targets
 do
   if [ "$logfile" != "$targets" ]
   then
-    echo -n "- $logfile"
-    logs_count="$(expr "$logs_count" '+' "1")"
-    tidied_log="$(echo "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
-    if sed 's/\cM//g' "$logfile" | sed 's/Installing: [0-9][0-9]*%\x1b\[K//g' | sed 's/\x1b\[K/\n/g' | sed 's/^\[[0-9][0-9]* %] //g' | sed 's/: \[[0-9][0-9]* %]$//g' | sed 's/: [0-9][0-9]*%$//g' | uniq 2> /dev/null > "$tidied_log"
+    printf '%s' "- $logfile"
+    logs_count="$(($logs_count+1))"
+    tidied_log="$(printf '%s' "$logfile" | rev | cut -f 2- -d '-' | rev).txt"
+    if sed -e 's/\cM//g' -e 's/Installing: [0-9][0-9]*%\x1b\[K//g' -e 's/\x1b\[K/\n/g' -e 's/^\[[0-9][0-9]* %] //g' -e 's/: \[[0-9][0-9]* %]$//g' -e 's/: [0-9][0-9]*%$//g' "$logfile" | uniq 2> /dev/null > "$tidied_log"
     then
       if rm "$logfile" 2> /dev/null
       then
-        logs_success="$(expr "$logs_success" '+' "1")"
-        echo ": O.K."
+        logs_success="$(($logs_success+1))"
+        printf '%s\n' ': O.K.'
       else
-        logs_nodelete="$(expr "$logs_nodelete" '+' "1")"
-        echo ": Tidied, but failed to remove it!"
+        logs_nodelete="$(($logs_nodelete+1))"
+        printf '%s\n' ': Tidied, but failed to remove it!'
       fi
     else
       rm -f "$tidied_log" 2> /dev/null
-      logs_failed="$(expr "$logs_failed" '+' "1")"
-      echo ": Tidying failed!"
+      logs_failed="$(($logs_failed+1))"
+      printf '%s\n' ': Tidying failed!'
     fi
   else retc=121
   fi
 done
 case $retc in
 0)
-  logs_remain="$(expr "$logs_nodelete" '+' "$logs_failed")"
-  if [ "$logs_remain" -eq "0" ]
+  logs_remain="$(($logs_nodelete+$logs_failed))"
+  if [ "$logs_remain" -eq 0 ]
   then
     if [ "$logs_count" -eq "$logs_success" ]
-    then echo "Summary: Processed $logs_count untidy log file(s) in $logdir successfully." >&2
-    else echo "Warning: Sucessfully processed $logs_success of $logs_count untidy log file(s) in $logdir (without a single failure), but the numbers differ (indicating an internal logic flaw in ${called})!" >&2
+    then printf '%s\n' "Summary: Processed $logs_count untidy log file(s) in $logdir successfully." >&2
+    else printf '%s\n' "Warning: Sucessfully processed $logs_success of $logs_count untidy log file(s) in $logdir (without a single failure), but the numbers differ (indicating an internal logic flaw in ${called})!" >&2
     fi
   else
-    if [ "$logs_remain" -lt "120" ]
+    if [ "$logs_remain" -lt 120 ]
     then retc="$logs_remain"
     else retc=120
     fi
-    if [ "$logs_count" -eq "$(expr "$logs_success" '+' "$logs_remain")" ]
-    then echo "Error: Processed $logs_count untidy log file(s) in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy (hence $logs_remain untidy log files remain)!" >&2
-    else echo "Error: Processed $logs_count untidy log file(s) in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy (hence $logs_remain untidy log files remain)!  Additionally these numbers do not add up, indicating an internal logic flaw in ${called}!" >&2
+    if [ "$logs_count" -eq "$(($logs_success+$logs_remain))" ]
+    then printf '%s\n' "Error: Processed $logs_count untidy log file(s) in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy (hence $logs_remain untidy log files remain)!" >&2
+    else printf '%s\n' "Error: Processed $logs_count untidy log file(s) in ${logdir}, of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy (hence $logs_remain untidy log files remain)!  Additionally these numbers do not add up, indicating an internal logic flaw in ${called}!" >&2
     fi
   fi
   ;;
 121)
-  if [ "$logs_count$logs_success$logs_nodelete$logs_failed" = "0000" ]
-  then echo "Notice: Found no untidy log file in $logdir" >&2
-  else echo "Warning: Internal logic error, as no untidy log file was found in ${logdir}, although $called processed $logs_count untidy log file(s), of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy!" >&2
+  if [ "$logs_count$logs_success$logs_nodelete$logs_failed" = 0000 ]
+  then printf '%s\n' "Notice: Found no untidy log file in $logdir" >&2
+  else printf '%s\n' "Warning: Internal logic error, as no untidy log file was found in ${logdir}, although $called processed $logs_count untidy log file(s), of these $logs_success sucessfully, $logs_nodelete tidied but failed to delete them and $logs_failed failed to tidy!" >&2
   fi
   ;;
 *)
-  echo "Warning: Internal logic flaw, $called should never get here (return code is ${retc})!" >&2
+  printf '%s\n' "Warning: Internal logic flaw, $called should never get here (return code is ${retc})!" >&2
   ;;
 esac
 
