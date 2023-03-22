@@ -35,8 +35,8 @@ else
   fi
   if [ $retc != 0 ]
   then
-    printf '%s\n' "Usage: $called [<logdirectory>|--help|-h]"
-    printf '%s\n' "Without a parameter it will use /var/log as log directory."
+    printf '%s\n' 'Usage: $called [<logdirectory>|--help|-h]'
+    printf '%s\n' 'Without a parameter it will use /var/log as log directory.'
     exit $retc
   fi
 fi
@@ -47,14 +47,14 @@ cd "$logdir" || exit 123
 # rm -rf UpdateTestcase-*
 
 if ! set -o pipefail
-then printf '%s\n' "Notice: This shell does not support \"-o pipefail\"." >&2
+then printf '%s\n' 'Notice: This shell does not support "-o pipefail".' >&2
 fi
 
 logs_count=0
 logs_success=0
 logs_nodelete=0
 logs_failed=0
-targets="systemupdate_*.log-dupes.txt"
+targets='systemupdate_*.log-dupes.txt'
 for logfile in $targets
 do
   if [ "$logfile" != "$targets" ]
@@ -67,15 +67,15 @@ do
       if rm "$logfile" 2> /dev/null
       then
         logs_success="$(($logs_success+1))"
-        printf '%s\n' ": O.K."
+        printf '%s\n' ': O.K.'
       else
         logs_nodelete="$(($logs_nodelete+1))"
-        printf '%s\n' ": Tidied, but failed to remove it!"
+        printf '%s\n' ': Tidied, but failed to remove it!'
       fi
     else
       rm -f "$tidied_log" 2> /dev/null
       logs_failed="$(($logs_failed+1))"
-      printf '%s\n' ": Tidying failed!"
+      printf '%s\n' ': Tidying failed!'
     fi
   else retc=121
   fi
