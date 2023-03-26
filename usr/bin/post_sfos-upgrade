@@ -27,7 +27,7 @@ then
   for i in '-TERM' '-INT' '-TERM' '-HUP' '-KILL' '-Failed_to_kill_store-client'
   do
     if pgrep store-client > /dev/null
-    then pkill $(printf '%s' $i) store-client
+    then eval pkill "$i" store-client
     else break
     fi
     sleep 1
