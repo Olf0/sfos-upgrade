@@ -23,7 +23,7 @@ printf '\n'
 
 if command -v store-client > /dev/null 2>&1
 then
-  printf '%s\n' '- Removing outdated Store version info.'
+  printf '%s\n' "- Removing outdated Store version info."
   for i in '-TERM' '-INT' '-TERM' '-HUP' '-KILL' '-Failed_to_kill_store-client'
   do
     if pgrep store-client > /dev/null
