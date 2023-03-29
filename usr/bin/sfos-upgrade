@@ -203,7 +203,7 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   exit 7
   ;;
 esac
-all_sfos_releases="$(printf '%s\n%s\n%s' "$sailversion_sfos_releases" "$sailfishdocs_sfos_releases" "$(printf '%s' "$mylist_sfos_releases" | tr ',' '\n')" | grep -vx '' | sort -ur)"
+all_sfos_releases="$(printf '%s\n%s\n%s' "$sailversion_sfos_releases" "$sailfishdocs_sfos_releases" "$(printf '%s' "$mylist_sfos_releases" | tr ',' '\n')" | fgrep -vx '' | sort -ur)"
 # Side note: all_sfos_releases is sorted from highest to lowest (by `sort -r`), in contrast to the all_stop_releases (below).
 # Attention: Because busybox's `sort` does not support the option `-V`, all_sfos_releases might be incorrectly sorted locally, because, e.g., "10" is treated as less than "9"!
 # Luckily this only affects point releases and hence not all_stop_releases, because solely the latest point release of a version X.Y.Z is its current stop release.
@@ -247,7 +247,7 @@ else
   fi
   # As of 2023-03-18 (i.e., 4.5.0.18 is the newest release) this works fine despite *and* because of busybox's `sort` lacking `-V`: 3.0.0.11, which was a release only for the Inoi R7, is treated as smaller than 3.0.0.8, which is the correct stop release version of 3.0.0.x.
   # But as soon as a stop release version X.Y.Z is publicly released (cBetas are *not* public) with both, point releases smaller and larger than 10, this ceases to work as intended.  Likely it will still work out O.K. in practice.
-  all_stop_versions="$(printf '%s\n%s' "$(printf '%s' "$sailfishdocs_stop_releases" | cut -s -d '.' -f 1-3)" "$(printf '%s' "$mylist_stop_versions" | tr ',' '\n')" | grep -vx '' | sort -u)"
+  all_stop_versions="$(printf '%s\n%s' "$(printf '%s' "$sailfishdocs_stop_releases" | cut -s -d '.' -f 1-3)" "$(printf '%s' "$mylist_stop_versions" | tr ',' '\n')" | fgrep -vx '' | sort -u)"
   all_stop_releases="$(for i in $all_stop_versions; do printf '%s' "$all_sfos_releases" | grep -xm 1 "${i}\.[0-9][0-9]*"; done)"
   compar0="$(compare_versions "$installed_release" "$upgrade_release")"
   case "$compar0" in
