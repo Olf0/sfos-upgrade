@@ -66,7 +66,7 @@ Categories:
  - ConsoleOnly
 Custom:
   Repo: %{url}
-Icon: %{url}/raw/master/icon/up.256x256.png
+Icon: %{url}/raw/master/.icon/up.256x256.png
 Url:
   Homepage: https://openrepos.net/content/olf/%{name}
   Help: %{url}/issues
