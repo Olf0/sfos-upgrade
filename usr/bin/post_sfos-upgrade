@@ -15,7 +15,7 @@ set -ufC  # "-u" (error when using uninitialised variables),
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
-export POSIXLY_CORRECT=1  # Can have side-effects (positive and negative), e.g., https://github.com/Olf0/sfos-upgrade/issues/73
+export POSIXLY_CORRECT=1  # Can have side-effects, see e.g., https://github.com/Olf0/sfos-upgrade/issues/73
                           # Ultimately this guarantees an (almost) consistent behaviour across shell implementations.
 
 called="$(basename "$0")"
