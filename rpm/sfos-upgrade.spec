@@ -84,7 +84,7 @@ Url:
 
 %install
 mkdir -p %{buildroot}%{_bindir}
-cp usr/bin/* %{buildroot}%{_bindir}/
+cp bin/* %{buildroot}%{_bindir}/
 
 %files
 %defattr(0755,root,root,-)
