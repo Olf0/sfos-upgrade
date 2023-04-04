@@ -55,7 +55,7 @@ Without a version number it retrieves the one set for SSU to perform slightly
 relaxed checks, but does not alter SSU's settings for upgrading.
 
 %if 0%{?_chum}
-PackageName: sfos-upgrade
+Title: sfos-upgrade
 Type: console-application
 DeveloperName: olf (Olf0)
 Categories:
@@ -66,8 +66,8 @@ Categories:
  - ConsoleOnly
 Custom:
   Repo: %{url}
-Icon: %{url}/raw/master/.icon/up.256x256.png
-Url:
+PackageIcon: %{url}/raw/master/.icon/up.256x256.png
+Links:
   Homepage: https://openrepos.net/content/olf/%{name}
   Help: %{url}/issues
   Bugtracker: %{url}/issues
