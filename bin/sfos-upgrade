@@ -114,10 +114,12 @@ installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[
 if [ -z "$*" ]
 then
   set_ssu=""
-  upgrade_release="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
+  upgrade_release="$(ssu re)"
+  upgrade_release="${upgrade_release##* }"
 else
   set_ssu=yes
-  ssu_set="$(ssu re | rev | cut -f 1 -d ' ' | rev)"
+  ssu_set="$(ssu re)"
+  ssu_set="${ssu_set##* }"
   upgrade_release="$1"
   shift
   if [ -n "$*" ]
@@ -172,7 +174,7 @@ else
 fi
 
 mylist_sfos_releases='4.5.0.19,4.5.0.18,4.5.0.16,4.4.0.72,4.4.0.68,4.4.0.64,4.4.0.58,4.3.0.15,4.3.0.12,4.2.0.21,4.2.0.19,4.1.0.24,4.1.0.23,4.0.1.48,4.0.1.45,3.4.0.24,3.4.0.22,3.3.0.16,3.3.0.14,3.2.1.20,3.2.1.19,3.2.0.14,3.2.0.12,3.1.0.12,3.1.0.11,3.0.3.10,3.0.3.9,3.0.3.8,3.0.2.8,3.0.1.14,3.0.1.13,3.0.1.11,3.0.0.11,3.0.0.8,3.0.0.5,2.2.1.23,2.2.1.20,2.2.1.19,2.2.1.18,2.2.0.29,2.1.4.15,2.1.4.14,2.1.4.13,2.1.4.12,2.1.3.7,2.1.3.5,2.1.3.3,2.1.2.3,2.1.1.26,2.1.1.25,2.1.1.24,2.1.1.23,2.1.1.12,2.1.0.11,2.1.0.10,2.1.0.9,2.0.5.6,2.0.4.14,2.0.4.13,2.0.3.14,2.0.3.11,2.0.2.51,2.0.2.48,2.0.2.47,2.0.2.45,2.0.2.43,2.0.1.11,2.0.1.9,2.0.1.7,2.0.0.10,1.1.9.30,1.1.9.28,1.1.9.27,1.1.9.24,1.1.9.23,1.1.7.28,1.1.7.27,1.1.7.25,1.1.7.24,1.1.7.23,1.1.6.27,1.1.6.26,1.1.6.24,1.1.4.29,1.1.4.28,1.1.4.24,1.1.4.22,1.1.2.16,1.1.2.15,1.1.2.13,1.1.2.10,1.1.1.27,1.1.1.26,1.1.1.24,1.1.0.39,1.1.0.38,1.1.0.37,1.1.0.29,1.1.0.26,1.1.0.23,1.1.0.22,1.1.0.19,1.0.8.21,1.0.8.20,1.0.8.19,1.0.8.18,1.0.7.18,1.0.7.16,1.0.7.14,1.0.7.12,1.0.5.19,1.0.5.16,1.0.5.13,1.0.5.12,1.0.5.11,1.0.4.20,1.0.4.16,1.0.4.12,1.0.4.10,1.0.3.8,1.0.3.7,1.0.3.5,1.0.2.5,1.0.1.12,1.0.1.10,1.0.1.6,1.0.0.5,1.0.0.3,1.0.0.1,0.99.6.8,0.99.6.3,0.99.5.11,0.99.5.8,0.99.5.6'
-my_recent_sfos_release="$(printf '%s' "$mylist_sfos_releases" | cut -f 1 -d ',')"
+my_recent_sfos_release="${mylist_sfos_releases%%,*}"
 sailversion_sfos_releases=""
 sailfishdocs_sfos_list=""
 sailfishdocs_sfos_releases=""
@@ -228,7 +230,7 @@ else
   # https://together.jolla.com/question/207172/downgrade-sailfish-os/?answer=207190#post-id-207190
   # Trivial, insufficient check for missing entries (both lists MUST be diligently updated concurrently!):
   #for i in $(printf '%s' "$mylist_stop_releases" | tr ',' ' '); do if printf '%s' "$mylist_sfos_releases" | fgrep -q "$i"; then printf '%s\n' "${i}!"; fi; done
-  #my_recent_stop_release="$(printf '%s' "$mylist_stop_releases" | cut -f 1 -d ',')"
+  #my_recent_stop_release="${mylist_stop_releases%%,*"
   # Do not: case "$(compare_versions "$upgrade_release" "$my_recent_stop_release")$(compare_versions "$installed_release" "$my_recent_stop_release")" in
   # , because this MUST be the same comparison as in line 181, respectively use its result.
   if [ -n "$fresh_release" ]  # Only extract Jolla's list of SailfishOS stop releases, if the installed release and / or the one to upgrade to is larger than the first entry of the internal list of SailfishOS releases.
@@ -312,7 +314,7 @@ else
           ;;
         g4)
           printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which downgrades to a \"point release\" \"below\" the stop release $stop_release." >&2
-          printf '%s\n\n' "While downgrading between \"point releases\" seems to be generally feasible, doing so \"below\" a stop release implies the slight danger of the changes making it a stop release not all being introduced with SailfishOS $(printf '%s' "$stop_release" | cut -f -3 -d '.').0 (but, e.g., with ${stop_release}, and thus potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
+          printf '%s\n\n' "While downgrading between \"point releases\" seems to be generally feasible, doing so \"below\" a stop release implies the slight danger of the changes making it a stop release not all being introduced with SailfishOS ${stop_release%.*}.0 (but, e.g., with ${stop_release}, and thus potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
           break
           ;;
         g?)
@@ -336,8 +338,8 @@ else
           break
           ;;
         g4)
-          printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which downgrades to a \"point release\" \"within\" the stop release range $(printf '%s' "$stop_release" | cut -f -3 -d '.').x!" >&2
-          printf '%s\n\n' "While downgrading between \"point releases\" seems to be generally feasible, doing so \"within\" a stop release range implies the danger of the changes making it a stop release not all being introduced with SailfishOS $(printf '%s' "$stop_release" | cut -f -3 -d '.').0 (but, e.g., with ${installed_release}, and hence potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
+          printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which downgrades to a \"point release\" \"within\" the stop release range ${stop_release%.*}.x!" >&2
+          printf '%s\n\n' "While downgrading between \"point releases\" seems to be generally feasible, doing so \"within\" a stop release range implies the danger of the changes making it a stop release not all being introduced with SailfishOS ${stop_release%.*}.0 (but, e.g., with ${installed_release}, and hence potentially downgrading \"across\" these changes, which would break this SailfishOS installation)." >&2
           break
           ;;
         g?)
@@ -410,14 +412,14 @@ then
     if btrfs_unallocated="$(($btrfs_total-$btrfs_used))"
     then
       btrfs_check=ok
-      if ! [ "$btrfs_unallocated" -ge 200 ]
+      if [ "$btrfs_unallocated" -lt 200 ]
       then
-        printf '%s\n' "Aborting: Less than 2 GiB unallocated data space ($(printf '%s' "$btrfs_unallocated" | rev | cut -c 3- | rev).$(printf '%s' "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!" >&2
+        printf '%s\n' "Aborting: Less than 2 GiB unallocated data space (${btrfs_unallocated%??}.${btrfs_unallocated#?} GiB) on the root filesystem (BTRFS)!" >&2
         printf '%s\n' "Please balance the btrfs root filesystem before retrying." >&2
         exit 1
-      elif ! [ "$btrfs_unallocated" -ge 250 ]
+      elif [ "$btrfs_unallocated" -lt 250 ]
       then
-        printf '%s\n' "Warning: Less than 2.5 GiB unallocated data space ($(printf '%s' "$btrfs_unallocated" | rev | cut -c 3- | rev).$(printf '%s' "$btrfs_unallocated" | rev | cut -c 1-2 | rev) GiB) on the root filesystem (BTRFS)!" >&2
+        printf '%s\n' "Warning: Less than 2.5 GiB unallocated data space (${btrfs_unallocated%??}.${btrfs_unallocated#?} GiB) on the root filesystem (BTRFS)!" >&2
         printf '%s\n\n' "Please consider to abort and to balance the btrfs root filesystem before retrying." >&2
       fi
     fi
@@ -599,7 +601,7 @@ ok)
   ;;
 esac
 
-if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt 5 ] 2> /dev/null
+if [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -ge 5 ] 2> /dev/null
 then
   printf '%s\n\n' "Notice: Mind that $called is best run on a freshly rebooted device." >&2
 fi
