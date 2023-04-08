@@ -1,10 +1,11 @@
 #!/bin/bash
 set -euC  # Omitting -f (aka -o noglob), because bash 3.2.57(1)-release does not perform a set +f (or +o noglob; plus setopt is not built-in) correctly, which would be needed later!
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
-export POSIXLY_CORRECT=1  # Also necessary for a sane `df` output, see https://github.com/Olf0/sfos-upgrade/issues/73 
 export BLOCKSIZE=512      # For `df` et al, see POSIX's `df` man-page and man-page for GNU `df`
 export BLOCK_SIZE=512     # For `df` et al, see man-page for GNU `df`
 export DF_BLOCK_SIZE=512  # For `df` et al, see man-page for GNU `df`
+export POSIXLY_CORRECT=1  # Also necessary for a sane `df` output, see https://github.com/Olf0/sfos-upgrade/issues/73 
+                          # Ultimately this ensures an almost consistent behaviour across shell implementations.
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
 # (in line 683) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
