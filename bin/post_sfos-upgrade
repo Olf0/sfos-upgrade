@@ -18,7 +18,7 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 export POSIXLY_CORRECT=1  # Can have side-effects, see e.g., https://github.com/Olf0/sfos-upgrade/issues/73
                           # Ultimately this ensures an almost consistent behaviour across shell implementations.
 
-called="$(basename "$0")"
+called="${0##*/}"
 if ! printf '%s' " $(id -un) $(id -Gn) " | fgrep -q ' root '
 then
   printf '%s\n' "Aborting: $called must be started with root privileges."
