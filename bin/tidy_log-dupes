@@ -29,7 +29,7 @@ export POSIXLY_CORRECT=1  # Can have side-effects, see e.g., https://github.com/
 # 124     : Error parsing parameters
 # 126     : Help called
 
-called="$(basename "$0")"
+called="${0##*/}"
 retc=0
 if [ -z "$*" ]
 then logdir=/var/log
