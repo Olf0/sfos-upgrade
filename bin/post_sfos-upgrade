@@ -64,7 +64,7 @@ then
   printf '\n'
   # Syncing, as I could not determine if zypper already does that:
   sync
-  printf '%s\n' "- Checking for updates per zypper:"
+  printf '%s\n' "- Checking for updates by zypper:"
   # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
   zypper update -y -l
   printf '\n'
@@ -77,7 +77,7 @@ printf '%s\n' "- Refreshing pkcon's caches:"
 pkcon refresh || exit $?
 # Syncing, as I could not determine if pkcon already does that:
 sync
-printf '%s\n' "- Checking for updates per pkcon:"
+printf '%s\n' "- Checking for updates by pkcon:"
 # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
 pkcon -y update
 
