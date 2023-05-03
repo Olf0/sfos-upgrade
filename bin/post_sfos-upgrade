@@ -1,0 +1,83 @@
+#!/bin/bash
+set -ufC  # "-u" (error when using uninitialised variables),
+# "-f" (disable pathname expansion) and "-C" (no-clobber / -overwrite).
+# Ultimately decided against "-e", because this script better runs through,
+# despite minor errors.
+# set -o pipefail  # May not be supported, busybox's ash and bash do; but
+# unnecessary for this script.
+# Using bash (formally) because it is "always there" on SailfishOS: Either the
+# real bash 3.2.57 (the last GPLv2 version) on SailfishOS less than v4 or via
+# busybox's bash-symlink (which is deployed by the busybox-symlinks-bash RPM)
+# since SailfishOS 4.  Note that busybox's ash support "-o pipefail", but not
+# "-o posix"; setting POSIXLY_CORRECT seems to achive the same without
+# compatibility issues, plus (when exported) also for a number of other GNU
+# utilities.
+# Nevertheless, this script is still a Bourne (not-"Again") Shell script and
+# shall stay free of bashisms.
+export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
+export POSIXLY_CORRECT=1  # Can have side-effects, see e.g., https://github.com/Olf0/sfos-upgrade/issues/73
+                          # Ultimately this ensures an almost consistent behaviour across shell implementations.
+
+called="${0##*/}"
+if ! printf '%s' " $(id -un) $(id -Gn) " | fgrep -q ' root '
+then
+  printf '%s\n' "Aborting: $called must be started with root privileges."
+  exit 1
+fi
+
+if ! [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -lt 4 ] 2> /dev/null
+then
+  printf '%s\n\n' "Notice: Mind that $called is best run on a freshly rebooted device."
+fi
+
+printf '%s\n' "- Cleaning logfiles of duplicate entries."
+tidy_log-dupes "$@"
+printf '\n'
+
+if command -v store-client > /dev/null 2>&1
+then
+  printf '%s\n' "- Removing outdated Store version info."
+  for i in '-TERM' '-INT' '-TERM' '-HUP' '-KILL' '-Failed_to_kill_store-client'
+  do
+    if pgrep store-client > /dev/null
+    then eval pkill "$i" store-client  # Or using the classic: `pkill "$(echo $i)" store-client`
+    else break
+    fi
+    sleep 1
+  done
+  printf '\n'
+fi
+# See troubleshooting section "Cleaning up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line
+rm -f /home/.pk-zypp-dist-upgrade-cache/*
+# See https://github.com/sailfishos/udisks2/commit/bcc6437ff35a3cc1e8c4777ee80d85a9c112e63e#diff-be2415d9a1095d0aa0d9dc7977c388a7ab5bb3ff7b3e4c38713062bd03165cee
+primuser="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
+# Paths for SailfishOS ≥ 2.2.1 rsp. SailfishOS < 2.2.1, see chapter "Final clean up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#final-clean-up
+rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primuser}/.cache/store-client/os-info"
+
+if command -v zypper > /dev/null 2>&1
+then
+#  No need to be "brutal":
+#  printf '%s\n' "- Cleaning zypper's caches:"
+#  zypper clean -m || exit $?
+  printf '%s\n' "- Refreshing zypper's caches:"
+  zypper refresh || exit $?
+  printf '\n'
+  # Syncing, as I could not determine if zypper already does that:
+  sync
+  printf '%s\n' "- Checking for updates by zypper:"
+  # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+  zypper update -y -l
+  printf '\n'
+fi
+
+# This may have become superfluous with SFOS 3.2.0, see
+# https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
+# Would need to investigate, but refreshing twice will do no harm, anyway.
+printf '%s\n' "- Refreshing pkcon's caches:"
+pkcon refresh || exit $?
+# Syncing, as I could not determine if pkcon already does that:
+sync
+printf '%s\n' "- Checking for updates by pkcon:"
+# As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+pkcon -y update
+

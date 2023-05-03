@@ -12,8 +12,10 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # and OBS, when configured accordingly; mind the sorting (`adud` < `alpha`).
 # For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Version:        3.10.1
-Release:        release2
+Version:        3.11.0
+Release:        beta1
+# The Group tag should comprise one of the groups listed here:
+# https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Applications/System
 Distribution:   SailfishOS
 License:        LGPL-2.1-only
@@ -55,7 +57,7 @@ Without a version number it retrieves the one set for SSU to perform slightly
 relaxed checks, but does not alter SSU's settings for upgrading.
 
 %if 0%{?_chum}
-PackageName: sfos-upgrade
+Title: sfos-upgrade
 Type: console-application
 DeveloperName: olf (Olf0)
 Categories:
@@ -66,8 +68,8 @@ Categories:
  - ConsoleOnly
 Custom:
   Repo: %{url}
-Icon: %{url}/raw/master/icon/up.256x256.png
-Url:
+PackageIcon: %{url}/raw/master/.icon/up.256x256.png
+Links:
   Homepage: https://openrepos.net/content/olf/%{name}
   Help: %{url}/issues
   Bugtracker: %{url}/issues
@@ -84,7 +86,7 @@ Url:
 
 %install
 mkdir -p %{buildroot}%{_bindir}
-cp usr/bin/* %{buildroot}%{_bindir}/
+cp bin/* %{buildroot}%{_bindir}/
 
 %files
 %defattr(0755,root,root,-)
@@ -92,6 +94,7 @@ cp usr/bin/* %{buildroot}%{_bindir}/
 %{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
 
+# Changelog format: https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/SF4VVE4NBEDQJDJZ4DJ6YW2DTGMWP23E/#6O6DFC6GDOLCU7QC3QJKJ3VCUGAOTD24
 %changelog
 * Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 99.99.99
 - See https://github.com/Olf0/sfos-upgrade/releases
