@@ -98,3 +98,4 @@ cp bin/* %{buildroot}%{_bindir}/
 %changelog
 * Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 99.99.99
 - See https://github.com/Olf0/sfos-upgrade/releases
+
