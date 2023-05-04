@@ -97,5 +97,5 @@ cp bin/* %{buildroot}%{_bindir}/
 # Changelog format: https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/SF4VVE4NBEDQJDJZ4DJ6YW2DTGMWP23E/#6O6DFC6GDOLCU7QC3QJKJ3VCUGAOTD24
 %changelog
 * Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 99.99.99
-- See https://github.com/Olf0/sfos-upgrade/releases
+- See %{url}/releases
 
