@@ -1,18 +1,19 @@
 Name:           sfos-upgrade
 Summary:        Scripts for fail-safe upgrading of SailfishOS at the command line with logging
 # The Git release tag format must adhere to just <version> since version 3.6.0.
-# The <version> field adheres to semantic versioning and the <release> field 
-# is comprised of {alpha,beta,rc,release} postfixed with a natural number
-# greater or equal to 1 (e.g., "beta3") and may additonally be postfixed with a
-# plus character ("+"), the name of the packager and a release number chosen by
-# her (e.g., "rc2+jane4").  `{alpha|beta|rc|release}` indicates the expected
-# status of the software.  No other identifiers shall be used for any published
-# version, but for the purpose of testing infrastructure other nonsensical
-# identifiers as `adud` may be used, which do *not* trigger a build at GitHub
-# and OBS, when configured accordingly; mind the sorting (`adud` < `alpha`).
-# For details and reasons, see
-# https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
+# The <version> tag must adhere to semantic versioning, for details see
+# https://semver.org/
 Version:        3.11.0
+# The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
+# natural number greater or equal to 1 (e.g., "beta3") and may additionally be
+# postfixed with a plus character ("+"), the name of the packager and a release
+# number chosen by her (e.g., "rc2+jane4").  `{alpha|beta|rc|release}`
+# indicates the expected status of the software.  No other identifiers shall be
+# used for any published version, but for the purpose of testing infrastructure
+# other nonsensual identifiers as `adud` may be used, which do *not* trigger a
+# build at GitHub and OBS, when configured accordingly; mind the sorting
+# (`adud` < `alpha`).  For details and reasons, see
+# https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
 Release:        beta1
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
