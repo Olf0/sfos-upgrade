@@ -19,11 +19,11 @@ Release:        beta1
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Applications/System
 Distribution:   SailfishOS
-License:        LGPL-2.1-only
-URL:            https://github.com/Olf0/%{name}
 # Altering the `Vendor:` field breaks the update path on SailfishOS, see
 # https://en.opensuse.org/SDB:Vendor_change_update#Disabling_Vendor_stickiness
 Vendor:         olf
+License:        LGPL-2.1-only
+URL:            https://github.com/Olf0/%{name}
 # The "Source0:" line below requires that the value of %%{name} is also the
 # project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
