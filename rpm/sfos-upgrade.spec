@@ -26,7 +26,7 @@ License:        LGPL-2.1-only
 URL:            https://github.com/Olf0/%{name}
 # The "Source0:" line below requires that the value of %%{name} is also the
 # project name at GitHub and the value of %%{release}/%%{version} is also the
-# name of a correspondingly set git-tag.
+# name of a correspondingly set Git tag.
 Source0:        %{url}/archive/%{release}/%{version}/%{name}-%{version}.tar.gz
 # Note that the rpmlintrc file shall be named so according to
 # https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
