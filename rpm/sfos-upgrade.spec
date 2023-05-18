@@ -1,6 +1,6 @@
 Name:           sfos-upgrade
 Summary:        Scripts for fail-safe upgrading of SailfishOS at the command line with logging
-# The Git release tag format must adhere to just <version> since version 3.6.0.
+# The Git tag format must adhere to <release/><version> since 2023-05-18.
 # The <version> tag must adhere to semantic versioning, for details see
 # https://semver.org/
 Version:        3.11.0
