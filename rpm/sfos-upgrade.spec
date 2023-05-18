@@ -3,7 +3,7 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # The Git release tag format must adhere to just <version> since version 3.6.0.
 # The <version> tag must adhere to semantic versioning, for details see
 # https://semver.org/
-Version:        3.11.1
+Version:        3.11.0
 # The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
 # natural number greater or equal to 1 (e.g., "beta3") and may additionally be
 # postfixed with a plus character ("+"), the name of the packager and a release
@@ -14,7 +14,7 @@ Version:        3.11.1
 # build at GitHub and OBS, when configured accordingly; mind the sorting
 # (`adud` < `alpha`).  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Release:        beta1
+Release:        rc2
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Applications/System
@@ -25,9 +25,9 @@ Vendor:         olf
 License:        LGPL-2.1-only
 URL:            https://github.com/Olf0/%{name}
 # The "Source0:" line below requires that the value of %%{name} is also the
-# project name at GitHub and the value of %%{version} is also the name of a
-# correspondingly set git-tag.
-Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+# project name at GitHub and the value of %%{release}/%%{version} is also the
+# name of a correspondingly set git-tag.
+Source0:        %{url}/archive/%{release}/%{version}/%{name}-%{version}.tar.gz
 # Note that the rpmlintrc file shall be named so according to
 # https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
 Source99:       %{name}.rpmlintrc
