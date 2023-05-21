@@ -3,12 +3,10 @@ name: 'CI on tags, plus PRs to master, devel and v*-legacy'
 on:
   push:
     tags:
-      - '*'
       - 'release*/*'
       - 'rc*/*'
       - 'beta*/*'
       - 'alpha*/*'
-      - 'test*/*'
   pull_request:
     branches:
       - master
