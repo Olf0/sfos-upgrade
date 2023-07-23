@@ -374,7 +374,7 @@ fi
 if mount -t btrfs | cut -s -f 3 -d ' ' | grep -qx '/'
 then
   btrfs_check=KO
-  if command -v btrfs-balancer > /dev/null 2>&1
+  if command -v btrfs-balancer >/dev/null 2>&1
   then
     btrfs_allocation="$(btrfs-balancer allocation / | tr -s ' ')"
     btrfs_alloc_percent="$(printf '%s' "$btrfs_allocation" | grep '^Allocated: ' | cut -f 2 -d ' ')"
@@ -404,7 +404,7 @@ then
         printf '%s\n\n' "Please consider to abort and to perform a btrfs-balancer run before retrying." >&2
       fi
     fi
-  elif command -v btrfs > /dev/null 2>&1
+  elif command -v btrfs >/dev/null 2>&1
   then
     btrfs_allocation="$(btrfs filesystem df / | grep -m 1 '^Data' | cut -s -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
     btrfs_total="$(printf '%s' "$btrfs_allocation" | grep '^total=' | cut -f 2 -d '=')"
@@ -475,7 +475,7 @@ for battery_uevents in $battery_path
 do
   # Workaround for Gemini's kernel broken battery information, which contains spaces: Use eval & sed instead of source / ".".
   # For details, see https://github.com/Olf0/sfos-upgrade/issues/39
-  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" < "${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" > /dev/null 2>&1
+  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" < "${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" >/dev/null 2>&1
   then
     battery_info=sourced
     break
@@ -601,7 +601,7 @@ ok)
   ;;
 esac
 
-if [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -ge 5 ] 2> /dev/null
+if [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -ge 5 ] 2>/dev/null
 then
   printf '%s\n\n' "Notice: Mind that $called is best run on a freshly rebooted device." >&2
 fi
@@ -680,7 +680,7 @@ for user_unit in \
   batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service \
   osmscout-server.socket osmscout-server.service
 do
-  if systemctl --user status "$user_unit" > /dev/null 2>&1
+  if systemctl --user status "$user_unit" >/dev/null 2>&1
   then
     printf '%s\n' "- Stopping $user_unit" | tee -a "$logfile" >&2
     if ! systemctl --user stop "$user_unit" 2>&1 | tee -a "$logfile" >&2
@@ -696,7 +696,7 @@ for system_unit in \
   btrfs-balancer.timer btrfs-balance.service \
   aliendalvik.service alien-settings.service alien-service-manager.service
 do
-  if systemctl status "$system_unit" > /dev/null 2>&1
+  if systemctl status "$system_unit" >/dev/null 2>&1
   then
     printf '%s\n' "- Stopping $system_unit" | tee -a "$logfile" >&2
     if ! systemctl stop "$system_unit" 2>&1 | tee -a "$logfile" >&2
@@ -709,7 +709,7 @@ do
 done
 for process in store-client harbour-storema harbour-warehou harbour-osmscou pkcon zypper rpm
 do
-  if pgrep -x "$process" > /dev/null 2>&1
+  if pgrep -x "$process" >/dev/null 2>&1
   then
     printf '%s\n' "- Stopping $process" | tee -a "$logfile" >&2
     if ! pkill -x "$process" 2>&1 | tee -a "$logfile" >&2
@@ -735,7 +735,7 @@ then
   printf '\n' | tee -a "$logfile" >&2
 fi
 
-if command -v patchmanager > /dev/null 2>&1
+if command -v patchmanager >/dev/null 2>&1
 then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   if [ -d /var/lib/patchmanager/ausmt/patches/ ]
   then
