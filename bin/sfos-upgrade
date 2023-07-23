@@ -110,11 +110,11 @@ installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[
 if [ -z "$*" ]
 then
   set_ssu=""
-  upgrade_release="$(ssu re | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
+  upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
   upgrade_release="${upgrade_release##* }"
 else
   set_ssu=yes
-  ssu_set="$(ssu re | tail -1)"
+  ssu_set="$(ssu re 2>/dev/null | tail -1)"
   ssu_set="${ssu_set##* }"
   upgrade_release="$1"
   shift
