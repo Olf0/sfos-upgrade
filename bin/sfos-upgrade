@@ -412,12 +412,12 @@ then
     if btrfs_unallocated="$(($btrfs_total-$btrfs_used))"
     then
       btrfs_check=ok
-      if [ "$btrfs_unallocated" -lt 200 ]
+      if ! [ "$btrfs_unallocated" -ge 200 ]
       then
         printf '%s\n' "Aborting: Less than 2 GiB unallocated data space (${btrfs_unallocated%??}.${btrfs_unallocated#?} GiB) on the root filesystem (BTRFS)!" >&2
         printf '%s\n' "Please balance the btrfs root filesystem before retrying." >&2
         exit 1
-      elif [ "$btrfs_unallocated" -lt 250 ]
+      elif ! [ "$btrfs_unallocated" -ge 250 ]
       then
         printf '%s\n' "Warning: Less than 2.5 GiB unallocated data space (${btrfs_unallocated%??}.${btrfs_unallocated#?} GiB) on the root filesystem (BTRFS)!" >&2
         printf '%s\n\n' "Please consider to abort and to balance the btrfs root filesystem before retrying." >&2
@@ -438,23 +438,23 @@ else
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release,
   # but one may upgrade from one stop release to another, comprising the RPMs of multiple releases.
   # Furthermore these estimates from Jolla only cover their own default components (RPMs), individually installed RPMs (e.g., from the Jolla Store, OpenRepos or even Jolla's SailfishOS repositories) are not and cannot be accounted for.
-  if ! [ "$free_space" -ge 524288 ]
+  if ! [ "$free_space" -gt 524288 ]
   then  # This hard ½ GiB limit is an rough estimate of an upper boundary for the sum of all RPM size increases by an upgrade plus space for the package management's indexes, caches etc.
-    printf '%s\n' "Aborting: Less than ½ GiB ($free_space KiB) free space on the root filesystem!" >&2
+    printf '%s\n' "Aborting: Only 0.5 GiB or less ($free_space KiB) free space on the root filesystem!" >&2
     printf '%s\n' "Before retrying, please clean up or enlarge the root filesystem, see:" >&2
     printf '%s\n' "https://gitlab.com/Olf0/sailfishX#33-increasing-the-root-lvm-volume-size" >&2
     exit 1
-  elif ! [ "$free_space" -ge 786432 ]
+  elif ! [ "$free_space" -gt 786432 ]
   then  # As the largest SailfishOS upgrades (Jolla's estimates: the sum of the sizes of all updated RPMs (which are installed by default), when directly upgrading from the predecessor release) have been over 600 MiB (e.g., SFOS 3.3.0 -> 3.4.0), a ¾ GiB limit to warn explicitly seems to be reasonable.
-    printf '%s\n' "Warning: Less than ¾ GiB ($free_space KiB) free space on the root filesystem!" >&2
-    printf '%s\n' "Please consider to abort and then to clean up or to enlarge the root filesystem before retrying, see:" >&2
+    printf '%s\n' "Warning: Only 0.75 GiB or less ($free_space KiB) free space on the root filesystem!" >&2
+    printf '%s\n' "Please do consider to abort and then to clean up or to enlarge the root filesystem before retrying, see:" >&2
     printf '%s\n' "https://gitlab.com/Olf0/sailfishX#33-increasing-the-root-lvm-volume-size" >&2
     printf '%s' "Do you really want to continue?" >&2
     askyes >&2
     printf '\n' >&2
-  elif ! [ "$free_space" -ge 1048576 ]
+  elif ! [ "$free_space" -gt 1048576 ]
   then  # This 1 GiB limit to emit a soft low space notice is intended to trigger users early to do something about it.
-    printf '%s\n' "Notice: Less than 1 GiB ($free_space KiB) free space on the root filesystem." >&2
+    printf '%s\n' "Notice: 1 GiB or less ($free_space KiB) free space on the root filesystem." >&2
     printf '%s\n' "Please consider to clean up or to enlarge the root filesystem, see:" >&2
     printf '%s\n\n' "https://gitlab.com/Olf0/sailfishX#33-increasing-the-root-lvm-volume-size" >&2
   fi
