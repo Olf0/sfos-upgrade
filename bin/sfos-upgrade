@@ -284,7 +284,7 @@ else
           break
           ;;
         *)
-          printf '%s\n' "Comparing versions in "stop releases" check #2a failed." >&2
+          printf '%s\n' "Comparing versions in \"stop releases\" check #2a failed." >&2
           exit 7
           ;;
         esac
@@ -293,7 +293,7 @@ else
         true
         ;;
       *)
-        printf '%s\n' "Comparing versions in "stop releases" check #1a failed." >&2
+        printf '%s\n' "Comparing versions in \"stop releases\" check #1a failed." >&2
         exit 7
         ;;
       esac
@@ -320,11 +320,11 @@ else
         g?)
           printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which is \"across\" the stop release ${stop_release}!" >&2
           printf '%s\n' "Doing that would likely break this SailfishOS installation." >&2
-          printf '%s\n' "The only way to achieve this properly is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+          printf '%s\n' "The only way to achieve this properly is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
           exit 3
           ;;
         *)
-          printf '%s\n' "Comparing versions in "stop releases" check #2b failed." >&2
+          printf '%s\n' "Comparing versions in \"stop releases\" check #2b failed." >&2
           exit 7
           ;;
         esac
@@ -345,11 +345,11 @@ else
         g?)
           printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which is \"across\" the stop release ${stop_release}!" >&2
           printf '%s\n' "Doing that would likely break this SailfishOS installation." >&2
-          printf '%s\n' "The only way to achieve this properly is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+          printf '%s\n' "The only way to achieve this properly is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
           exit 3
           ;;
         *)
-          printf '%s\n' "Comparing versions in "stop releases" check #2c failed." >&2
+          printf '%s\n' "Comparing versions in \"stop releases\" check #2c failed." >&2
           exit 7
           ;;
         esac
@@ -358,14 +358,14 @@ else
         true
         ;;
       *)
-        printf '%s\n' "Comparing versions in "stop releases" check #1b failed." >&2
+        printf '%s\n' "Comparing versions in \"stop releases\" check #1b failed." >&2
         exit 7
         ;;
       esac
     done
     ;;
   *)
-    printf '%s\n' "Comparing versions in "stop releases" check #0 failed." >&2
+    printf '%s\n' "Comparing versions in \"stop releases\" check #0 failed." >&2
     exit 7
     ;;
   esac
@@ -618,29 +618,29 @@ g?)
   g4)
     printf '%s\n' "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
-    printf '%s\n' "Note that the "official" (i.e., approved by Jolla) way to achieve this is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
-    printf '%s\n' "Though you can try downgrading and if it fails or breaks some functionality, perform a "factory reset" then (in the worst case at the recovery console)." >&2
+    printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Though you can try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     printf '%s' "Do you want to do that?" >&2
     ;;
   g4?*)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
-    printf '%s\n' "Note that the "official" (i.e., approved by Jolla) way to achieve this is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
-    printf '%s\n' "Though you may try downgrading and if it fails or breaks some functionality, perform a "factory reset" then (in the worst case at the recovery console)." >&2
+    printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Though you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
   g?)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"micro\" version (i.e., their third field)." >&2
     printf '%s\n' "This might make this SailfishOS installation not working properly!" >&2
-    printf '%s\n' "Note that the proper way to achieve this is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
-    printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a "factory reset" then (in the worst case at the recovery console)." >&2
+    printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
   g?*)
     printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)!" >&2
     printf '%s\n' "Though this might make this SailfishOS installation not working properly, this downgrade may be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." >&2
-    printf '%s\n' "Note that the proper way to achieve this is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
-    printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a "factory reset" then (in the worst case at the recovery console)." >&2
+    printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console)." >&2
     exit 3
     ;;
   *)
@@ -777,7 +777,7 @@ l???|??l?)
   fi
   ;;
 *)
-  printf '%s\n' "Comparing versions in "*grading from or to below SailfishOS 1.0.4.20" check failed." >&2
+  printf '%s\n' "Comparing versions in \"*grading from or to below SailfishOS 1.0.4.20\" check failed." >&2
   exit 7
   ;;
 esac
