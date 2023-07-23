@@ -438,13 +438,13 @@ else
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release,
   # but one may upgrade from one stop release to another, comprising the RPMs of multiple releases.
   # Furthermore these estimates from Jolla only cover their own default components (RPMs), individually installed RPMs (e.g., from the Jolla Store, OpenRepos or even Jolla's SailfishOS repositories) are not and cannot be accounted for.
-  if ! [ "$free_space" -gt 524288 ]
+  if ! [ "$free_space" -ge 524288 ]
   then  # This hard ½ GiB limit is an rough estimate of an upper boundary for the sum of all RPM size increases by an upgrade plus space for the package management's indexes, caches etc.
     printf '%s\n' "Aborting: Less than ½ GiB ($free_space KiB) free space on the root filesystem!" >&2
     printf '%s\n' "Before retrying, please clean up or enlarge the root filesystem, see:" >&2
     printf '%s\n' "https://gitlab.com/Olf0/sailfishX#33-increasing-the-root-lvm-volume-size" >&2
     exit 1
-  elif ! [ "$free_space" -gt 786432 ]
+  elif ! [ "$free_space" -ge 786432 ]
   then  # As the largest SailfishOS upgrades (Jolla's estimates: the sum of the sizes of all updated RPMs (which are installed by default), when directly upgrading from the predecessor release) have been over 600 MiB (e.g., SFOS 3.3.0 -> 3.4.0), a ¾ GiB limit to warn explicitly seems to be reasonable.
     printf '%s\n' "Warning: Less than ¾ GiB ($free_space KiB) free space on the root filesystem!" >&2
     printf '%s\n' "Please consider to abort and then to clean up or to enlarge the root filesystem before retrying, see:" >&2
