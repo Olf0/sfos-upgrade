@@ -11,7 +11,7 @@ export POSIXLY_CORRECT=1  # Also necessary for a sane `df` output, see https://g
 # (in line 670) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked for v1.0.0.5 by
-# curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep bash , as no earlier
+# curl -fL https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep bash , as no earlier
 # released version is available there, e.g., the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash anyway; though I have not checked
 # that for ancient releases (which might be re-deployed after a "factory reset"), likely SailfishOS inherited that
@@ -185,11 +185,11 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   fresh_release=1  # Version is newer than internal list.
   sailversion_fail=y
   sailfishdocs_fail=y
-  # Calling curl with the -k (= --insecure) option, which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
-  if sailversion_sfos_releases="$(curl -sSk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -x '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
+  # Calling curl with the -k (= --insecure) option (plus -fsS[L]), which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
+  if sailversion_sfos_releases="$(curl --fail --silent --show-error --insecure https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -x '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
   then sailversion_fail=n
   fi
-  sailfishdocs_sfos_list="$(curl -sSkL https://github.com/sailfishos/docs.sailfishos.org/raw/master/Support/Releases/README.md | cut -s -d '|' -f 2,5 | tr -d ' ')"
+  sailfishdocs_sfos_list="$(curl --fail --silent --show-error --insecure --location https://github.com/sailfishos/docs.sailfishos.org/raw/master/Support/Releases/README.md | cut -s -d '|' -f 2,5 | tr -d ' ')"
   if sailfishdocs_sfos_releases="$(printf '%s' "$sailfishdocs_sfos_list" | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
   then sailfishdocs_fail=n
   fi
