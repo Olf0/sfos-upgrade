@@ -42,6 +42,7 @@ BuildArch:      noarch
 Requires:       ssu
 Requires:       sailfish-version
 Requires:       curl
+Requires:       procps
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
