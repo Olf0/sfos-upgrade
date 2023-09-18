@@ -39,8 +39,8 @@ then
   printf '%s\n' "- Removing outdated Store version info."
   for i in '-TERM' '-INT' '-TERM' '-HUP' '-KILL' '-Failed_to_kill_store-client'
   do
-    if pgrep store-client > /dev/null
-    then eval pkill "$i" store-client  # Or using the classic: `pkill "$(echo $i)" store-client`
+    if pgrep -x store-client > /dev/null
+    then eval pkill "$i" -x store-client  # Or using the classic: `pkill "$(echo $i)" -x store-client`
     else break
     fi
     sleep 1
