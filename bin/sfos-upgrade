@@ -673,6 +673,62 @@ then
   printf '\n' | tee -a "$logfile" >&2
 fi
 
+# Copied and adatped from `post_sfos-upgrade`; may try to unify, but that is not really easy
+if command -v store-client > /dev/null 2>&1
+then
+  printf '%s\n' "- Removing outdated SailfishOS version info for the Jolla Store."
+  for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_store-client
+  do
+    if pgrep -x store-client > /dev/null
+    then eval pkill $i -x store-client
+    else break
+    fi
+    sleep 1
+  done
+  printf '\n'
+fi
+# See troubleshooting section "Cleaning up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line
+rm -f /home/.pk-zypp-dist-upgrade-cache/*
+# See https://github.com/sailfishos/udisks2/commit/bcc6437ff35a3cc1e8c4777ee80d85a9c112e63e#diff-be2415d9a1095d0aa0d9dc7977c388a7ab5bb3ff7b3e4c38713062bd03165cee
+primuser="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
+# Paths for SailfishOS ≥ 2.2.1 rsp. SailfishOS < 2.2.1, see chapter "Final clean up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#final-clean-up
+rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primuser}/.cache/store-client/os-info"
+printf '%s\n' "- Cleansing ssu(d)\'s caches and restarting it."
+for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_ssud
+do
+  if pgrep -x ssud > /dev/null
+  then eval pkill $i -x ssud
+  else break
+  fi
+  sleep 1
+done
+printf '\n'
+rm -rf /var/cache/ssu/*
+ssu ur
+if [ $update-apps = Y ]
+then
+  if command -v zypper > /dev/null 2>&1
+  then
+  #  No need to be "brutal":
+  #  printf '%s\n' "- Cleansing zypper's caches:"
+  #  zypper clean -m || exit $?
+    printf '%s\n' "- Refreshing zypper's caches:"
+    zypper refresh || exit $?
+    printf '\n%s\n' "- Checking for updates by zypper:"
+    # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+    zypper update -y -l
+    printf '\n'
+  fi
+  # This may have become superfluous with SFOS 3.2.0, see
+  # https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
+  # Would need to investigate, but refreshing twice will do no harm, anyway.
+  printf '%s\n' "- Refreshing pkcon's caches:"
+  pkcon refresh || exit $?
+  printf '%s\n' "- Checking for updates by pkcon:"
+  # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+  pkcon -y update
+fi
+
 emit_newline=""
 for user_unit in \
   osupdate-check.timer osupdate-check.service \
