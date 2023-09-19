@@ -61,44 +61,52 @@ askyes ()
     printf '%s\n' "Warning due to internal error: The function askyes expects no parameters, but was called with \"${*}\"." >&2
     retcode=3
   fi
-  return "$retcode"
+  return $retcode
 }
 
 compare_versions ()
 {
-  # Emits "e" (equal) if A = B, "l" (lesser) if A < B, "g" (greater) if A > B to STDOUT or "x" if A and B are not comparable, immediately
-  # followed by the number of the first field {1..4} from the left, in which the mismatch occurred (hence always "e4" for a match).
-  # Returns 1 if version strings are not comparable and 3 if not called with two arguments.
+  # Emits "e" (equal) if A = B, "l" (lesser) if A < B, "g" (greater) if A > B to STDOUT or "x" if a non-numeric value was detected,
+  # immediately followed by the number of the first field {1..4} from the left, in which the mismatch occurred (e.g., "e4" for a full match).
+  # Supports matching partial version strings, then outputs, for example, "e2", if the second field was the last comparable one (i.e., 
+  # the third field is empty in either version string).
+  # Returns 1 for the "x" case and 3 (and no output) if not called with two arguments.
   if [ "$#" != 2 ]
   then
     printf '%s\n' "Warning due to internal error: The function compare_versions expects 2 parameters, but was called with ${#}!" >&2
-    retc=3
+    retcode=3
   else
+    retcode=0
     version_a="$1"
     version_b="$2"
-    retc=0
     comparison=e
     for field_num in 1 2 3 4
     do
-      a_substring="$(printf '%s' "$version_a" | cut -s -f "$field_num" -d '.')"
-      b_substring="$(printf '%s' "$version_b" | cut -s -f "$field_num" -d '.')"
+      a_substring="$(printf '%s' "$version_a" | cut -s -f $field_num -d '.')"
+      b_substring="$(printf '%s' "$version_b" | cut -s -f $field_num -d '.')"
       if [ "$a_substring" != "$b_substring" ]
       then  # When different, ...
         if [ "$a_substring" -lt "$b_substring" ]
         then comparison=l
         elif [ "$a_substring" -gt "$b_substring" ]
         then comparison=g
+        elif { [ -z "$a_substring" ] && [ "$b_substring" -ge 0 ]; } || { [ -z "$b_substring" ] && [ "$a_substring" -ge 0 ]; }  # One empty, the other an integer value
+        then field_num=$((field_num-1))
         else
-          printf '%s\n' "Warning from function compare_versions: Version strings \"${version_a}\" and \"${version_b}\" are not comparable!" >&2
-          retc=1
+          printf '%s\n' "Warning from function compare_versions: One of the version strings \"${version_a}\" and \"${version_b}\" contains other characters than [.0-9]!" >&2
+          retcode=1
           comparison=x
         fi
         break  # ... jump out of the loop.
+      elif [ -z "$a_substring" ] && [ -z "$b_substring" ]  # The same, but both empty
+      then
+        field_num=$((field_num-1))
+        break
       fi
     done
     printf '%s' "$comparison$field_num"
   fi
-  return "$retc"
+  return $retcode
 }
 
 
@@ -113,12 +121,12 @@ update_apps=Y
 
 if [ $# = 0 ]
 then
-  set_ssu=""
+  set_ssu=N
   upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
   upgrade_release="${upgrade_release##* }"
   relax_checks=Y
 else
-  set_ssu=yes
+  set_ssu=Y
   ssu_set="$(ssu re 2>/dev/null | tail -1)"
   ssu_set="${ssu_set##* }"
   j=0
@@ -133,7 +141,7 @@ else
       break
       ;;
     *)  # Else (copied from "no parameter" case, above):
-      set_ssu=""
+      set_ssu=N
       upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
       upgrade_release="${upgrade_release##* }"
       relax_checks=Y
@@ -171,7 +179,7 @@ else
   compar_s="$(compare_versions "$installed_release" "$ssu_set")"
   case "$compar_s" in
   e?)
-    true
+    :
     ;;
   l?)
     printf '%s\n' "Notice: The installed version $installed_release is smaller than the one currently set for SSU (${ssu_set})." >&2
@@ -224,7 +232,7 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   fi 
   ;;
 [egl]?[egl]?)  # No need to download lists of SailfishOS releases.
-  true
+  :
   ;;
 *)
   printf '%s\n' "Comparing versions failed when checking, if downloading lists of SailfishOS releases is necessary." >&2
@@ -264,7 +272,7 @@ else
     then
       printf '%s\n' "Warning: Failed to extract the current "stop releases" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
       printf '%s\n' "Hence unable to check if the path from \"${installed_release}\" to \"${upgrade_release}\" contains a \"stop release\"." >&2
-      if [ -z "$set_ssu" ]
+      if [ $set_ssu = N ]
       then printf '%s' "Do you want to continue?" >&2
       else printf '%s' "Do you really want to continue?" >&2
       fi
@@ -293,7 +301,7 @@ else
         case "$compar2" in
         l?)
           printf '%s\n' "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" >&2
-          if [ -n "$set_ssu" ]
+          if [ $set_ssu = Y ]
           then
             printf '%s\n' "Thus upgrading to $stop_release instead." >&2
             upgrade_release="$stop_release"
@@ -315,7 +323,7 @@ else
         esac
         ;;
       [el]?)  # Continue looping
-        true
+        :
         ;;
       *)
         printf '%s\n' "Comparing versions in \"stop releases\" check #1a failed." >&2
@@ -380,7 +388,7 @@ else
         esac
         ;;
       g?)  # Continue looping
-        true
+        :
         ;;
       *)
         printf '%s\n' "Comparing versions in \"stop releases\" check #1b failed." >&2
@@ -531,7 +539,7 @@ Charging-[0-9]*-*|Full-[0-9]*-*)
   then
     printf '%s\n' "Warning: Battery is charged less than 18.5% (${power_supply_capacity_design}%) of its original design capacity!" >&2
     printf '%s' "Continue charging before " >&2
-    if [ -z "$set_ssu" ]
+    if [ $set_ssu = N ]
     then battery_check=ask
     fi
   else
@@ -562,7 +570,7 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
   then
     printf '%s\n' "Warning: Battery is charged 25% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity!" >&2
     printf '%s' "Continue charging before " >&2
-    if [ -z "$set_ssu" ]
+    if [ $set_ssu = N ]
     then battery_check=ask
     fi
   else
@@ -591,14 +599,14 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
 ?*-*-*)
   printf '%s\n' "Warning: Failed to determine battery charge!" >&2
   printf '%s' "Check your device before " >&2
-  if [ -z "$set_ssu" ]
+  if [ $set_ssu = N ]
   then battery_check=ask
   fi
   ;;
 *-*-*)
   printf '%s\n' "Warning: Failed to determine battery charging state!" >&2
   printf '%s' "Check your device before " >&2
-  if [ -z "$set_ssu" ]
+  if [ $set_ssu = N ]
   then battery_check=ask
   fi
   ;;
@@ -619,7 +627,7 @@ ask)
   printf '\n' >&2
   ;;
 ok)
-  true
+  :
   ;;
 *)
   exit 23
@@ -640,28 +648,28 @@ l?)
   ;;
 g?)
   case "$compar0$set_ssu" in
-  g4)
+  g4N)
     printf '%s\n' "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
     printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Though you can try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you want to do that?" >&2
     ;;
-  g4?*)
+  g4Y)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
     printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Though you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
-  g?)
+  g?N)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"micro\" version (i.e., their third field)." >&2
     printf '%s\n' "This might make this SailfishOS installation not working properly!" >&2
     printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
-  g?*)
+  g?Y)
     printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)!" >&2
     printf '%s\n' "Though this might make this SailfishOS installation not working properly, this downgrade may be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." >&2
     printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
@@ -705,7 +713,7 @@ then
   for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_store-client
   do
     if pgrep -x store-client > /dev/null
-    then pkill $i -x store-client
+    then pkill $i -x store-client || :
     else break
     fi
     sleep 1
@@ -722,7 +730,7 @@ printf '%s\n' "- Cleansing ssu(d)\'s caches and restarting it." | tee -a "$logfi
 for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_ssud
 do
   if pgrep -x ssud > /dev/null
-  then pkill $i -x ssud
+  then pkill $i -x ssud || :
   else break
   fi
   sleep 1
@@ -835,7 +843,7 @@ fi
 compar_o="$(compare_versions "$installed_release" "1.0.4.20")$(compare_versions "$upgrade_release" "1.0.4.20")"
 case "$compar_o" in
 [eg]?[eg]?)
-  true
+  :
   ;;
 l???|??l?)
   if openrepos_repos="$(ssu lr | fgrep openrepo)"
@@ -859,7 +867,7 @@ l???|??l?)
   ;;
 esac
 
-if [ -n "$set_ssu" ]
+if [ $set_ssu = Y ]
 then
   printf '%s\n' "- Setting SSU in release mode to SailfishOS release $upgrade_release" | tee -a "$logfile" >&2
   if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
