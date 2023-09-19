@@ -680,7 +680,7 @@ then
   for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_store-client
   do
     if pgrep -x store-client > /dev/null
-    then eval pkill $i -x store-client
+    then pkill $i -x store-client
     else break
     fi
     sleep 1
@@ -697,7 +697,7 @@ printf '%s\n' "- Cleansing ssu(d)\'s caches and restarting it."
 for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_ssud
 do
   if pgrep -x ssud > /dev/null
-  then eval pkill $i -x ssud
+  then pkill $i -x ssud
   else break
   fi
   sleep 1
@@ -852,8 +852,8 @@ then
   exit 6
 fi
 
-# Syncing, as I could not determine if both /usr/bin/rnd-dist-upgrade and /usr/bin/pkcon dist-upgrade (either of these two is called by version --dup) already do that:
-sync
+# No need to sync, the subsequent reboot will do, though I could not determine if both /usr/bin/rnd-dist-upgrade and /usr/bin/pkcon dist-upgrade (either of these two is called by version --dup) already do that:
+# sync
 
 printf '%s\n' "Notice: After rebooting, do not miss to run post_$called" >&2
 exit 0
