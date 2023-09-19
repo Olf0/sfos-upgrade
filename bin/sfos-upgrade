@@ -107,39 +107,64 @@ compare_versions ()
 called="${0##*/}"
 
 installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | head -1)"  # `version` may emit multiple version strings, see issue #32
-if [ -z "$*" ]
+implicit_version=N
+relax_checks=N
+update_apps=Y
+
+if [ $# = 0 ]
 then
   set_ssu=""
   upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
   upgrade_release="${upgrade_release##* }"
+  relax_checks=Y
 else
   set_ssu=yes
   ssu_set="$(ssu re 2>/dev/null | tail -1)"
   ssu_set="${ssu_set##* }"
-  upgrade_release="$1"
-  shift
-  if [ -n "$*" ]
-  then
-    printf '%s\n' "Aborting: No extra parameters expected, but called with \"${*}\"." >&2
-    exit 3
+  j=0
+  for i in "$@"
+  do
+  j=$((j+1))
+  if [ $j = $# ] && [ $implicit_version != Y ]
+  then  # Last parameter
+    case "$i" in
+    [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9]|[1-9].[0-9].[0-9]|4.[1-9])
+      upgrade_release="$i"
+      break
+      ;;
+    *)  # Else (copied from "no parameter" case, above):
+      set_ssu=""
+      upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
+      upgrade_release="${upgrade_release##* }"
+      relax_checks=Y
+      ;;
+    esac
   fi
-  case "$upgrade_release" in
-  [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9])
-    true
-    ;;
-  --verify)
-    upgrade_release="$installed_release"
-    ;;
+  case "$i" in
   -\?|--help)
-    printf '%s\n' "Usage: $called [<version>|--verify|--help]"
-    printf '%s\n' "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
+    printf '%s\n' "Usage: $called [--help|-?] [--verify|-v] [--relax-checks|-r] [--no-apps-update|-n] [<version>]"
+    printf '%s\n' "With a version string provided as last parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
+    printf '%s\n' "The version must either comprise all four fields, for three fields the highest point release will be picked, the same applies to two fields greater than \"4.0\" and lesser that \"5.0\"."
     printf '%s\n' "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
-    printf '%s\n' "With --verify as argument $called performs a \"samegrade\" operation, i.e., checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly."
+    printf '%s\n' "With the --verify option $called performs a \"samegrade\" operation, i.e., checks if the correct versions of all recent RPMs are installed and"
+    printf '%s\n' "updates or installs them accordingly.  In this case providing version number results in an error."
+    printf '%s\n' "The --relax-checks option relaxes the checks in the same manner as calling $called without a version string."
+    printf '%s\n' "Providing the --help option displays this usage description and exits.  More details can be obtained by reading ${called}'s code: It is a shell script."
     exit 2
     ;;
+  -v|--verify)
+    upgrade_release="$installed_release"
+    implicit_version=Y
+    ;;
+  -r|--relax-checks)
+    relax_checks=Y
+    ;;
+  -n|--no-apps-update)
+    update_apps=N
+    ;;
   *)
-    printf '%s\n' "Aborting: Incorrect option or version format \"${upgrade_release}\" provided!" >&2
-    printf '%s\n' "For a brief usage description, see: $called --help" >&2
+    printf '%s\n' "Aborting: Incorrect option or version format \"${i}\" provided!" >&2
+    printf '%s\n' "For a usage description, see: $called --help" >&2
     exit 3
     ;;
   esac
@@ -705,7 +730,7 @@ done
 printf '\n'
 rm -rf /var/cache/ssu/*
 ssu ur
-if [ $update-apps = Y ]
+if [ $update_apps = Y ]
 then
   if command -v zypper > /dev/null 2>&1
   then
@@ -715,7 +740,7 @@ then
     # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
     zypper -q update -y -l
     printf '\n'
-  elif command -v pkcon > /dev/null 2>&1
+  elif command -v pkcon > /dev/null 2>&1  # Here it is either update all apps by zypper or by pkcon; in contrast to post_sfos-upgrade, where refreshing all caches is equally important, hence both are called there.
     printf '%s\n' "- Refreshing pkcon's caches:"
     pkcon -p refresh || exit $?
     printf '%s\n' "- Checking for app updates by pkcon:"
