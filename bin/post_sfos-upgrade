@@ -78,14 +78,14 @@ then
   # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
   zypper update -y -l
   printf '\n'
+if command -v pkcon > /dev/null 2>&1
+  # This may have become superfluous with SFOS 3.2.0, see
+  # https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
+  # Would need to investigate, but refreshing twice will do no harm, anyway.
+  printf '%s\n' "- Refreshing pkcon's caches:"
+  pkcon refresh || exit $?
+  printf '%s\n' "- Checking for updates by pkcon:"
+  # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+  pkcon -y update
 fi
-
-# This may have become superfluous with SFOS 3.2.0, see
-# https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
-# Would need to investigate, but refreshing twice will do no harm, anyway.
-printf '%s\n' "- Refreshing pkcon's caches:"
-pkcon refresh || exit $?
-printf '%s\n' "- Checking for updates by pkcon:"
-# As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
-pkcon -y update
 
