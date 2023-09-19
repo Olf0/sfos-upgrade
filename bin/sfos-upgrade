@@ -709,24 +709,19 @@ if [ $update-apps = Y ]
 then
   if command -v zypper > /dev/null 2>&1
   then
-  #  No need to be "brutal":
-  #  printf '%s\n' "- Cleansing zypper's caches:"
-  #  zypper clean -m || exit $?
     printf '%s\n' "- Refreshing zypper's caches:"
-    zypper refresh || exit $?
-    printf '\n%s\n' "- Checking for updates by zypper:"
+    zypper -q refresh || exit $?
+    printf '\n%s\n' "- Checking for app updates by zypper:"
     # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
-    zypper update -y -l
+    zypper -q update -y -l
     printf '\n'
+  elif command -v pkcon > /dev/null 2>&1
+    printf '%s\n' "- Refreshing pkcon's caches:"
+    pkcon -p refresh || exit $?
+    printf '%s\n' "- Checking for app updates by pkcon:"
+    # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+    pkcon -p -y update
   fi
-  # This may have become superfluous with SFOS 3.2.0, see
-  # https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
-  # Would need to investigate, but refreshing twice will do no harm, anyway.
-  printf '%s\n' "- Refreshing pkcon's caches:"
-  pkcon refresh || exit $?
-  printf '%s\n' "- Checking for updates by pkcon:"
-  # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
-  pkcon -y update
 fi
 
 emit_newline=""
