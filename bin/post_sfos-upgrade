@@ -78,7 +78,8 @@ then
   # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
   zypper update -y -l
   printf '\n'
-if command -v pkcon > /dev/null 2>&1
+fi  # Not executing either zypper or pkcon but both, because refreshing both of their caches is an important aspect.
+if command -v pkcon > /dev/null 2>&1  # Is usually installed, but PackageKit is deliberately not specified as a dependency.
   # This may have become superfluous with SFOS 3.2.0, see
   # https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
   # Would need to investigate, but refreshing twice will do no harm, anyway.
