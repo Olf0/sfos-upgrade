@@ -122,7 +122,7 @@ update_apps=Y
 if [ $# = 0 ]
 then
   set_ssu=N
-  upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
+  upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # `ssu` emits a prefix-line, if not called by root user
   upgrade_release="${upgrade_release##* }"
   relax_checks=Y
 else
@@ -134,7 +134,7 @@ else
   do
   j=$((j+1))
   if [ $j = $# ] && [ $implicit_version != Y ]
-  then  # Last parameter
+  then  # Last parameter and option `--verify` not yet set
     case "$i" in
     [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9]|[1-9].[0-9].[0-9]|4.[1-9])
       upgrade_release="$i"
@@ -142,7 +142,7 @@ else
       ;;
     *)  # Else (copied from "no parameter" case, above):
       set_ssu=N
-      upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
+      upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # `ssu` emits a prefix-line, if not called by root user
       upgrade_release="${upgrade_release##* }"
       relax_checks=Y
       ;;
@@ -150,15 +150,19 @@ else
   fi
   case "$i" in
   -\?|--help)
-    printf '%s\n' "Usage: $called [--help|-?] [--verify|-v] [--relax-checks|-r] [--no-apps-update|-n] [<version>]"
+    printf '%s\n' "Usage: $called [<options>] [<version>]"
     printf '%s\n' "With a version string provided as last parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
     printf '%s\n' "The version must either comprise all four fields, for three fields the highest point release will be picked, the same applies to two fields greater than \"4.0\" and lesser that \"5.0\"."
     printf '%s\n' "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
+    printf '%s\n' "The options can be any combination of [--help|-?] [--verify|-v] [--relax-checks|-r] [--no-apps-update|-n] or none."
     printf '%s\n' "With the --verify option $called performs a \"samegrade\" operation, i.e., checks if the correct versions of all recent RPMs are installed and"
     printf '%s\n' "updates or installs them accordingly.  In this case providing version number results in an error."
     printf '%s\n' "The --relax-checks option relaxes the checks in the same manner as calling $called without a version string."
     printf '%s\n' "Providing the --help option displays this usage description and exits.  More details can be obtained by reading ${called}'s code: It is a shell script."
     exit 2
+    ;;
+  -z|--zypper)
+    use_zypper=Y
     ;;
   -v|--verify)
     upgrade_release="$installed_release"
@@ -167,11 +171,14 @@ else
   -r|--relax-checks)
     relax_checks=Y
     ;;
+  -p|--pkcon)
+    use_pkcon=Y
+    ;;
   -n|--no-apps-update)
     update_apps=N
     ;;
   *)
-    printf '%s\n' "Aborting: Incorrect option or version format \"${i}\" provided!" >&2
+    printf '%s\n' "Aborting: Incorrect option or version format \"${i}\" used!" >&2
     printf '%s\n' "For a usage description, see: $called --help" >&2
     exit 3
     ;;
