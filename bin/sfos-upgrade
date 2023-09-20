@@ -11,7 +11,7 @@ export POSIXLY_CORRECT=1  # Also necessary for a sane `df` output, see https://g
 # (in line 670) is available, after checking that bash seems to be present in mer-core at least since 2011-10-04
 # (see https://git.sailfishos.org/mer-core/bash / https://git.merproject.org/mer-core/bash ) and consequently in
 # SailfishOS since its beginnings (checked for v1.0.0.5 by
-# curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep bash , as no earlier
+# curl -fL https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep bash , as no earlier
 # released version is available there, e.g., the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash anyway; though I have not checked
 # that for ancient releases (which might be re-deployed after a "factory reset"), likely SailfishOS inherited that
@@ -110,11 +110,11 @@ installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[
 if [ -z "$*" ]
 then
   set_ssu=""
-  upgrade_release="$(ssu re | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
+  upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
   upgrade_release="${upgrade_release##* }"
 else
   set_ssu=yes
-  ssu_set="$(ssu re | tail -1)"
+  ssu_set="$(ssu re 2>/dev/null | tail -1)"
   ssu_set="${ssu_set##* }"
   upgrade_release="$1"
   shift
@@ -174,7 +174,7 @@ then
   exit 3
 fi
 
-mylist_sfos_releases='4.5.0.21,4.5.0.19,4.5.0.18,4.5.0.16,4.4.0.72,4.4.0.68,4.4.0.64,4.4.0.58,4.3.0.15,4.3.0.12,4.2.0.21,4.2.0.19,4.1.0.24,4.1.0.23,4.0.1.48,4.0.1.45,3.4.0.24,3.4.0.22,3.3.0.16,3.3.0.14,3.2.1.20,3.2.1.19,3.2.0.14,3.2.0.12,3.1.0.12,3.1.0.11,3.0.3.10,3.0.3.9,3.0.3.8,3.0.2.8,3.0.1.14,3.0.1.13,3.0.1.11,3.0.0.11,3.0.0.8,3.0.0.5,2.2.1.23,2.2.1.20,2.2.1.19,2.2.1.18,2.2.0.29,2.1.4.15,2.1.4.14,2.1.4.13,2.1.4.12,2.1.3.7,2.1.3.5,2.1.3.3,2.1.2.3,2.1.1.26,2.1.1.25,2.1.1.24,2.1.1.23,2.1.1.12,2.1.0.11,2.1.0.10,2.1.0.9,2.0.5.6,2.0.4.14,2.0.4.13,2.0.3.14,2.0.3.11,2.0.2.51,2.0.2.48,2.0.2.47,2.0.2.45,2.0.2.43,2.0.1.11,2.0.1.9,2.0.1.7,2.0.0.10,1.1.9.30,1.1.9.28,1.1.9.27,1.1.9.24,1.1.9.23,1.1.7.28,1.1.7.27,1.1.7.25,1.1.7.24,1.1.7.23,1.1.6.27,1.1.6.26,1.1.6.24,1.1.4.29,1.1.4.28,1.1.4.24,1.1.4.22,1.1.2.16,1.1.2.15,1.1.2.13,1.1.2.10,1.1.1.27,1.1.1.26,1.1.1.24,1.1.0.39,1.1.0.38,1.1.0.37,1.1.0.29,1.1.0.26,1.1.0.23,1.1.0.22,1.1.0.19,1.0.8.21,1.0.8.20,1.0.8.19,1.0.8.18,1.0.7.18,1.0.7.16,1.0.7.14,1.0.7.12,1.0.5.19,1.0.5.16,1.0.5.13,1.0.5.12,1.0.5.11,1.0.4.20,1.0.4.16,1.0.4.12,1.0.4.10,1.0.3.8,1.0.3.7,1.0.3.5,1.0.2.5,1.0.1.12,1.0.1.10,1.0.1.6,1.0.0.5,1.0.0.3,1.0.0.1,0.99.6.8,0.99.6.3,0.99.5.11,0.99.5.8,0.99.5.6'
+mylist_sfos_releases='4.5.0.24,4.5.0.21,4.5.0.19,4.5.0.18,4.5.0.16,4.4.0.72,4.4.0.68,4.4.0.64,4.4.0.58,4.3.0.15,4.3.0.12,4.2.0.21,4.2.0.19,4.1.0.24,4.1.0.23,4.0.1.48,4.0.1.45,3.4.0.24,3.4.0.22,3.3.0.16,3.3.0.14,3.2.1.20,3.2.1.19,3.2.0.14,3.2.0.12,3.1.0.12,3.1.0.11,3.0.3.10,3.0.3.9,3.0.3.8,3.0.2.8,3.0.1.14,3.0.1.13,3.0.1.11,3.0.0.11,3.0.0.8,3.0.0.5,2.2.1.23,2.2.1.20,2.2.1.19,2.2.1.18,2.2.0.29,2.1.4.15,2.1.4.14,2.1.4.13,2.1.4.12,2.1.3.7,2.1.3.5,2.1.3.3,2.1.2.3,2.1.1.26,2.1.1.25,2.1.1.24,2.1.1.23,2.1.1.12,2.1.0.11,2.1.0.10,2.1.0.9,2.0.5.6,2.0.4.14,2.0.4.13,2.0.3.14,2.0.3.11,2.0.2.51,2.0.2.48,2.0.2.47,2.0.2.45,2.0.2.43,2.0.1.11,2.0.1.9,2.0.1.7,2.0.0.10,1.1.9.30,1.1.9.28,1.1.9.27,1.1.9.24,1.1.9.23,1.1.7.28,1.1.7.27,1.1.7.25,1.1.7.24,1.1.7.23,1.1.6.27,1.1.6.26,1.1.6.24,1.1.4.29,1.1.4.28,1.1.4.24,1.1.4.22,1.1.2.16,1.1.2.15,1.1.2.13,1.1.2.10,1.1.1.27,1.1.1.26,1.1.1.24,1.1.0.39,1.1.0.38,1.1.0.37,1.1.0.29,1.1.0.26,1.1.0.23,1.1.0.22,1.1.0.19,1.0.8.21,1.0.8.20,1.0.8.19,1.0.8.18,1.0.7.18,1.0.7.16,1.0.7.14,1.0.7.12,1.0.5.19,1.0.5.16,1.0.5.13,1.0.5.12,1.0.5.11,1.0.4.20,1.0.4.16,1.0.4.12,1.0.4.10,1.0.3.8,1.0.3.7,1.0.3.5,1.0.2.5,1.0.1.12,1.0.1.10,1.0.1.6,1.0.0.5,1.0.0.3,1.0.0.1,0.99.6.8,0.99.6.3,0.99.5.11,0.99.5.8,0.99.5.6'
 my_recent_sfos_release="${mylist_sfos_releases%%,*}"
 sailversion_sfos_releases=""
 sailfishdocs_sfos_list=""
@@ -185,11 +185,11 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   fresh_release=1  # Version is newer than internal list.
   sailversion_fail=y
   sailfishdocs_fail=y
-  # Calling curl with the -k (= --insecure) option, which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
-  if sailversion_sfos_releases="$(curl -sSk https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -x '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
+  # Calling curl with the -k (= --insecure) option (plus -fsS[L]), which only disables the certificate validity checks, because after a factory reset the used certificate bundle is much too old (contains outdated root certifictes) to correctly verify the certificate chain.
+  if sailversion_sfos_releases="$(curl --fail --silent --show-error --insecure https://coderus.openrepos.net/whitesoft/sailversion | cut -f 1 -d ' ' | grep -x '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
   then sailversion_fail=n
   fi
-  sailfishdocs_sfos_list="$(curl -sSkL https://github.com/sailfishos/docs.sailfishos.org/raw/master/Support/Releases/README.md | cut -s -d '|' -f 2,5 | tr -d ' ')"
+  sailfishdocs_sfos_list="$(curl --fail --silent --show-error --insecure --location https://github.com/sailfishos/docs.sailfishos.org/raw/master/Support/Releases/README.md | cut -s -d '|' -f 2,5 | tr -d ' ')"
   if sailfishdocs_sfos_releases="$(printf '%s' "$sailfishdocs_sfos_list" | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
   then sailfishdocs_fail=n
   fi
@@ -223,7 +223,7 @@ else
   sailfishdocs_stop_releases=""
   # Because Jolla regularly fails to document their stop releases in a timely manner (see e.g., https://forum.sailfishos.org/t/scripted-download-of-https-jolla-zendesk-com-hc-en-us-articles-201836347-fails/7935/2 ),
   # I had to change the policy how to deal with this lacking information: All final releases, which are not documented not to be a stop release, are handled as one starting with sfos-upgrade 3.9.1.
-  # mylist_stop_releases='4.5.0.21,4.4.0.72,4.3.0.15,4.2.0.21,4.1.0.24,4.0.1.48,3.4.0.24,3.2.0.12,3.0.0.8,2.2.0.29,2.0.5.6,2.0.0.10,1.1.9.30,1.1.7.28,1.1.2.16,1.0.2.5,1.0.0.5'
+  # mylist_stop_releases='4.5.0.24,4.4.0.72,4.3.0.15,4.2.0.21,4.1.0.24,4.0.1.48,3.4.0.24,3.2.0.12,3.0.0.8,2.2.0.29,2.0.5.6,2.0.0.10,1.1.9.30,1.1.7.28,1.1.2.16,1.0.2.5,1.0.0.5'
   mylist_stop_versions='4.5.0,4.4.0,4.3.0,4.2.0,4.1.0,4.0.1,3.4.0,3.2.0,3.0.0,2.2.0,2.0.5,2.0.0,1.1.9,1.1.7,1.1.2,1.0.2,1.0.0'
   # 0.99.5.11 and 1.0.1.10 are not documented to be "stop releases" at https://docs.sailfishos.org/Support/Releases/
   # But 2.0.5.6 seems to be a "stop release", at least on some devices, see comments thread to
@@ -284,7 +284,7 @@ else
           break
           ;;
         *)
-          printf '%s\n' "Comparing versions in "stop releases" check #2a failed." >&2
+          printf '%s\n' "Comparing versions in \"stop releases\" check #2a failed." >&2
           exit 7
           ;;
         esac
@@ -293,7 +293,7 @@ else
         true
         ;;
       *)
-        printf '%s\n' "Comparing versions in "stop releases" check #1a failed." >&2
+        printf '%s\n' "Comparing versions in \"stop releases\" check #1a failed." >&2
         exit 7
         ;;
       esac
@@ -320,11 +320,11 @@ else
         g?)
           printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which is \"across\" the stop release ${stop_release}!" >&2
           printf '%s\n' "Doing that would likely break this SailfishOS installation." >&2
-          printf '%s\n' "The only way to achieve this properly is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+          printf '%s\n' "The only way to achieve this properly is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
           exit 3
           ;;
         *)
-          printf '%s\n' "Comparing versions in "stop releases" check #2b failed." >&2
+          printf '%s\n' "Comparing versions in \"stop releases\" check #2b failed." >&2
           exit 7
           ;;
         esac
@@ -345,11 +345,11 @@ else
         g?)
           printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which is \"across\" the stop release ${stop_release}!" >&2
           printf '%s\n' "Doing that would likely break this SailfishOS installation." >&2
-          printf '%s\n' "The only way to achieve this properly is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+          printf '%s\n' "The only way to achieve this properly is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
           exit 3
           ;;
         *)
-          printf '%s\n' "Comparing versions in "stop releases" check #2c failed." >&2
+          printf '%s\n' "Comparing versions in \"stop releases\" check #2c failed." >&2
           exit 7
           ;;
         esac
@@ -358,14 +358,14 @@ else
         true
         ;;
       *)
-        printf '%s\n' "Comparing versions in "stop releases" check #1b failed." >&2
+        printf '%s\n' "Comparing versions in \"stop releases\" check #1b failed." >&2
         exit 7
         ;;
       esac
     done
     ;;
   *)
-    printf '%s\n' "Comparing versions in "stop releases" check #0 failed." >&2
+    printf '%s\n' "Comparing versions in \"stop releases\" check #0 failed." >&2
     exit 7
     ;;
   esac
@@ -374,7 +374,7 @@ fi
 if mount -t btrfs | cut -s -f 3 -d ' ' | grep -qx '/'
 then
   btrfs_check=KO
-  if command -v btrfs-balancer > /dev/null 2>&1
+  if command -v btrfs-balancer >/dev/null 2>&1
   then
     btrfs_allocation="$(btrfs-balancer allocation / | tr -s ' ')"
     btrfs_alloc_percent="$(printf '%s' "$btrfs_allocation" | grep '^Allocated: ' | cut -f 2 -d ' ')"
@@ -404,7 +404,7 @@ then
         printf '%s\n\n' "Please consider to abort and to perform a btrfs-balancer run before retrying." >&2
       fi
     fi
-  elif command -v btrfs > /dev/null 2>&1
+  elif command -v btrfs >/dev/null 2>&1
   then
     btrfs_allocation="$(btrfs filesystem df / | grep -m 1 '^Data' | cut -s -f 2 -d ':' | tr ',' '\n' | tr -d ' ' | rev | grep '^Bi*G[0-9][0-9]\.[0-9][0-9]*=' | sed 's/^Bi*G//g' | tr -d '.' | rev)"
     btrfs_total="$(printf '%s' "$btrfs_allocation" | grep '^total=' | cut -f 2 -d '=')"
@@ -412,12 +412,12 @@ then
     if btrfs_unallocated="$(($btrfs_total-$btrfs_used))"
     then
       btrfs_check=ok
-      if [ "$btrfs_unallocated" -lt 200 ]
+      if ! [ "$btrfs_unallocated" -ge 200 ]
       then
         printf '%s\n' "Aborting: Less than 2 GiB unallocated data space (${btrfs_unallocated%??}.${btrfs_unallocated#?} GiB) on the root filesystem (BTRFS)!" >&2
         printf '%s\n' "Please balance the btrfs root filesystem before retrying." >&2
         exit 1
-      elif [ "$btrfs_unallocated" -lt 250 ]
+      elif ! [ "$btrfs_unallocated" -ge 250 ]
       then
         printf '%s\n' "Warning: Less than 2.5 GiB unallocated data space (${btrfs_unallocated%??}.${btrfs_unallocated#?} GiB) on the root filesystem (BTRFS)!" >&2
         printf '%s\n\n' "Please consider to abort and to balance the btrfs root filesystem before retrying." >&2
@@ -440,21 +440,21 @@ else
   # Furthermore these estimates from Jolla only cover their own default components (RPMs), individually installed RPMs (e.g., from the Jolla Store, OpenRepos or even Jolla's SailfishOS repositories) are not and cannot be accounted for.
   if ! [ "$free_space" -gt 524288 ]
   then  # This hard ½ GiB limit is an rough estimate of an upper boundary for the sum of all RPM size increases by an upgrade plus space for the package management's indexes, caches etc.
-    printf '%s\n' "Aborting: Less than ½ GiB ($free_space KiB) free space on the root filesystem!" >&2
+    printf '%s\n' "Aborting: Only 0.5 GiB or less ($free_space KiB) free space on the root filesystem!" >&2
     printf '%s\n' "Before retrying, please clean up or enlarge the root filesystem, see:" >&2
     printf '%s\n' "https://gitlab.com/Olf0/sailfishX#33-increasing-the-root-lvm-volume-size" >&2
     exit 1
   elif ! [ "$free_space" -gt 786432 ]
   then  # As the largest SailfishOS upgrades (Jolla's estimates: the sum of the sizes of all updated RPMs (which are installed by default), when directly upgrading from the predecessor release) have been over 600 MiB (e.g., SFOS 3.3.0 -> 3.4.0), a ¾ GiB limit to warn explicitly seems to be reasonable.
-    printf '%s\n' "Warning: Less than ¾ GiB ($free_space KiB) free space on the root filesystem!" >&2
-    printf '%s\n' "Please consider to abort and then to clean up or to enlarge the root filesystem before retrying, see:" >&2
+    printf '%s\n' "Warning: Only 0.75 GiB or less ($free_space KiB) free space on the root filesystem!" >&2
+    printf '%s\n' "Please do consider to abort and then to clean up or to enlarge the root filesystem before retrying, see:" >&2
     printf '%s\n' "https://gitlab.com/Olf0/sailfishX#33-increasing-the-root-lvm-volume-size" >&2
     printf '%s' "Do you really want to continue?" >&2
     askyes >&2
     printf '\n' >&2
-  elif ! [ "$free_space" -ge 1048576 ]
+  elif ! [ "$free_space" -gt 1048576 ]
   then  # This 1 GiB limit to emit a soft low space notice is intended to trigger users early to do something about it.
-    printf '%s\n' "Notice: Less than 1 GiB ($free_space KiB) free space on the root filesystem." >&2
+    printf '%s\n' "Notice: 1 GiB or less ($free_space KiB) free space on the root filesystem." >&2
     printf '%s\n' "Please consider to clean up or to enlarge the root filesystem, see:" >&2
     printf '%s\n\n' "https://gitlab.com/Olf0/sailfishX#33-increasing-the-root-lvm-volume-size" >&2
   fi
@@ -475,7 +475,7 @@ for battery_uevents in $battery_path
 do
   # Workaround for Gemini's kernel broken battery information, which contains spaces: Use eval & sed instead of source / ".".
   # For details, see https://github.com/Olf0/sfos-upgrade/issues/39
-  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" < "${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" > /dev/null 2>&1
+  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" < "${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" >/dev/null 2>&1
   then
     battery_info=sourced
     break
@@ -601,7 +601,7 @@ ok)
   ;;
 esac
 
-if [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -ge 5 ] 2> /dev/null
+if [ "$(uptime | cut -f 1 -d ',' | rev | grep '^nim ' | cut -f 2 -d ' ' | rev)" -ge 5 ] 2>/dev/null
 then
   printf '%s\n\n' "Notice: Mind that $called is best run on a freshly rebooted device." >&2
 fi
@@ -618,29 +618,29 @@ g?)
   g4)
     printf '%s\n' "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
-    printf '%s\n' "Note that the "official" (i.e., approved by Jolla) way to achieve this is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
-    printf '%s\n' "Though you can try downgrading and if it fails or breaks some functionality, perform a "factory reset" then (in the worst case at the recovery console)." >&2
+    printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Though you can try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you want to do that?" >&2
     ;;
   g4?*)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
-    printf '%s\n' "Note that the "official" (i.e., approved by Jolla) way to achieve this is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
-    printf '%s\n' "Though you may try downgrading and if it fails or breaks some functionality, perform a "factory reset" then (in the worst case at the recovery console)." >&2
+    printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Though you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
   g?)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"micro\" version (i.e., their third field)." >&2
     printf '%s\n' "This might make this SailfishOS installation not working properly!" >&2
-    printf '%s\n' "Note that the proper way to achieve this is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
-    printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a "factory reset" then (in the worst case at the recovery console)." >&2
+    printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
   g?*)
     printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)!" >&2
     printf '%s\n' "Though this might make this SailfishOS installation not working properly, this downgrade may be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." >&2
-    printf '%s\n' "Note that the proper way to achieve this is to execute a "factory reset", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
-    printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a "factory reset" then (in the worst case at the recovery console)." >&2
+    printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     exit 3
     ;;
   *)
@@ -680,7 +680,7 @@ for user_unit in \
   batterynotifierstatuschecker.service batterynotifier.timer batterynotifier.service \
   osmscout-server.socket osmscout-server.service
 do
-  if systemctl --user status "$user_unit" > /dev/null 2>&1
+  if systemctl --user status "$user_unit" >/dev/null 2>&1
   then
     printf '%s\n' "- Stopping $user_unit" | tee -a "$logfile" >&2
     if ! systemctl --user stop "$user_unit" 2>&1 | tee -a "$logfile" >&2
@@ -696,7 +696,7 @@ for system_unit in \
   btrfs-balancer.timer btrfs-balance.service \
   aliendalvik.service alien-settings.service alien-service-manager.service
 do
-  if systemctl status "$system_unit" > /dev/null 2>&1
+  if systemctl status "$system_unit" >/dev/null 2>&1
   then
     printf '%s\n' "- Stopping $system_unit" | tee -a "$logfile" >&2
     if ! systemctl stop "$system_unit" 2>&1 | tee -a "$logfile" >&2
@@ -709,7 +709,7 @@ do
 done
 for process in store-client harbour-storema harbour-warehou harbour-osmscou pkcon zypper rpm
 do
-  if pgrep -x "$process" > /dev/null 2>&1
+  if pgrep -x "$process" >/dev/null 2>&1
   then
     printf '%s\n' "- Stopping $process" | tee -a "$logfile" >&2
     if ! pkill -x "$process" 2>&1 | tee -a "$logfile" >&2
@@ -735,7 +735,7 @@ then
   printf '\n' | tee -a "$logfile" >&2
 fi
 
-if command -v patchmanager > /dev/null 2>&1
+if command -v patchmanager >/dev/null 2>&1
 then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   if [ -d /var/lib/patchmanager/ausmt/patches/ ]
   then
@@ -777,7 +777,7 @@ l???|??l?)
   fi
   ;;
 *)
-  printf '%s\n' "Comparing versions in "*grading from or to below SailfishOS 1.0.4.20" check failed." >&2
+  printf '%s\n' "Comparing versions in \"*grading from or to below SailfishOS 1.0.4.20\" check failed." >&2
   exit 7
   ;;
 esac
