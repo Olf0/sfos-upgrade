@@ -80,6 +80,7 @@ then
   printf '\n'
 fi  # Not executing either zypper or pkcon but both, because refreshing both of their caches is an important aspect.
 if command -v pkcon > /dev/null 2>&1  # Is usually installed, but PackageKit is deliberately not specified as a dependency.
+then
   # This may have become superfluous with SFOS 3.2.0, see
   # https://together.jolla.com/question/214572/changelog-320-torronsuo/#214572-packagekit
   # Would need to investigate, but refreshing twice will do no harm, anyway.
