@@ -715,12 +715,12 @@ then
 fi
 
 # Copied and adatped from `post_sfos-upgrade`; may try to unify, but that is not really easy
-if command -v store-client > /dev/null 2>&1
+if command -v store-client >/dev/null 2>&1
 then
   printf '%s\n' "- Removing outdated SailfishOS version info for the Jolla Store." | tee -a "$logfile" >&2
   for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_store-client
   do
-    if pgrep -x store-client > /dev/null
+    if pgrep -x store-client >/dev/null
     then pkill $i -x store-client || :
     else break
     fi
@@ -737,7 +737,7 @@ rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primu
 printf '%s\n' "- Cleansing ssu(d)\'s caches and restarting it." | tee -a "$logfile" >&2
 for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_ssud
 do
-  if pgrep -x ssud > /dev/null
+  if pgrep -x ssud >/dev/null
   then pkill $i -x ssud || :
   else break
   fi
@@ -748,7 +748,7 @@ rm -rf /var/cache/ssu/*
 ssu ur
 if [ $update_apps = Y ]
 then
-  if command -v zypper > /dev/null 2>&1
+  if command -v zypper >/dev/null 2>&1
   then
     printf '%s\n' "- Refreshing zypper's caches." | tee -a "$logfile" >&2
     zypper -q refresh 2>&1 | tee -a "$logfile" >&2
@@ -756,7 +756,7 @@ then
     # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
     zypper -q update -y -l 2>&1 | tee -a "$logfile" >&2
     printf '\n' | tee -a "$logfile" >&2
-  elif command -v pkcon > /dev/null 2>&1  # Here it is either update all apps by zypper or by pkcon; in contrast to post_sfos-upgrade, where refreshing all caches is equally important, hence both are called there.
+  elif command -v pkcon >/dev/null 2>&1  # Here it is either update all apps by zypper or by pkcon; in contrast to post_sfos-upgrade, where refreshing all caches is equally important, hence both are called there.
     printf '%s\n' "- Refreshing pkcon's caches." | tee -a "$logfile" >&2
     pkcon -p refresh 2>&1 | tee -a "$logfile" >&2
     printf '%s\n' "- Checking for app updates by pkcon." | tee -a "$logfile" >&2
