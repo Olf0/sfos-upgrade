@@ -516,7 +516,7 @@ for battery_uevents in $battery_path
 do
   # Workaround for Gemini's kernel broken battery information, which contains spaces: Use eval & sed instead of source / ".".
   # For details, see https://github.com/Olf0/sfos-upgrade/issues/39
-  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" < "${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" >/dev/null 2>&1
+  if [ "$battery_uevents" != "$battery_path" ] && [ -s "${battery_uevents}/uevent" ] && eval "$(tr '"' "'" <"${battery_uevents}/uevent" | sed 's/\([]_[:alnum:]]=\)\(.*\)/\1"\2"/')" >/dev/null 2>&1
   then
     battery_info=sourced
     break
@@ -833,7 +833,7 @@ then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   if [ -d /var/lib/patchmanager/ausmt/patches/ ]
   then
     printf '%s\n' "- Unapplying all Patchmanager-Patches." | tee -a "$logfile" >&2
-    if ! patchmanager --unapply-all >> "$logfile" 2>&1
+    if ! patchmanager --unapply-all >>"$logfile" 2>&1
     then
       printf '%s\n' "Aborting: Failed to unapply Patchmanager-Patches!" | tee -a "$logfile" >&2
       exit 6
