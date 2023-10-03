@@ -97,7 +97,7 @@ touch %{buildroot}%{_sharedstatedir}/%{name}/post_no-update-apps
 %defattr(0755,root,root,-)
 %{_bindir}/%{name}
 %{_bindir}/post_%{name}
-%{_bindir}/tidy_log-dupes
+%{_bindir}/%{name}_functions
 %ghost %{_sharedstatedir}/%{name}/disabled_user-repos.txt
 %ghost %{_sharedstatedir}/%{name}/post_no-update-apps
 
