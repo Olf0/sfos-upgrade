@@ -96,7 +96,7 @@ touch %{buildroot}%{_sharedstatedir}/%{name}/disabled-repos.txt
 %{_bindir}/%{name}
 %{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
-%ghost %{buildroot}%{_sharedstatedir}/%{name}/disabled-repos.txt
+%ghost %{_sharedstatedir}/%{name}/disabled-repos.txt
 
 # Changelog format: https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/SF4VVE4NBEDQJDJZ4DJ6YW2DTGMWP23E/#6O6DFC6GDOLCU7QC3QJKJ3VCUGAOTD24
 %changelog
