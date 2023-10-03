@@ -91,6 +91,7 @@ mkdir -p %{buildroot}%{_bindir}
 cp bin/* %{buildroot}%{_bindir}/
 mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
 touch %{buildroot}%{_sharedstatedir}/%{name}/disabled_user-repos.txt
+touch %{buildroot}%{_sharedstatedir}/%{name}/post_no-update-apps
 
 %files
 %defattr(0755,root,root,-)
@@ -98,6 +99,7 @@ touch %{buildroot}%{_sharedstatedir}/%{name}/disabled_user-repos.txt
 %{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
 %ghost %{_sharedstatedir}/%{name}/disabled_user-repos.txt
+%ghost %{_sharedstatedir}/%{name}/post_no-update-apps
 
 # Changelog format: https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/SF4VVE4NBEDQJDJZ4DJ6YW2DTGMWP23E/#6O6DFC6GDOLCU7QC3QJKJ3VCUGAOTD24
 %changelog
