@@ -714,58 +714,6 @@ then
   printf '\n' | tee -a "$logfile" >&2
 fi
 
-# Copied and adatped from `post_sfos-upgrade`; may try to unify, but that is not really easy
-if command -v store-client >/dev/null 2>&1
-then
-  printf '%s\n' "- Removing outdated SailfishOS version info for the Jolla Store." | tee -a "$logfile" >&2
-  for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_store-client
-  do
-    if pgrep -x store-client >/dev/null
-    then pkill $i -x store-client || :
-    else break
-    fi
-    sleep 1
-  done
-  printf '\n' | tee -a "$logfile" >&2
-fi
-# See troubleshooting section "Cleaning up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line
-rm -f /home/.pk-zypp-dist-upgrade-cache/*
-# See https://github.com/sailfishos/udisks2/commit/bcc6437ff35a3cc1e8c4777ee80d85a9c112e63e#diff-be2415d9a1095d0aa0d9dc7977c388a7ab5bb3ff7b3e4c38713062bd03165cee
-primuser="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
-# Paths for SailfishOS ≥ 2.2.1 rsp. SailfishOS < 2.2.1, see chapter "Final clean up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#final-clean-up
-rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primuser}/.cache/store-client/os-info"
-printf '%s\n' "- Cleansing ssu(d)\'s caches and restarting it." | tee -a "$logfile" >&2
-for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_ssud
-do
-  if pgrep -x ssud >/dev/null
-  then pkill $i -x ssud || :
-  else break
-  fi
-  sleep 1
-done
-printf '\n' | tee -a "$logfile" >&2
-rm -rf /var/cache/ssu/*
-ssu ur
-if [ $update_apps = Y ]
-then
-  if command -v zypper >/dev/null 2>&1
-  then
-    printf '%s\n' "- Refreshing zypper's caches." | tee -a "$logfile" >&2
-    zypper -q refresh 2>&1 | tee -a "$logfile" >&2
-    printf '\n%s\n' "- Checking for app updates by zypper." | tee -a "$logfile" >&2
-    # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
-    zypper -q update -y -l 2>&1 | tee -a "$logfile" >&2
-    printf '\n' | tee -a "$logfile" >&2
-  elif command -v pkcon >/dev/null 2>&1  # Here it is either update all apps by zypper or by pkcon; in contrast to post_sfos-upgrade, where refreshing all caches is equally important, hence both are called there.
-    printf '%s\n' "- Refreshing pkcon's caches." | tee -a "$logfile" >&2
-    pkcon -p refresh 2>&1 | tee -a "$logfile" >&2
-    printf '%s\n' "- Checking for app updates by pkcon." | tee -a "$logfile" >&2
-    # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
-    pkcon -p -y update 2>&1 | tee -a "$logfile" >&2
-    printf '\n' | tee -a "$logfile" >&2
-  fi
-fi
-
 emit_newline=""
 for user_unit in \
   osupdate-check.timer osupdate-check.service \
@@ -847,33 +795,80 @@ then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   fi
 fi
 
-# Simplified since v2.3, because `ssu dr` seems to *always* return "O.K.":
-compar_o="$(compare_versions "$installed_release" "1.0.4.20")$(compare_versions "$upgrade_release" "1.0.4.20")"
-case "$compar_o" in
-[eg]?[eg]?)
-  :
-  ;;
-l???|??l?)
-  if openrepos_repos="$(ssu lr | fgrep openrepo)"
+# Copied and adatped from `post_sfos-upgrade`; may try to unify, but that is not really easy
+if command -v store-client >/dev/null 2>&1
+then
+  printf '%s\n' "- Removing outdated SailfishOS version info for the Jolla Store." | tee -a "$logfile" >&2
+  for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_store-client
+  do
+    if pgrep -x store-client >/dev/null
+    then pkill $i -x store-client | tee -a "$logfile" >&2 || :
+    else break
+    fi
+    sleep 1
+  done
+  printf '\n' | tee -a "$logfile" >&2
+fi
+# See https://github.com/sailfishos/udisks2/commit/bcc6437ff35a3cc1e8c4777ee80d85a9c112e63e#diff-be2415d9a1095d0aa0d9dc7977c388a7ab5bb3ff7b3e4c38713062bd03165cee
+primuser="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
+# Paths for SailfishOS ≥ 2.2.1 rsp. SailfishOS < 2.2.1, see chapter "Final clean up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#final-clean-up
+rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primuser}/.cache/store-client/os-info"
+# See troubleshooting section "Cleaning up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line
+rm -f /home/.pk-zypp-dist-upgrade-cache/*
+printf '%s\n' "- Cleansing ssu(d)\'s caches and restarting it." | tee -a "$logfile" >&2
+for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_ssud
+do
+  if pgrep -x ssud >/dev/null
+  then pkill $i -x ssud | tee -a "$logfile" >&2 || :
+  else break
+  fi
+  sleep 1
+done
+printf '\n' | tee -a "$logfile" >&2
+rm -rf /var/cache/ssu/*
+ssu ur
+if [ $update_apps = Y ]
+then
+  if command -v zypper >/dev/null 2>&1
   then
-    # References:
-    # https://jolla.zendesk.com/hc/en-us/articles/201836347#5
-    # https://together.jolla.com/question/38508/release-notes-software-version-10516-paarlampi/
-    # https://together.jolla.com/question/33507/release-notes-software-version-10420-ohijarvi/
-    printf '%s\n' "- Disabling OpenRepos' repositories (*grading from or to below 1.0.4.20):" | tee -a "$logfile" >&2
-    for open_repo in $(printf '%s' "$openrepos_repos" | cut -s -f 3 -d ' ')
-    do
-      printf '%s\n' "$open_repo" | tee -a "$logfile" >&2
-      ssu dr "$open_repo" 2>&1 | tee -a "$logfile" >&2
-    done
+    printf '%s\n' "- Refreshing zypper's caches." | tee -a "$logfile" >&2
+    zypper -q --non-interactive refresh 2>&1 | tee -a "$logfile" >&2
+    printf '\n%s\n' "- Checking for app updates by zypper." | tee -a "$logfile" >&2
+    # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+    zypper -q --non-interactive update -y -l 2>&1 | tee -a "$logfile" >&2
+    printf '\n' | tee -a "$logfile" >&2
+  elif command -v pkcon >/dev/null 2>&1  # Here it is either update all apps by zypper or by pkcon; in contrast to post_sfos-upgrade, where refreshing all caches is equally important, hence both are called there.
+    printf '%s\n' "- Refreshing pkcon's caches." | tee -a "$logfile" >&2
+    pkcon -p refresh 2>&1 | tee -a "$logfile" >&2
+    printf '%s\n' "- Checking for app updates by pkcon." | tee -a "$logfile" >&2
+    # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+    pkcon -p -y update 2>&1 | tee -a "$logfile" >&2
     printf '\n' | tee -a "$logfile" >&2
   fi
-  ;;
-*)
-  printf '%s\n' "Comparing versions in \"*grading from or to below SailfishOS 1.0.4.20\" check failed." >&2
-  exit 7
-  ;;
-esac
+fi
+
+disabled_user-repos="$(ssu lr | sed -n '/^.nabled .*user/,/^[a-zA-Z]*abled /p' | grep -o 'openrepos-[^[:blank:]]*' | tee -a /var/lib/sfos-upgrade/disabled_user-repos.txt)"
+# Simplified since v2.3, because `ssu dr` seems to *always* return "O.K.":
+# References for SailfishOS 1.0.4
+# https://jolla.zendesk.com/hc/en-us/articles/201836347#5
+# https://together.jolla.com/question/38508/release-notes-software-version-10516-paarlampi/
+# https://together.jolla.com/question/33507/release-notes-software-version-10420-ohijarvi/
+# Reference for SailfishOS 3.4.0+
+# https://forum.sailfishos.org/t/update-from-3-4-0-22-to-3-4-0-24-urges-user-to-remove-system-packages/2681/2
+printf '%s\n' "- Disabling OpenRepos' repositories:" | tee -a "$logfile" >&2
+for open_repo in $(printf '%s' "$disabled-user-repos")
+do
+  printf '%s\n' "$open_repo" | tee -a "$logfile" >&2
+  ssu dr "$open_repo" 2>&1 | tee -a "$logfile" >&2
+done
+printf '\n' | tee -a "$logfile" >&2
+
+# Experimental option
+if [ $ = Y ]
+# https://forum.sailfishos.org/t/update-from-3-4-0-22-to-3-4-0-24-urges-user-to-remove-system-packages/2681/11
+then pkcon -p -y --allow-downgrade --allow-reinstall update
+# zypper -q --non-interactive update -y -l --allow-downgrade --allow-vendor-change --allow-name-change
+fi
 
 if [ $set_ssu = Y ]
 then
