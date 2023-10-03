@@ -89,6 +89,7 @@ Links:
 %install
 mkdir -p %{buildroot}%{_bindir}
 cp bin/* %{buildroot}%{_bindir}/
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
 touch %{buildroot}%{_sharedstatedir}/%{name}/disabled-repos.txt
 
 %files
