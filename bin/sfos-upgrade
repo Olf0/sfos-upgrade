@@ -278,7 +278,7 @@ else
   then  # sailfishdocs_fail is set (to something), if fresh_release is not empty.
     if [ "$sailfishdocs_fail" != n ] || ! sailfishdocs_stop_releases="$(printf '%s' "$sailfishdocs_sfos_list" | fgrep -i stoprelease | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
     then
-      printf '%s\n' "Warning: Failed to extract the current "stop releases" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
+      printf '%s\n' "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
       printf '%s\n' "Hence unable to check if the path from \"${installed_release}\" to \"${upgrade_release}\" contains a \"stop release\"." >&2
       if [ $set_ssu = N ]
       then printf '%s' "Do you want to continue?" >&2
