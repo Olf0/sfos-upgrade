@@ -98,6 +98,7 @@ touch %{buildroot}%{_sharedstatedir}/%{name}/post_no-update-apps
 %{_bindir}/%{name}
 %{_bindir}/post_%{name}
 %{_bindir}/%{name}_functions
+%dir %{_sharedstatedir}/%{name}
 %ghost %{_sharedstatedir}/%{name}/disabled_user-repos.txt
 %ghost %{_sharedstatedir}/%{name}/post_no-update-apps
 
