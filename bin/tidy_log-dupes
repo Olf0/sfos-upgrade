@@ -3,7 +3,6 @@ set -u  # "-u" (error when using uninitialised variables).
 # Must not use "-f" (disable pathname expansion) in this script.
 # Ultimately decided against "-e", because this script better runs through,
 # despite minor errors; the same applies to "-C" (no-clobber / -overwrite).
-set -o pipefail  # May not be supported, busybox's ash and bash do.
 # Using bash (formally) because it is "always there" on SailfishOS: Either the
 # real bash 3.2.57 (the last GPLv2 version) on SailfishOS less than v4 or via
 # busybox's bash-symlink (which is deployed by the busybox-symlinks-bash RPM)
@@ -58,10 +57,26 @@ fi
 
 cd "$logdir" || exit 123
 
-# Removing stale metadata downloads left over by version --dup
-# rm -rf UpdateTestcase-*
+# Remove stale metadata downloads left over by `version --dup`?
+stale_files='UpdateTestcase-*'
+stale_files_expanded="$(printf '%s' $stale_files)"
+if [ "$stale_files" != "$stale_files_expanded" ]
+then
+  printf '%s\n' "Notice: Found stale metadata downloads left over by `version --dup`, $stale_files_expanded"
+  printf '%s' "Delete them? (y/N) "
+  read yn
+  case "$yn" in
+  y|Y)
+    rm -rf $stale_files
+    ;;
+  *)
+    :
+    ;;
+  esac
+  printf '\n'
+fi
 
-if ! set -o pipefail
+if ! set -o pipefail  # May not be supported, busybox's ash and bash do.
 then printf '%s\n' "Notice: This shell does not support \"-o pipefail\"." >&2
 fi
 
