@@ -3,7 +3,7 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # The Git tag format must adhere to <release>/<version> since 2023-05-18.
 # The <version> tag must adhere to semantic versioning, for details see
 # https://semver.org/
-Version:        3.11.2
+Version:        3.11.3
 # The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
 # natural number greater or equal to 1 (e.g., "beta3") and may additionally be
 # postfixed with a plus character ("+"), the name of the packager and a release
@@ -14,7 +14,7 @@ Version:        3.11.2
 # build at GitHub and OBS, when configured accordingly; mind the sorting
 # (`adud` < `alpha`).  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Release:        release2
+Release:        release3
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Applications/System
@@ -89,12 +89,18 @@ Links:
 %install
 mkdir -p %{buildroot}%{_bindir}
 cp bin/* %{buildroot}%{_bindir}/
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}
+touch %{buildroot}%{_sharedstatedir}/%{name}/disabled_user-repos.txt
+touch %{buildroot}%{_sharedstatedir}/%{name}/post_no-update-apps
 
 %files
 %defattr(0755,root,root,-)
 %{_bindir}/%{name}
 %{_bindir}/post_%{name}
 %{_bindir}/tidy_log-dupes
+%dir %{_sharedstatedir}/%{name}
+%ghost %{_sharedstatedir}/%{name}/disabled_user-repos.txt
+%ghost %{_sharedstatedir}/%{name}/post_no-update-apps
 
 # Changelog format: https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/SF4VVE4NBEDQJDJZ4DJ6YW2DTGMWP23E/#6O6DFC6GDOLCU7QC3QJKJ3VCUGAOTD24
 %changelog
