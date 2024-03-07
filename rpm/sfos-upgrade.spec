@@ -3,7 +3,7 @@ Summary:        Scripts for fail-safe upgrading of SailfishOS at the command lin
 # The Git tag format must adhere to <release>/<version> since 2023-05-18.
 # The <version> tag must adhere to semantic versioning, for details see
 # https://semver.org/
-Version:        3.11.3
+Version:        3.99.90
 # The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
 # natural number greater or equal to 1 (e.g., "beta3") and may additionally be
 # postfixed with a plus character ("+"), the name of the packager and a release
@@ -14,14 +14,14 @@ Version:        3.11.3
 # build at GitHub and OBS, when configured accordingly; mind the sorting
 # (`adud` < `alpha`).  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Release:        release3
+Release:        beta1
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Applications/System
 Distribution:   SailfishOS
 # Altering the `Vendor:` field breaks the update path on SailfishOS, see
 # https://en.opensuse.org/SDB:Vendor_change_update#Disabling_Vendor_stickiness
-Vendor:         olf
+Vendor:         meego
 License:        LGPL-2.1-only
 URL:            https://github.com/Olf0/%{name}
 # The "Source0:" line below requires that the value of %%{name} is also the
@@ -97,6 +97,7 @@ touch %{buildroot}%{_sharedstatedir}/%{name}/post_no-update-apps
 %defattr(0755,root,root,-)
 %{_bindir}/%{name}
 %{_bindir}/post_%{name}
+%{_bindir}/%{name}_functions
 %{_bindir}/tidy_log-dupes
 %dir %{_sharedstatedir}/%{name}
 %ghost %{_sharedstatedir}/%{name}/disabled_user-repos.txt

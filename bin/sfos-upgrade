@@ -61,44 +61,52 @@ askyes ()
     printf '%s\n' "Warning due to internal error: The function askyes expects no parameters, but was called with \"${*}\"." >&2
     retcode=3
   fi
-  return "$retcode"
+  return $retcode
 }
 
 compare_versions ()
 {
-  # Emits "e" (equal) if A = B, "l" (lesser) if A < B, "g" (greater) if A > B to STDOUT or "x" if A and B are not comparable, immediately
-  # followed by the number of the first field {1..4} from the left, in which the mismatch occurred (hence always "e4" for a match).
-  # Returns 1 if version strings are not comparable and 3 if not called with two arguments.
+  # Emits "e" (equal) if A = B, "l" (lesser) if A < B, "g" (greater) if A > B to STDOUT or "x" if a non-numeric value was detected,
+  # immediately followed by the number of the first field {1..4} from the left, in which the mismatch occurred (e.g., "e4" for a full match).
+  # Supports matching partial version strings, then outputs, for example, "e2", if the second field was the last comparable one (i.e., 
+  # the third field is empty in either version string).
+  # Returns 1 for the "x" case and 3 (and no output) if not called with two arguments.
   if [ "$#" != 2 ]
   then
     printf '%s\n' "Warning due to internal error: The function compare_versions expects 2 parameters, but was called with ${#}!" >&2
-    retc=3
+    retcode=3
   else
+    retcode=0
     version_a="$1"
     version_b="$2"
-    retc=0
     comparison=e
     for field_num in 1 2 3 4
     do
-      a_substring="$(printf '%s' "$version_a" | cut -s -f "$field_num" -d '.')"
-      b_substring="$(printf '%s' "$version_b" | cut -s -f "$field_num" -d '.')"
+      a_substring="$(printf '%s' "$version_a" | cut -s -f $field_num -d '.')"
+      b_substring="$(printf '%s' "$version_b" | cut -s -f $field_num -d '.')"
       if [ "$a_substring" != "$b_substring" ]
       then  # When different, ...
         if [ "$a_substring" -lt "$b_substring" ]
         then comparison=l
         elif [ "$a_substring" -gt "$b_substring" ]
         then comparison=g
+        elif { [ -z "$a_substring" ] && [ "$b_substring" -ge 0 ]; } || { [ -z "$b_substring" ] && [ "$a_substring" -ge 0 ]; }  # One empty, the other an integer value
+        then field_num=$((field_num-1))
         else
-          printf '%s\n' "Warning from function compare_versions: Version strings \"${version_a}\" and \"${version_b}\" are not comparable!" >&2
-          retc=1
+          printf '%s\n' "Warning from function compare_versions: One of the version strings \"${version_a}\" and \"${version_b}\" contains other characters than [.0-9]!" >&2
+          retcode=1
           comparison=x
         fi
         break  # ... jump out of the loop.
+      elif [ -z "$a_substring" ] && [ -z "$b_substring" ]  # The same, but both empty
+      then
+        field_num=$((field_num-1))
+        break
       fi
     done
     printf '%s' "$comparison$field_num"
   fi
-  return "$retc"
+  return $retcode
 }
 
 
@@ -107,46 +115,79 @@ compare_versions ()
 called="${0##*/}"
 
 installed_release="$(version | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*' | head -1)"  # `version` may emit multiple version strings, see issue #32
-if [ -z "$*" ]
+implicit_version=N
+relax_checks=N
+update_apps=Y
+upgrade_by=version
+
+if [ $# = 0 ]
 then
-  set_ssu=""
-  upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # ´ssu´ emits a prefix-line, if not called by root user
+  set_ssu=N
+  upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # `ssu` emits a prefix-line, if not called by root user
   upgrade_release="${upgrade_release##* }"
+  relax_checks=Y
 else
-  set_ssu=yes
+  set_ssu=Y
   ssu_set="$(ssu re 2>/dev/null | tail -1)"
   ssu_set="${ssu_set##* }"
-  upgrade_release="$1"
-  shift
-  if [ -n "$*" ]
-  then
-    printf '%s\n' "Aborting: No extra parameters expected, but called with \"${*}\"." >&2
-    exit 3
+  j=0
+  for i in "$@"
+  do
+  j=$((j+1))
+  if [ $j = $# ] && [ $implicit_version != Y ]
+  then  # Last parameter and option `--verify` not yet set
+    case "$i" in
+    [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9]|[1-9].[0-9].[0-9]|4.[1-9])
+      upgrade_release="$i"
+      break
+      ;;
+    *)  # Else (copied from "no parameter" case, above):
+      set_ssu=N
+      upgrade_release="$(ssu re 2>/dev/null | tail -1)"  # `ssu` emits a prefix-line, if not called by root user
+      upgrade_release="${upgrade_release##* }"
+      relax_checks=Y
+      ;;
+    esac
   fi
-  case "$upgrade_release" in
-  [1-9].[0-9].[0-9].[0-9]|[1-9].[0-9].[0-9].[1-9][0-9])
-    true
-    ;;
-  --verify)
-    upgrade_release="$installed_release"
-    ;;
+  case "$i" in
   -\?|--help)
-    printf '%s\n' "Usage: $called [<version>|--verify|--help]"
-    printf '%s\n' "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
+    printf '%s\n' "Usage: $called [<options>] [<version>]"
+    printf '%s\n' "With a version string provided as last parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
+    printf '%s\n' "The version must either comprise all four fields, for three fields the highest point release will be picked, the same applies to two fields greater than \"4.0\" and lesser that \"5.0\"."
     printf '%s\n' "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
-    printf '%s\n' "With --verify as argument $called performs a \"samegrade\" operation, i.e., checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly."
+    printf '%s\n' "The options can be any combination of [--help|-?] [--verify|-v] [--relax-checks|-r] [--no-apps-update|-n] or none."
+    printf '%s\n' "With the --verify option $called performs a \"samegrade\" operation, i.e., checks if the correct versions of all recent RPMs are installed and"
+    printf '%s\n' "updates or installs them accordingly.  In this case providing version number results in an error."
+    printf '%s\n' "The --relax-checks option relaxes the checks in the same manner as calling $called without a version string."
+    printf '%s\n' "Providing the --help option displays this usage description and exits.  More details can be obtained by reading ${called}'s code: It is a shell script."
     exit 2
     ;;
+  -z|--zypper)
+    upgrade_by=zypper
+    ;;
+  -v|--verify)
+    upgrade_release="$installed_release"
+    implicit_version=Y
+    ;;
+  -r|--relax-checks)
+    relax_checks=Y
+    ;;
+  -p|--pkcon)
+    upgrade_by=pkcon
+    ;;
+  -n|--no-apps-update)
+    update_apps=N
+    ;;
   *)
-    printf '%s\n' "Aborting: Incorrect option or version format \"${upgrade_release}\" provided!" >&2
-    printf '%s\n' "For a brief usage description, see: $called --help" >&2
+    printf '%s\n' "Aborting: Incorrect option or version format \"${i}\" used!" >&2
+    printf '%s\n' "For a usage description, see: $called --help" >&2
     exit 3
     ;;
   esac
   compar_s="$(compare_versions "$installed_release" "$ssu_set")"
   case "$compar_s" in
   e?)
-    true
+    :
     ;;
   l?)
     printf '%s\n' "Notice: The installed version $installed_release is smaller than the one currently set for SSU (${ssu_set})." >&2
@@ -199,7 +240,7 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   fi 
   ;;
 [egl]?[egl]?)  # No need to download lists of SailfishOS releases.
-  true
+  :
   ;;
 *)
   printf '%s\n' "Comparing versions failed when checking, if downloading lists of SailfishOS releases is necessary." >&2
@@ -237,9 +278,9 @@ else
   then  # sailfishdocs_fail is set (to something), if fresh_release is not empty.
     if [ "$sailfishdocs_fail" != n ] || ! sailfishdocs_stop_releases="$(printf '%s' "$sailfishdocs_sfos_list" | fgrep -i stoprelease | cut -s -d '|' -f 1 | grep -o '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*')"
     then
-      printf '%s\n' "Warning: Failed to extract the current "stop releases" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
+      printf '%s\n' "Warning: Failed to extract the current \"stop releases\" from https://github.com/sailfishos/docs.sailfishos.org/tree/master/Support/Releases#readme" >&2
       printf '%s\n' "Hence unable to check if the path from \"${installed_release}\" to \"${upgrade_release}\" contains a \"stop release\"." >&2
-      if [ -z "$set_ssu" ]
+      if [ $set_ssu = N ]
       then printf '%s' "Do you want to continue?" >&2
       else printf '%s' "Do you really want to continue?" >&2
       fi
@@ -268,7 +309,7 @@ else
         case "$compar2" in
         l?)
           printf '%s\n' "Notice: Upgrading from $installed_release to $upgrade_release would omit installing $stop_release as a stop release!" >&2
-          if [ -n "$set_ssu" ]
+          if [ $set_ssu = Y ]
           then
             printf '%s\n' "Thus upgrading to $stop_release instead." >&2
             upgrade_release="$stop_release"
@@ -290,7 +331,7 @@ else
         esac
         ;;
       [el]?)  # Continue looping
-        true
+        :
         ;;
       *)
         printf '%s\n' "Comparing versions in \"stop releases\" check #1a failed." >&2
@@ -355,7 +396,7 @@ else
         esac
         ;;
       g?)  # Continue looping
-        true
+        :
         ;;
       *)
         printf '%s\n' "Comparing versions in \"stop releases\" check #1b failed." >&2
@@ -506,7 +547,7 @@ Charging-[0-9]*-*|Full-[0-9]*-*)
   then
     printf '%s\n' "Warning: Battery is charged less than 18.5% (${power_supply_capacity_design}%) of its original design capacity!" >&2
     printf '%s' "Continue charging before " >&2
-    if [ -z "$set_ssu" ]
+    if [ $set_ssu = N ]
     then battery_check=ask
     fi
   else
@@ -537,7 +578,7 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
   then
     printf '%s\n' "Warning: Battery is charged 25% or less (${POWER_SUPPLY_CAPACITY}%) of its capacity!" >&2
     printf '%s' "Continue charging before " >&2
-    if [ -z "$set_ssu" ]
+    if [ $set_ssu = N ]
     then battery_check=ask
     fi
   else
@@ -566,14 +607,14 @@ Charging-*-[0-9]*|Full-*-[0-9]*)
 ?*-*-*)
   printf '%s\n' "Warning: Failed to determine battery charge!" >&2
   printf '%s' "Check your device before " >&2
-  if [ -z "$set_ssu" ]
+  if [ $set_ssu = N ]
   then battery_check=ask
   fi
   ;;
 *-*-*)
   printf '%s\n' "Warning: Failed to determine battery charging state!" >&2
   printf '%s' "Check your device before " >&2
-  if [ -z "$set_ssu" ]
+  if [ $set_ssu = N ]
   then battery_check=ask
   fi
   ;;
@@ -594,7 +635,7 @@ ask)
   printf '\n' >&2
   ;;
 ok)
-  true
+  :
   ;;
 *)
   exit 23
@@ -615,28 +656,28 @@ l?)
   ;;
 g?)
   case "$compar0$set_ssu" in
-  g4)
+  g4N)
     printf '%s\n' "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
     printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Though you can try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you want to do that?" >&2
     ;;
-  g4?*)
+  g4Y)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
     printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Though you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
-  g?)
+  g?N)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"micro\" version (i.e., their third field)." >&2
     printf '%s\n' "This might make this SailfishOS installation not working properly!" >&2
     printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
-  g?*)
+  g?Y)
     printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)!" >&2
     printf '%s\n' "Though this might make this SailfishOS installation not working properly, this downgrade may be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." >&2
     printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
@@ -754,35 +795,82 @@ then  # Unapply all Patchmanager-Patches, if Patchmanager 2.x is installed.
   fi
 fi
 
-# Simplified since v2.3, because `ssu dr` seems to *always* return "O.K.":
-compar_o="$(compare_versions "$installed_release" "1.0.4.20")$(compare_versions "$upgrade_release" "1.0.4.20")"
-case "$compar_o" in
-[eg]?[eg]?)
-  true
-  ;;
-l???|??l?)
-  if openrepos_repos="$(ssu lr | fgrep openrepo)"
+# Copied and adatped from `post_sfos-upgrade`; may try to unify, but that is not really easy
+if command -v store-client >/dev/null 2>&1
+then
+  printf '%s\n' "- Removing outdated SailfishOS version info for the Jolla Store." | tee -a "$logfile" >&2
+  for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_store-client
+  do
+    if pgrep -x store-client >/dev/null
+    then pkill $i -x store-client | tee -a "$logfile" >&2 || :
+    else break
+    fi
+    sleep 1
+  done
+  printf '\n' | tee -a "$logfile" >&2
+fi
+# See https://github.com/sailfishos/udisks2/commit/bcc6437ff35a3cc1e8c4777ee80d85a9c112e63e#diff-be2415d9a1095d0aa0d9dc7977c388a7ab5bb3ff7b3e4c38713062bd03165cee
+primuser="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
+# Paths for SailfishOS ≥ 2.2.1 rsp. SailfishOS < 2.2.1, see chapter "Final clean up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#final-clean-up
+rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primuser}/.cache/store-client/os-info"
+# See troubleshooting section "Cleaning up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line
+rm -f /home/.pk-zypp-dist-upgrade-cache/*
+printf '%s\n' "- Cleansing ssu(d)\'s caches and restarting it." | tee -a "$logfile" >&2
+for i in -TERM -INT -TERM -HUP -KILL -Failed_to_kill_ssud
+do
+  if pgrep -x ssud >/dev/null
+  then pkill $i -x ssud | tee -a "$logfile" >&2 || :
+  else break
+  fi
+  sleep 1
+done
+printf '\n' | tee -a "$logfile" >&2
+rm -rf /var/cache/ssu/*
+ssu ur
+if [ $update_apps = Y ]
+then
+  if command -v zypper >/dev/null 2>&1
   then
-    # References:
-    # https://jolla.zendesk.com/hc/en-us/articles/201836347#5
-    # https://together.jolla.com/question/38508/release-notes-software-version-10516-paarlampi/
-    # https://together.jolla.com/question/33507/release-notes-software-version-10420-ohijarvi/
-    printf '%s\n' "- Disabling OpenRepos' repositories (*grading from or to below 1.0.4.20):" | tee -a "$logfile" >&2
-    for open_repo in $(printf '%s' "$openrepos_repos" | cut -s -f 3 -d ' ')
-    do
-      printf '%s\n' "$open_repo" | tee -a "$logfile" >&2
-      ssu dr "$open_repo" 2>&1 | tee -a "$logfile" >&2
-    done
+    printf '%s\n' "- Refreshing zypper's caches." | tee -a "$logfile" >&2
+    zypper -q --non-interactive refresh 2>&1 | tee -a "$logfile" >&2
+    printf '\n%s\n' "- Checking for app updates by zypper." | tee -a "$logfile" >&2
+    # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+    zypper -q --non-interactive update -y -l 2>&1 | tee -a "$logfile" >&2
+    printf '\n' | tee -a "$logfile" >&2
+  elif command -v pkcon >/dev/null 2>&1  # Here it is either update all apps by zypper or by pkcon; in contrast to post_sfos-upgrade, where refreshing all caches is equally important, hence both are called there.
+    printf '%s\n' "- Refreshing pkcon's caches." | tee -a "$logfile" >&2
+    pkcon -p refresh 2>&1 | tee -a "$logfile" >&2
+    printf '%s\n' "- Checking for app updates by pkcon." | tee -a "$logfile" >&2
+    # As of SailfishOS 4.1.0, `version --dup` does not seem to always update all packages, any more:
+    pkcon -p -y update 2>&1 | tee -a "$logfile" >&2
     printf '\n' | tee -a "$logfile" >&2
   fi
-  ;;
-*)
-  printf '%s\n' "Comparing versions in \"*grading from or to below SailfishOS 1.0.4.20\" check failed." >&2
-  exit 7
-  ;;
-esac
+fi
 
-if [ -n "$set_ssu" ]
+disabled_user-repos="$(ssu lr | sed -n '/^.nabled .*user/,/^[a-zA-Z]*abled /p' | grep -o 'openrepos-[^[:blank:]]*' | tee -a /var/lib/sfos-upgrade/disabled_user-repos.txt)"
+# Simplified since v2.3, because `ssu dr` seems to *always* return "O.K.":
+# References for SailfishOS 1.0.4
+# https://jolla.zendesk.com/hc/en-us/articles/201836347#5
+# https://together.jolla.com/question/38508/release-notes-software-version-10516-paarlampi/
+# https://together.jolla.com/question/33507/release-notes-software-version-10420-ohijarvi/
+# Reference for SailfishOS 3.4.0+
+# https://forum.sailfishos.org/t/update-from-3-4-0-22-to-3-4-0-24-urges-user-to-remove-system-packages/2681/2
+printf '%s\n' "- Disabling OpenRepos' repositories:" | tee -a "$logfile" >&2
+for open_repo in $(printf '%s' "$disabled-user-repos")
+do
+  printf '%s\n' "$open_repo" | tee -a "$logfile" >&2
+  ssu dr "$open_repo" 2>&1 | tee -a "$logfile" >&2
+done
+printf '\n' | tee -a "$logfile" >&2
+
+# Experimental option
+if [ $ = Y ]
+# https://forum.sailfishos.org/t/update-from-3-4-0-22-to-3-4-0-24-urges-user-to-remove-system-packages/2681/11
+then pkcon -p -y --allow-downgrade --allow-reinstall update
+# zypper -q --non-interactive update -y -l --allow-downgrade --allow-vendor-change --allow-name-change
+fi
+
+if [ $set_ssu = Y ]
 then
   printf '%s\n' "- Setting SSU in release mode to SailfishOS release $upgrade_release" | tee -a "$logfile" >&2
   if ! ssu re "$upgrade_release" 2>&1 | tee -a "$logfile"
@@ -801,8 +889,8 @@ then
   exit 6
 fi
 
-# Syncing, as I could not determine if both /usr/bin/rnd-dist-upgrade and /usr/bin/pkcon dist-upgrade (either of these two is called by version --dup) already do that:
-sync
+# No need to sync, the subsequent reboot will do, though I could not determine if both /usr/bin/rnd-dist-upgrade and /usr/bin/pkcon dist-upgrade (either of these two is called by version --dup) already do that:
+# sync
 
 printf '%s\n' "Notice: After rebooting, do not miss to run post_$called" >&2
 exit 0
