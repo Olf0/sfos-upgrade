@@ -3,7 +3,7 @@
 
 <br />
 
-Upgrading SailfishOS at the GUI (per *Settings→SailfishOS updates*) provides very little information about its progress / process / success, beyond reading `/var/log/systemupdate.log` after an upgrade.  This can make troubleshooting issues hard.<br />
+Upgrading SailfishOS at the GUI (via *Settings→SailfishOS updates*) provides very little information about its progress / process / success, beyond reading `/var/log/systemupdate.log` after an upgrade.  This can make troubleshooting issues hard.<br />
 Furthermore the GUI offers no control which SailfishOS version to upgrade to.
 
 In contrast to that, Jolla's [guide how to upgrade SailfishOS at the command line](https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line) offers full control, while lacking any logs or safety checks.<br />
@@ -31,7 +31,7 @@ Usage (as root user):
 
 * **sfos-upgrade [\<version\>]**<br />
   With a version number provided as parameter, it sets SSU to this version and in release mode before upgrading to this SailfishOS version.  This is the regular use case.<br />
-  Without a version number, it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.  Hence the version to upgrade to and SSU's "release mode" have to be set (per e.g. `ssu re <version>`) *before* executing `sfos-upgrade` without a parameter.
+  Without a version number, it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading.  Hence the version to upgrade to and SSU's "release mode" have to be set (by e.g. `ssu re <version>`) *before* executing `sfos-upgrade` without a parameter.
 
 * **sfos-upgrade --verify**<br />
   Performs a "samegrade" operation, i.e. checks if the recent versions of all available RPMs are installed and updates or installs them accordingly.<br />
