@@ -15,7 +15,7 @@ export POSIXLY_CORRECT=1  # Also necessary for a sane `df` output, see https://g
 # released version is available there, e.g. the first ones at https://coderus.openrepos.net/whitesoft/sailversion ).
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash anyway; though I have not checked
 # that for ancient releases (which might be re-deployed after a "factory reset"), likely SailfishOS inherited that
-# from Fedora, via MeeGo and Mer (MeeGo reconstructed), too (i.e., in addition to the presence of bash by default).
+# from Fedora, via MeeGo and Mer (MeeGo reconstructed), too (i.e. in addition to the presence of bash by default).
 # Since SailfishOS 4.0, the busybox variant of ash has become the shell installed by default, which provides some bash
 # compatibility (implicitly, when called via its bash-symlink, which is deployed by the busybox-symlinks-bash RPM),
 # including "-o pipefail" (hurray!).  But not "-o posix" (which was used to ensure shell behaviour as defined
@@ -134,7 +134,7 @@ else
     printf '%s\n' "Usage: $called [<version>|--verify|--help]"
     printf '%s\n' "With a version number provided as parameter it sets SSU to this version and in release mode before upgrading.  This is the regular use case."
     printf '%s\n' "Without a version number it retrieves the one set for SSU to perform slightly relaxed checks, but does not alter SSU's settings for upgrading."
-    printf '%s\n' "With --verify as argument $called performs a \"samegrade\" operation, i.e., checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly."
+    printf '%s\n' "With --verify as argument $called performs a \"samegrade\" operation, i.e. checks if the correct versions of all recent RPMs are installed and updates or installs them accordingly."
     exit 2
     ;;
   *)
@@ -248,7 +248,7 @@ else
     fi
   fi
   all_stop_versions="$(printf '%s\n%s' "$(printf '%s' "$sailfishdocs_stop_releases" | cut -s -d '.' -f 1-3 | uniq)" "$(printf '%s' "$mylist_stop_versions" | tr ',' '\n')" | fgrep -vx '' | sort -u)"
-  # As of 2023-04-09 (i.e., 4.5.0.19 is the latest release) the next line works fine despite *and* because "$all_sfos_releases" is sorted non-numerically in line 209: 3.0.0.11, which was a release solely for the Inoi R7, is treated as smaller than 3.0.0.8, which is the correct stop release version of 3.0.0.x.
+  # As of 2023-04-09 (i.e. 4.5.0.19 is the latest release) the next line works fine despite *and* because "$all_sfos_releases" is sorted non-numerically in line 209: 3.0.0.11, which was a release solely for the Inoi R7, is treated as smaller than 3.0.0.8, which is the correct stop release version of 3.0.0.x.
   # But as soon as a stop release version X.Y.Z is publicly released (cBetas are not public) with both, point releases smaller and larger than 10, this ceases to work as intended.  Likely it will still be O.K. in practice.  Something like `sort -t '.' -k 1n,1 -k 2n,2 -k 3n,3 -k 4,4` might be used to explicitly specify what is intended, though here this is equivalent to just `sort`.
   all_stop_releases="$(for i in $all_stop_versions; do printf '%s' "$all_sfos_releases" | grep -xm 1 "${i}\.[0-9][0-9]*"; done)"
   compar0="$(compare_versions "$installed_release" "$upgrade_release")"
@@ -329,7 +329,7 @@ else
           ;;
         esac
         ;;
-      g4)  # Hit the first stop release, which is greater but in the same stop release range (i.e., only differs by the "point release" number) than the installed release.
+      g4)  # Hit the first stop release, which is greater but in the same stop release range (i.e. only differs by the "point release" number) than the installed release.
         compar2="$(compare_versions "$stop_release" "$upgrade_release")"
         case "$compar2" in
         [el]?)
@@ -434,7 +434,7 @@ else
   # "(<df in 0.5 K blocks> - 1) / 2" instead, but the deviation is negligible: 1 KByte too much free space indicated for negative values.
   free_space="$((($(df -P / | head -2 | tail -1 | rev | grep '^/ ' | tr -s ' ' | cut -s -f 3 -d ' ' | rev)+1)/2))"
   # Note that in contrast to upgrading at the GUI, the RPMs for upgrading are not all downloaded first (and installed after booting into the system-update mode),
-  # but downloaded and installed one by one, hence requiring much less space on persistent storage (i.e., the root filesystem) for upgrading.
+  # but downloaded and installed one by one, hence requiring much less space on persistent storage (i.e. the root filesystem) for upgrading.
   # OTOH, be aware that the download sizes Jolla mentions in their release notes are only valid for upgrading from the direct predecessor release,
   # but one may upgrade from one stop release to another, comprising the RPMs of multiple releases.
   # Furthermore these estimates from Jolla only cover their own default components (RPMs), individually installed RPMs (e.g. from the Jolla Store, OpenRepos or even Jolla's SailfishOS repositories) are not and cannot be accounted for.
@@ -618,26 +618,26 @@ g?)
   g4)
     printf '%s\n' "Notice: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
-    printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Note that the \"official\" (i.e. approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Though you can try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you want to do that?" >&2
     ;;
   g4?*)
     printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which just carries a smaller \"point release\" number." >&2
     printf '%s\n' "Nevertheless this may make this SailfishOS installation not working properly." >&2
-    printf '%s\n' "Note that the \"official\" (i.e., approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
+    printf '%s\n' "Note that the \"official\" (i.e. approved by Jolla) way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Though you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
   g?)
-    printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"micro\" version (i.e., their third field)." >&2
+    printf '%s\n' "Warning: About to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"micro\" version (i.e. their third field)." >&2
     printf '%s\n' "This might make this SailfishOS installation not working properly!" >&2
     printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
     printf '%s' "Do you really want to do that?" >&2
     ;;
   g?*)
-    printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e., their third field)!" >&2
+    printf '%s\n' "Aborting: Trying to DOWNGRADE SailfishOS from $installed_release to ${upgrade_release}, which differ in at least their \"second minor\" version (i.e. their third field)!" >&2
     printf '%s\n' "Though this might make this SailfishOS installation not working properly, this downgrade may be performed by setting SSU to the intended release before starting sfos-upgrade without a parameter." >&2
     printf '%s\n' "Note that the proper way to achieve this is to execute a \"factory reset\", followed by UPgrading to the intended version, or re-flashing to the intended or an even older version (then upgrading to the intended one)." >&2
     printf '%s\n' "Although you may try downgrading and if it fails or breaks some functionality, perform a \"factory reset\" then (in the worst case at the recovery console), or simply re-flash." >&2
