@@ -228,7 +228,7 @@ else
   # 0.99.5.11 and 1.0.1.10 are not documented to be "stop releases" at https://docs.sailfishos.org/Support/Releases/
   # But 2.0.5.6 seems to be a "stop release", at least on some devices, see comments thread to
   # https://together.jolla.com/question/207172/downgrade-sailfish-os/?answer=207190#post-id-207190
-  # Trivial, insufficient check for missing entries (both lists MUST be diligently updated concurrently!):
+  # Trivial, insufficient check for missing entries (hence both lists MUST be diligently updated concurrently!):
   #for i in $(printf '%s' "$mylist_stop_releases" | tr ',' ' '); do if printf '%s' "$mylist_sfos_releases" | fgrep -q "$i"; then printf '%s\n' "${i}!"; fi; done
   #my_recent_stop_release="${mylist_stop_releases%%,*"
   # Do not: case "$(compare_versions "$upgrade_release" "$my_recent_stop_release")$(compare_versions "$installed_release" "$my_recent_stop_release")" in
