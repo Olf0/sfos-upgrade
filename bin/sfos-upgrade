@@ -4,7 +4,7 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 export BLOCKSIZE=512      # For `df` et al, see POSIX's `df` man-page and man-page for GNU `df`
 export BLOCK_SIZE=512     # For `df` et al, see man-page for GNU `df`
 export DF_BLOCK_SIZE=512  # For `df` et al, see man-page for GNU `df`
-export POSIXLY_CORRECT=1  # Also necessary for a sane `df` output, see https://github.com/Olf0/sfos-upgrade/issues/73 
+export POSIXLY_CORRECT=1  # Also necessary for a sane `df` output, see https://github.com/Olf0/sfos-upgrade/issues/73
                           # Ultimately this ensures an almost consistent behaviour across shell implementations.
 
 # Switched to use bash since version 2.1 of this script (in its first line), as this ensures that "-o pipefail"
@@ -196,7 +196,7 @@ g???|??g?)  # Only download lists of SailfishOS releases, if the installed relea
   if [ "$sailfishdocs_fail$sailversion_fail" = yy ]
   then
     printf '%s\n\n' "Notice: Failed to retrieve a list of recent SailfishOS releases, hence unable to check the validity of version number \"${upgrade_release}\"." >&2
-  fi 
+  fi
   ;;
 [egl]?[egl]?)  # No need to download lists of SailfishOS releases.
   true
