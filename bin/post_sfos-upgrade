@@ -19,7 +19,7 @@ export POSIXLY_CORRECT=1  # Can have side-effects, see e.g., https://github.com/
                           # Ultimately this ensures an almost consistent behaviour across shell implementations.
 
 called="${0##*/}"
-if ! printf '%s' " $(id -un) $(id -Gn) " | fgrep -q ' root '
+if ! printf '%s' " $(id -un) $(id -Gn) " | grep -F -q ' root '
 then
   printf '%s\n' "Aborting: $called must be started with root privileges."
   exit 1
@@ -50,7 +50,7 @@ fi
 # See troubleshooting section "Cleaning up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#update-using-the-command-line
 rm -f /home/.pk-zypp-dist-upgrade-cache/*
 # See https://github.com/sailfishos/udisks2/commit/bcc6437ff35a3cc1e8c4777ee80d85a9c112e63e#diff-be2415d9a1095d0aa0d9dc7977c388a7ab5bb3ff7b3e4c38713062bd03165cee
-primuser="$(loginctl list-sessions | fgrep seat0 | tr -s ' ' | cut -d ' ' -f 4)"
+primuser="$(loginctl list-sessions | grep -F seat0 | tr -s ' ' | cut -d ' ' -f 4)"
 # Paths for SailfishOS ≥ 2.2.1 rsp. SailfishOS < 2.2.1, see chapter "Final clean up" at https://docs.sailfishos.org/Support/Help_Articles/Updating_Sailfish_OS/#final-clean-up
 rm -f "/home/${primuser}/.cache/sailfish-osupdateservice/os-info" "/home/${primuser}/.cache/store-client/os-info"
 
